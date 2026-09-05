@@ -1,3 +1,5 @@
+import { ticketDashboardCaseStudy } from "./caseStudy";
+
 export const modes = {
   work: {
     key: "work",
@@ -36,6 +38,7 @@ export const projects = [
       "Agents couldn't see which tickets were about to breach — so I made urgency impossible to miss",
     description:
       "A customer-support ticketing dashboard that surfaces SLA-risk, breached, and unassigned tickets on login — turning a manual daily scan into an ambient view.",
+    caseStudy: ticketDashboardCaseStudy,
   },
   {
     number: "02",
@@ -57,17 +60,17 @@ export const projects = [
 
 export const hobbyColumns = [
   [
-    { label: "Cooking", emoji: "🍳", color: "#f6c98a", rotate: -6, marginTop: 0 },
-    { label: "Anime", emoji: "📺", color: "#b9c6f5", rotate: 5, marginTop: 24 },
-    { label: "Travel", emoji: "✈️", color: "#a3ded4", rotate: -5, marginTop: 24 },
+    { label: "Cooking", emoji: "🍳", color: "#f6c98a", rotate: -6 },
+    { label: "Anime", emoji: "📺", color: "#b9c6f5", rotate: 5 },
+    { label: "Travel", emoji: "✈️", color: "#a3ded4", rotate: -5 },
   ],
   [
-    { label: "Painting", emoji: "🎨", color: "#f5a9c0", rotate: 4, marginTop: 0 },
-    { label: "Music", emoji: "🎧", color: "#f6d675", rotate: -4, marginTop: 24 },
-    { label: "Photography", emoji: "📷", color: "#f3b8d6", rotate: 3, marginTop: 24 },
+    { label: "Painting", emoji: "🎨", color: "#f5a9c0", rotate: 4 },
+    { label: "Music", emoji: "🎧", color: "#f6d675", rotate: -4 },
+    { label: "Photography", emoji: "📷", color: "#f3b8d6", rotate: 3 },
   ],
   [
-    { label: "Cricket", emoji: "🏏", color: "#a9d99b", rotate: -3, marginTop: 48 },
-    { label: "Gaming", emoji: "🎮", color: "#c9b3ef", rotate: 6, marginTop: 24 },
+    { label: "Cricket", emoji: "🏏", color: "#a9d99b", rotate: -3 },
+    { label: "Gaming", emoji: "🎮", color: "#c9b3ef", rotate: 6 },
   ],
 ];

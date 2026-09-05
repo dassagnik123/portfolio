@@ -21,21 +21,19 @@ function Tag({ children }) {
   );
 }
 
-export default function ProjectCard({ project, className = "" }) {
+export default function ProjectCard({ project, onClick, className = "" }) {
   const { number, large, filled, tags, title, description, slotLabel } =
     project;
 
   return (
-    <div
-      className={`relative flex flex-col overflow-hidden rounded-3xl border border-neutral-800 bg-neutral-900 ${className}`}
+    <button
+      type="button"
+      onClick={onClick}
+      className={`group relative flex h-full w-full flex-col overflow-hidden rounded-3xl border border-neutral-800 bg-neutral-900 text-left transition hover:border-neutral-700 ${className}`}
     >
-      <div
-        className={`relative flex items-center justify-center overflow-hidden ${
-          large ? "min-h-[280px] flex-1" : "min-h-[170px] flex-1"
-        }`}
-      >
+      <div className="relative min-h-0 flex-1 overflow-hidden">
         {filled ? (
-          <div className="absolute inset-0 flex items-center justify-center bg-[radial-gradient(ellipse_at_top,_#6b6f76_0%,_#3a3c40_45%,_#1a1b1d_100%)] p-6">
+          <div className="absolute inset-0 flex items-start justify-center overflow-hidden bg-[radial-gradient(ellipse_at_top,_#6b6f76_0%,_#3a3c40_45%,_#1a1b1d_100%)] px-6 pb-6 pt-16">
             <TicketDashboardMockup />
           </div>
         ) : (
@@ -49,34 +47,33 @@ export default function ProjectCard({ project, className = "" }) {
         <span className="absolute left-5 top-5 font-display text-sm font-bold text-accent-work">
           {number}
         </span>
-        <button
-          type="button"
-          aria-label="View project"
-          className="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-full border border-white/25 text-white/90 backdrop-blur-sm transition hover:bg-white/10"
+        <span
+          aria-hidden
+          className="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-full border border-white/25 text-white/90 backdrop-blur-sm transition group-hover:bg-white/10"
         >
           <ArrowIcon />
-        </button>
+        </span>
       </div>
 
-      <div className={large ? "p-6 md:p-8" : "p-6"}>
-        <div className="mb-4 flex flex-wrap gap-2">
+      <div className={`shrink-0 ${large ? "p-5 md:p-6" : "p-4 md:p-5"}`}>
+        <div className="mb-3 flex flex-wrap gap-2">
           {tags.map((tag) => (
             <Tag key={tag}>{tag}</Tag>
           ))}
         </div>
         <h3
           className={`font-display font-extrabold leading-snug text-white ${
-            large ? "text-xl md:text-2xl lg:text-[1.7rem]" : "text-lg"
+            large ? "text-lg md:text-xl lg:text-2xl" : "text-base md:text-lg"
           }`}
         >
           {title}
         </h3>
         {description && (
-          <p className="mt-3 text-sm leading-relaxed text-neutral-400">
+          <p className="mt-2 text-xs leading-relaxed text-neutral-400 md:text-sm">
             {description}
           </p>
         )}
       </div>
-    </div>
+    </button>
   );
 }

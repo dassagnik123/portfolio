@@ -16,11 +16,13 @@ const ImageIcon = () => (
 
 export default function ImageSlot({
   label,
+  dropText,
   placeholder,
   showLabel = true,
   className = "",
   iconClassName = "text-neutral-500",
   initial = null,
+  uploadable = true,
 }) {
   const [src, setSrc] = useState(initial);
   const inputRef = useRef(null);
@@ -29,6 +31,23 @@ export default function ImageSlot({
     const file = e.target.files?.[0];
     if (!file) return;
     setSrc(URL.createObjectURL(file));
+  }
+
+  if (!uploadable) {
+    return (
+      <div
+        className={`relative flex flex-col items-center justify-center gap-3 overflow-hidden ${className}`}
+        style={src ? undefined : placeholder ? { backgroundColor: placeholder } : undefined}
+      >
+        {src ? (
+          <img src={src} alt={label} className="h-full w-full object-cover" />
+        ) : (
+          <span className={iconClassName}>
+            <ImageIcon />
+          </span>
+        )}
+      </div>
+    );
   }
 
   if (src) {
@@ -69,7 +88,7 @@ export default function ImageSlot({
       </span>
       {showLabel && (
         <span className="px-6 text-center text-sm leading-snug text-neutral-500">
-          Drop the {label} screenshot
+          {dropText ?? `Drop the ${label} screenshot`}
           <br />
           or{" "}
           <span className="underline underline-offset-2 group-hover:text-neutral-300">

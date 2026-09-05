@@ -23,3 +23,28 @@ body {
 #root {
   min-height: 100svh;
 }
+
+@keyframes float {
+  0%,
+  100% {
+    transform: rotate(var(--rotate, 0deg)) translateY(0);
+  }
+  50% {
+    transform: rotate(var(--rotate, 0deg)) translateY(-8px);
+  }
+}
+
+.polaroid-float {
+  transform: rotate(var(--rotate, 0deg));
+  animation: float 4.5s ease-in-out infinite;
+  animation-delay: var(--float-delay, 0s);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.polaroid-float:hover {
+  animation-play-state: paused;
+  transform: rotate(0deg) scale(1.06) !important;
+  box-shadow: 0 22px 34px -10px rgba(0, 0, 0, 0.4);
+}

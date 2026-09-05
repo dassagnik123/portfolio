@@ -1,7 +1,9 @@
 import { useState } from "react";
+import Gallery from "./components/Gallery";
 import ModeToggle from "./components/ModeToggle";
 import Polaroid from "./components/Polaroid";
 import ProjectCard from "./components/ProjectCard";
+import ProjectDetail from "./components/ProjectDetail";
 import { contact, hobbyColumns, modes, projects } from "./data";
 
 function Badge({ children, active, accentClass }) {
@@ -20,6 +22,8 @@ function Badge({ children, active, accentClass }) {
 
 export default function App() {
   const [mode, setMode] = useState("work");
+  const [activeHobby, setActiveHobby] = useState(null);
+  const [activeProject, setActiveProject] = useState(null);
   const isPersonal = mode === "personal";
   const content = modes[mode];
 
@@ -29,11 +33,11 @@ export default function App() {
 
   return (
     <div
-      className={`min-h-screen border-t-4 border-black transition-colors duration-500 ${
+      className={`flex h-dvh flex-col overflow-hidden border-t-4 border-black transition-colors duration-500 ${
         isPersonal ? "bg-cream text-neutral-900" : "bg-neutral-950 text-white"
       }`}
     >
-      <header className="flex flex-wrap items-center justify-between gap-4 px-6 py-7 sm:px-10 lg:px-14">
+      <header className="flex shrink-0 flex-wrap items-center justify-between gap-4 px-6 py-5 sm:px-10 lg:px-14">
         <span className="font-display text-2xl font-extrabold">SD.</span>
         <div className="flex flex-wrap items-center gap-4 text-xs font-medium tracking-wide sm:gap-6 sm:text-sm">
           <span className="opacity-70">{contact.email.toUpperCase()}</span>
@@ -43,8 +47,8 @@ export default function App() {
         </div>
       </header>
 
-      <main className="grid grid-cols-1 items-start gap-10 px-6 pb-16 sm:px-10 lg:grid-cols-[minmax(0,480px)_1fr] lg:gap-12 lg:px-14">
-        <section className="flex flex-col justify-start gap-6 pt-4">
+      <main className="grid min-h-0 flex-1 grid-cols-1 items-stretch gap-6 overflow-hidden px-6 pb-6 sm:px-10 lg:grid-cols-[minmax(0,480px)_1fr] lg:gap-10 lg:px-14">
+        <section className="flex min-h-0 flex-col justify-start gap-5 overflow-hidden pt-10 lg:pt-16">
           <div className="flex flex-nowrap gap-1.5">
             {content.badges.map((badge, i) => (
               <Badge key={badge} active={i === 0} accentClass={accentClass}>
@@ -53,16 +57,16 @@ export default function App() {
             ))}
           </div>
 
-          <h1 className="font-display text-6xl font-extrabold leading-[0.95] tracking-tight sm:text-7xl">
+          <h1 className="font-display text-5xl font-extrabold leading-[0.95] tracking-tight sm:text-6xl lg:text-7xl">
             {content.name[0]}
             <br />
             {content.name[1]}
           </h1>
 
-          <p className="max-w-md text-lg leading-relaxed opacity-90">
+          <p className="max-w-md text-base leading-relaxed opacity-90 lg:text-lg">
             {content.lead}
           </p>
-          <p className="max-w-md text-base leading-relaxed opacity-60">
+          <p className="max-w-md text-sm leading-relaxed opacity-60 lg:text-base">
             {content.sub}
           </p>
 
@@ -84,33 +88,52 @@ export default function App() {
           </div>
         </section>
 
-        <section>
+        <section className="min-h-0 overflow-hidden">
           {isPersonal ? (
-            <div className="grid grid-cols-2 gap-x-6 gap-y-6 sm:grid-cols-3">
+            <div className="grid h-full grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
               {hobbyColumns.map((column, colIndex) => (
-                <div key={colIndex} className="flex flex-col gap-6">
-                  {column.map((hobby) => (
+                <div
+                  key={colIndex}
+                  className="flex h-full flex-col justify-center gap-6"
+                >
+                  {column.map((hobby, itemIndex) => (
                     <Polaroid
                       key={hobby.label}
                       {...hobby}
-                      className={colIndex === 2 ? "hidden sm:block" : undefined}
+                      delay={colIndex * 0.4 + itemIndex * 0.7}
+                      onClick={() => setActiveHobby(hobby)}
+                      className={colIndex === 2 ? "hidden sm:block" : ""}
                     />
                   ))}
                 </div>
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-3 sm:grid-rows-2">
+            <div className="flex h-full gap-3">
+              <div className="flex w-6 shrink-0 items-center justify-center">
+                <span className="[writing-mode:vertical-rl] rotate-180 text-xs font-semibold tracking-[0.3em] text-neutral-500">
+                  PROJECTS
+                </span>
+              </div>
               <ProjectCard
                 project={projects[0]}
-                className="sm:col-span-2 sm:row-span-2"
+                onClick={() => setActiveProject(projects[0])}
+                className="min-h-0 h-full flex-1"
               />
-              <ProjectCard project={projects[1]} className="sm:col-start-3" />
-              <ProjectCard project={projects[2]} className="sm:col-start-3" />
             </div>
           )}
         </section>
       </main>
+
+      {activeHobby && (
+        <Gallery hobby={activeHobby} onBack={() => setActiveHobby(null)} />
+      )}
+      {activeProject && (
+        <ProjectDetail
+          project={activeProject}
+          onBack={() => setActiveProject(null)}
+        />
+      )}
     </div>
   );
 }
