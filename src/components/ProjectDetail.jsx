@@ -210,7 +210,7 @@ export default function ProjectDetail({ project, onBack }) {
             activeId={activeId}
             onNavigate={handleNavigate}
           />
-          <div className="fixed bottom-6 right-6 z-[60] flex items-center gap-2 rounded-full border border-neutral-800 bg-neutral-900/90 px-4 py-2 text-xs text-neutral-400 backdrop-blur-sm">
+          <div className="fixed bottom-6 right-6 z-[60] hidden items-center gap-2 rounded-full border border-neutral-800 bg-neutral-900/90 px-4 py-2 text-xs text-neutral-400 backdrop-blur-sm sm:flex">
             <span className="flex items-center gap-1">
               <kbd className="flex h-5 w-5 items-center justify-center rounded border border-neutral-700 bg-neutral-800 font-sans text-[10px] text-neutral-300">
                 ↑

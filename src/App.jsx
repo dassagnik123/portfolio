@@ -40,7 +40,7 @@ export default function App() {
 
   return (
     <div
-      className={`flex h-dvh flex-col overflow-hidden border-t-4 border-black transition-colors duration-500 ${
+      className={`flex min-h-dvh flex-col overflow-x-hidden border-t-4 border-black transition-colors duration-500 lg:h-dvh lg:overflow-hidden ${
         isPersonal ? "bg-cream text-neutral-900" : "bg-neutral-950 text-white"
       }`}
     >
@@ -81,9 +81,9 @@ export default function App() {
         </div>
       </header>
 
-      <main className="grid min-h-0 flex-1 grid-cols-1 items-stretch gap-6 overflow-hidden px-6 pb-6 sm:px-10 lg:grid-cols-[minmax(0,480px)_1fr] lg:gap-10 lg:px-14">
-        <section className="flex min-h-0 flex-col justify-start gap-5 overflow-hidden pt-10 lg:pt-16">
-          <div className="flex flex-nowrap gap-1.5">
+      <main className="flex flex-1 flex-col gap-10 px-6 pb-10 sm:px-10 lg:grid lg:min-h-0 lg:grid-cols-[minmax(0,480px)_1fr] lg:items-stretch lg:gap-10 lg:overflow-hidden lg:px-14 lg:pb-6">
+        <section className="flex flex-col justify-start gap-5 pt-4 sm:pt-6 lg:min-h-0 lg:overflow-hidden lg:pt-16">
+          <div className="flex flex-wrap gap-1.5 lg:flex-nowrap">
             {content.badges.map((badge, i) => (
               <Badge key={badge} active={i === 0} accentClass={accentClass}>
                 {badge}
@@ -133,13 +133,13 @@ export default function App() {
           </div>
         </section>
 
-        <section className="min-h-0">
+        <section className="lg:min-h-0">
           {isPersonal ? (
-            <div className="grid h-full grid-cols-2 gap-x-10 gap-y-6 p-8 sm:grid-cols-3">
+            <div className="grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3 sm:gap-x-10 lg:h-full lg:gap-y-6 lg:p-8">
               {hobbyColumns.map((column, colIndex) => (
                 <div
                   key={colIndex}
-                  className="flex h-full flex-col justify-center gap-10"
+                  className="flex flex-col justify-center gap-6 sm:gap-8 lg:h-full lg:gap-10"
                 >
                   {column.map((hobby, itemIndex) => (
                     <Polaroid
@@ -154,7 +154,7 @@ export default function App() {
               ))}
             </div>
           ) : (
-            <div className="flex h-full gap-3">
+            <div className="flex gap-3 lg:h-full">
               <div className="flex w-6 shrink-0 items-center justify-center">
                 <span className="[writing-mode:vertical-rl] rotate-180 text-xs font-semibold tracking-[0.3em] text-neutral-500">
                   PROJECTS
@@ -163,7 +163,7 @@ export default function App() {
               <ProjectCard
                 project={projects[0]}
                 onClick={() => setActiveProject(projects[0])}
-                className="min-h-0 h-full flex-1"
+                className="min-h-[420px] lg:h-full lg:min-h-0 lg:flex-1"
               />
             </div>
           )}

@@ -30,7 +30,7 @@ export default function Polaroid({
     <button
       type="button"
       onClick={onClick}
-      className={`group relative mx-auto flex w-full max-w-[180px] flex-1 min-h-0 max-h-[228px] cursor-pointer flex-col text-left ${className}`}
+      className={`group relative mx-auto flex w-full max-w-[180px] aspect-[4/5] cursor-pointer flex-col text-left lg:aspect-auto lg:min-h-0 lg:max-h-[228px] lg:flex-1 ${className}`}
     >
       <span
         aria-hidden
