@@ -7,7 +7,7 @@ import { contact, hobbyColumns, modes, projects } from "./data";
 function Badge({ children, active, accentClass }) {
   return (
     <span
-      className={`rounded-full border px-4 py-1.5 text-xs font-semibold tracking-wide ${
+      className={`whitespace-nowrap rounded-full border px-3 py-1.5 text-xs font-semibold tracking-wide ${
         active
           ? `${accentClass.border} ${accentClass.text}`
           : "border-current/25 text-current/70"
@@ -43,9 +43,9 @@ export default function App() {
         </div>
       </header>
 
-      <main className="grid grid-cols-1 items-start gap-10 px-6 pb-16 sm:px-10 lg:grid-cols-[minmax(0,420px)_1fr] lg:gap-12 lg:px-14">
+      <main className="grid grid-cols-1 items-start gap-10 px-6 pb-16 sm:px-10 lg:grid-cols-[minmax(0,480px)_1fr] lg:gap-12 lg:px-14">
         <section className="flex flex-col justify-start gap-6 pt-4">
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-nowrap gap-1.5">
             {content.badges.map((badge, i) => (
               <Badge key={badge} active={i === 0} accentClass={accentClass}>
                 {badge}
