@@ -21,6 +21,7 @@ export default function Polaroid({
   emoji,
   color,
   rotate,
+  offset = 0,
   delay = 0,
   onClick,
   className = "",
@@ -29,7 +30,7 @@ export default function Polaroid({
     <button
       type="button"
       onClick={onClick}
-      className={`group relative mx-auto block w-full max-w-[150px] cursor-pointer text-left ${className}`}
+      className={`group relative mx-auto flex w-full max-w-[180px] flex-1 min-h-0 max-h-[228px] cursor-pointer flex-col text-left ${className}`}
     >
       <span
         aria-hidden
@@ -51,10 +52,14 @@ export default function Polaroid({
       </span>
 
       <span
-        className="polaroid-float relative z-10 flex flex-col rounded-sm bg-white p-2 pb-2.5 shadow-[0_12px_24px_-8px_rgba(0,0,0,0.25)]"
-        style={{ "--rotate": `${rotate}deg`, "--float-delay": `${delay}s` }}
+        className="polaroid-float relative z-10 flex min-h-0 flex-1 flex-col rounded-sm bg-white p-2.5 pb-3 shadow-[0_12px_24px_-8px_rgba(0,0,0,0.25)]"
+        style={{
+          "--rotate": `${rotate}deg`,
+          "--offset": `${offset}px`,
+          "--float-delay": `${delay}s`,
+        }}
       >
-        <div className="relative aspect-square w-full overflow-hidden">
+        <div className="relative min-h-0 w-full flex-1 overflow-hidden">
           <ImageSlot
             label={label}
             placeholder={color}
@@ -63,7 +68,7 @@ export default function Polaroid({
             className="h-full w-full"
           />
         </div>
-        <p className="mt-2 flex shrink-0 items-center justify-between gap-1.5 text-xs text-neutral-700">
+        <p className="mt-2.5 flex shrink-0 items-center justify-between gap-1.5 text-sm text-neutral-700">
           <span className="flex items-center gap-1.5">
             <span>{emoji}</span>
             <span>{label}</span>

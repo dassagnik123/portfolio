@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ImageSlot from "./ImageSlot";
 import SectionNav from "./SectionNav";
 import TicketDashboardMockup from "./TicketDashboardMockup";
@@ -162,6 +162,36 @@ export default function ProjectDetail({ project, onBack }) {
     });
   }
 
+  const activeIdRef = useRef(activeId);
+  activeIdRef.current = activeId;
+  const navSectionsRef = useRef(navSections);
+  navSectionsRef.current = navSections;
+
+  useEffect(() => {
+    if (!caseStudy) return undefined;
+
+    function handleKeyDown(e) {
+      if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+      e.preventDefault();
+
+      const sections = navSectionsRef.current;
+      const currentIndex = sections.findIndex(
+        (s) => s.id === activeIdRef.current,
+      );
+      const delta = e.key === "ArrowDown" ? 1 : -1;
+      const nextIndex = Math.min(
+        Math.max(currentIndex + delta, 0),
+        sections.length - 1,
+      );
+      const next = sections[nextIndex];
+      if (next) handleNavigate(next.id);
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [caseStudy]);
+
   return (
     <div className="fixed inset-0 z-50 flex flex-col overflow-y-auto bg-neutral-950 p-6 text-white sm:p-10">
       <button
@@ -174,11 +204,24 @@ export default function ProjectDetail({ project, onBack }) {
       </button>
 
       {navSections.length > 0 && (
-        <SectionNav
-          sections={navSections}
-          activeId={activeId}
-          onNavigate={handleNavigate}
-        />
+        <>
+          <SectionNav
+            sections={navSections}
+            activeId={activeId}
+            onNavigate={handleNavigate}
+          />
+          <div className="fixed bottom-6 right-6 z-[60] flex items-center gap-2 rounded-full border border-neutral-800 bg-neutral-900/90 px-4 py-2 text-xs text-neutral-400 backdrop-blur-sm">
+            <span className="flex items-center gap-1">
+              <kbd className="flex h-5 w-5 items-center justify-center rounded border border-neutral-700 bg-neutral-800 font-sans text-[10px] text-neutral-300">
+                ↑
+              </kbd>
+              <kbd className="flex h-5 w-5 items-center justify-center rounded border border-neutral-700 bg-neutral-800 font-sans text-[10px] text-neutral-300">
+                ↓
+              </kbd>
+            </span>
+            <span>to navigate sections</span>
+          </div>
+        </>
       )}
 
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 pb-16">

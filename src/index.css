@@ -27,15 +27,16 @@ body {
 @keyframes float {
   0%,
   100% {
-    transform: rotate(var(--rotate, 0deg)) translateY(0);
+    transform: rotate(var(--rotate, 0deg)) translateY(var(--offset, 0px));
   }
   50% {
-    transform: rotate(var(--rotate, 0deg)) translateY(-8px);
+    transform: rotate(var(--rotate, 0deg))
+      translateY(calc(var(--offset, 0px) - 8px));
   }
 }
 
 .polaroid-float {
-  transform: rotate(var(--rotate, 0deg));
+  transform: rotate(var(--rotate, 0deg)) translateY(var(--offset, 0px));
   animation: float 4.5s ease-in-out infinite;
   animation-delay: var(--float-delay, 0s);
   transition:

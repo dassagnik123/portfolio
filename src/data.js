@@ -28,6 +28,12 @@ export const contact = {
   phone: "7595895302",
 };
 
+export const socials = {
+  linkedin: "https://linkedin.com/in/sagnikdas",
+  twitter: "https://twitter.com/sagnikdas",
+  resume: "/resume.pdf",
+};
+
 export const projects = [
   {
     number: "01",
@@ -60,17 +66,17 @@ export const projects = [
 
 export const hobbyColumns = [
   [
-    { label: "Cooking", emoji: "🍳", color: "#f6c98a", rotate: -6 },
-    { label: "Anime", emoji: "📺", color: "#b9c6f5", rotate: 5 },
-    { label: "Travel", emoji: "✈️", color: "#a3ded4", rotate: -5 },
+    { label: "Cooking", emoji: "🍳", color: "#f6c98a", rotate: -7, offset: 6 },
+    { label: "Anime", emoji: "📺", color: "#b9c6f5", rotate: 6, offset: -16 },
+    { label: "Travel", emoji: "✈️", color: "#a3ded4", rotate: -5, offset: 12 },
   ],
   [
-    { label: "Painting", emoji: "🎨", color: "#f5a9c0", rotate: 4 },
-    { label: "Music", emoji: "🎧", color: "#f6d675", rotate: -4 },
-    { label: "Photography", emoji: "📷", color: "#f3b8d6", rotate: 3 },
+    { label: "Painting", emoji: "🎨", color: "#f5a9c0", rotate: 5, offset: -14 },
+    { label: "Music", emoji: "🎧", color: "#f6d675", rotate: -6, offset: 10 },
+    { label: "Photography", emoji: "📷", color: "#f3b8d6", rotate: 4, offset: -8 },
   ],
   [
-    { label: "Cricket", emoji: "🏏", color: "#a9d99b", rotate: -3 },
-    { label: "Gaming", emoji: "🎮", color: "#c9b3ef", rotate: 6 },
+    { label: "Cricket", emoji: "🏏", color: "#a9d99b", rotate: -4, offset: 10 },
+    { label: "Gaming", emoji: "🎮", color: "#c9b3ef", rotate: 7, offset: -12 },
   ],
 ];
