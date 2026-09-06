@@ -40,8 +40,8 @@ export default function Gallery({ hobby, onBack }) {
           >
             <ImageSlot
               label={hobby.label}
-              dropText={`Add a ${hobby.label.toLowerCase()} photo`}
               placeholder={hobby.color}
+              uploadable={false}
               className="aspect-square w-full"
             />
           </div>

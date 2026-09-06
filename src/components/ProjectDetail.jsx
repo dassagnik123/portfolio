@@ -116,7 +116,7 @@ function CaseStudySection({ section }) {
   return (
     <section
       id={sectionId(section.heading)}
-      className="scroll-mt-8 flex flex-col gap-4 border-t border-neutral-800 pt-10 first:border-t-0 first:pt-0"
+      className="scroll-mt-24 flex flex-col gap-4 border-t border-neutral-800 pt-10 first:border-t-0 first:pt-0"
     >
       <h3 className="font-display text-2xl font-extrabold text-white">
         {section.heading}
@@ -128,47 +128,111 @@ function CaseStudySection({ section }) {
   );
 }
 
+function CaseStudyOverview({ rows }) {
+  return (
+    <section
+      id="overview"
+      className="scroll-mt-24 rounded-2xl border border-neutral-800 bg-neutral-900/50 p-5 sm:p-6"
+    >
+      <div className="mb-4 flex items-center gap-2">
+        <span className="h-1.5 w-1.5 rounded-full bg-accent-work" />
+        <h3 className="font-display text-xs font-bold uppercase tracking-[0.18em] text-neutral-300">
+          1-minute overview
+        </h3>
+      </div>
+      <dl className="flex flex-col gap-3">
+        {rows.map((row) => (
+          <div
+            key={row.label}
+            className="grid grid-cols-[5.5rem_1fr] gap-x-4 border-t border-neutral-800/70 pt-3 first:border-t-0 first:pt-0 sm:grid-cols-[7rem_1fr]"
+          >
+            <dt className="pt-0.5 text-[11px] font-semibold uppercase tracking-wide text-neutral-500 sm:text-xs">
+              {row.label}
+            </dt>
+            <dd className="text-sm leading-relaxed text-neutral-300 sm:text-base">
+              <Rich text={row.text} />
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+  );
+}
+
 export default function ProjectDetail({ project, onBack }) {
   const { number, filled, cover, tags, title, description, slotLabel, caseStudy } =
     project;
 
   const navSections = caseStudy
-    ? caseStudy.sections.map((s) => ({
-        heading: s.heading,
-        id: sectionId(s.heading),
-      }))
+    ? [
+        ...(caseStudy.overview
+          ? [{ heading: "Overview", id: "overview" }]
+          : []),
+        ...caseStudy.sections.map((s) => ({
+          heading: s.heading,
+          id: sectionId(s.heading),
+        })),
+      ]
     : [];
 
   const [activeId, setActiveId] = useState(navSections[0]?.id ?? null);
+  const scrollRef = useRef(null);
 
   useEffect(() => {
     if (!caseStudy) return undefined;
+    const container = scrollRef.current;
+    if (!container) return undefined;
 
-    const elements = navSections
-      .map((s) => document.getElementById(s.id))
-      .filter(Boolean);
+    const ids = navSections.map((s) => s.id);
+    // Activation line, just below the sticky Back bar.
+    const LINE = 140;
 
-    const visibility = new Map();
+    function update() {
+      const els = ids
+        .map((id) => document.getElementById(id))
+        .filter(Boolean);
+      if (els.length === 0) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          visibility.set(entry.target.id, entry.isIntersecting);
-        });
-        const visible = elements.filter((el) => visibility.get(el.id));
-        if (visible.length === 0) return;
-        const topMost = visible.reduce((a, b) =>
-          a.getBoundingClientRect().top < b.getBoundingClientRect().top
-            ? a
-            : b,
+      const maxScroll = container.scrollHeight - container.clientHeight;
+
+      // Sections in the final screenful can never scroll their heading up to
+      // LINE. Slide the detection line down toward the viewport bottom as the
+      // scroll approaches the end, so those trailing sections still activate
+      // in order instead of the last reachable one staying stuck.
+      let line = LINE;
+      if (maxScroll > 4) {
+        const overshoot = Math.max(
+          0,
+          container.scrollTop - (maxScroll - container.clientHeight),
         );
-        setActiveId(topMost.id);
-      },
-      { rootMargin: "-10% 0px -75% 0px", threshold: 0 },
-    );
+        const t = Math.min(1, overshoot / container.clientHeight);
+        line = LINE + t * (container.clientHeight - LINE);
+      }
 
-    elements.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
+      let current = els[0].id;
+      for (const el of els) {
+        if (el.getBoundingClientRect().top - line <= 1) {
+          current = el.id;
+        } else {
+          break;
+        }
+      }
+
+      // Pinned to the bottom → the very last section is the one in view.
+      if (maxScroll > 4 && container.scrollTop >= maxScroll - 2) {
+        current = els[els.length - 1].id;
+      }
+
+      setActiveId(current);
+    }
+
+    update();
+    container.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      container.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [caseStudy]);
 
@@ -211,15 +275,20 @@ export default function ProjectDetail({ project, onBack }) {
   }, [caseStudy]);
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col overflow-y-auto bg-neutral-950 p-6 text-white sm:p-10">
-      <button
-        type="button"
-        onClick={onBack}
-        className="mb-8 flex w-fit shrink-0 items-center gap-2 rounded-full border-2 border-accent-work px-5 py-2.5 text-sm font-semibold text-accent-work transition hover:bg-accent-work hover:text-neutral-950"
-      >
-        <BackIcon />
-        Back
-      </button>
+    <div
+      ref={scrollRef}
+      className="fixed inset-0 z-50 flex flex-col overflow-y-auto bg-neutral-950 text-white"
+    >
+      <div className="sticky top-0 z-30 shrink-0 bg-neutral-950/90 px-6 py-4 backdrop-blur-sm sm:px-10">
+        <button
+          type="button"
+          onClick={onBack}
+          className="flex w-fit items-center gap-2 rounded-full border-2 border-accent-work px-5 py-2.5 text-sm font-semibold text-accent-work transition hover:bg-accent-work hover:text-neutral-950"
+        >
+          <BackIcon />
+          Back
+        </button>
+      </div>
 
       {navSections.length > 0 && (
         <>
@@ -242,7 +311,7 @@ export default function ProjectDetail({ project, onBack }) {
         </>
       )}
 
-      <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 pb-16">
+      <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-6 pb-16 pt-4 sm:px-10">
         {cover ? (
           <div className="relative overflow-hidden rounded-3xl border border-neutral-800">
             <img
@@ -293,6 +362,10 @@ export default function ProjectDetail({ project, onBack }) {
                 {caseStudy.duration}
               </span>
             </div>
+
+            {caseStudy.overview && (
+              <CaseStudyOverview rows={caseStudy.overview} />
+            )}
 
             <div className="flex flex-col gap-10">
               {caseStudy.sections.map((section) => (

@@ -45,7 +45,13 @@ export default function App() {
         isPersonal ? "bg-cream text-neutral-900" : "bg-neutral-950 text-white"
       }`}
     >
-      {!isPersonal && (
+      {isPersonal ? (
+        <div aria-hidden className="personal-backdrop">
+          <div className="personal-blob personal-blob-1" />
+          <div className="personal-blob personal-blob-2" />
+          <div className="personal-blob personal-blob-3" />
+        </div>
+      ) : (
         <div aria-hidden className="work-backdrop">
           <div className="work-aurora work-aurora-1" />
           <div className="work-aurora work-aurora-2" />

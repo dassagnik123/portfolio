@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 // Vertical "scroll up" word rotator. Cycles through `items`, always moving
 // upward — an appended clone of the first word makes the wrap seamless.
@@ -36,13 +36,31 @@ export default function RotatingText({ items, interval = 2400 }) {
   }, [animating]);
 
   // Match the container width to the visible word so the sentence reflows.
-  useLayoutEffect(() => {
+  // getBoundingClientRect keeps sub-pixel precision; the +1 guards against the
+  // container's overflow:hidden clipping the final glyph after rounding.
+  const measure = useCallback(() => {
     const el = trackRef.current?.children[index];
-    if (el) setWidth(el.offsetWidth);
+    if (el) setWidth(Math.ceil(el.getBoundingClientRect().width) + 1);
   }, [index]);
 
+  useLayoutEffect(() => {
+    measure();
+  }, [measure]);
+
+  // Re-measure once the web font has actually loaded (first paint often uses
+  // fallback metrics) and whenever the viewport resizes the type scale.
+  useEffect(() => {
+    document.fonts?.ready.then(measure).catch(() => {});
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [measure]);
+
   return (
-    <span className="rotating-text" style={{ width }} aria-label={items[index % items.length]}>
+    <span
+      className="rotating-text"
+      style={{ width }}
+      aria-label={items[index % items.length]}
+    >
       <span
         ref={trackRef}
         className="rotating-text__track"
