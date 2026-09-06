@@ -260,6 +260,13 @@ export const ticketDashboardCaseStudy = {
             "Improve prioritization within the list",
           ],
         },
+        {
+          type: "image",
+          src: "/cs-ticket-list.png",
+          alt: "Redesigned support ticket list with an SLA Status column as the leftmost field",
+          caption:
+            "The redesigned ticket list — SLA Status leads every row, so urgency reads at a glance without opening a ticket.",
+        },
         { type: "h3", text: "Bulk Actions" },
         {
           type: "p",
@@ -302,6 +309,13 @@ export const ticketDashboardCaseStudy = {
             "Makes urgency visible instantly",
             "Reduces SLA misses",
           ],
+        },
+        {
+          type: "image",
+          src: "/cs-dashboard-sla-table.png",
+          alt: "Dashboard prioritization tables showing SLA At Risk and Unassigned tickets, each capped to a short list",
+          caption:
+            "The dashboard's bounded prioritization tables — the most at-risk and unassigned tickets surface on login, no filtering required.",
         },
         { type: "h3", text: "High-Priority & Unassigned Tickets" },
         {
@@ -362,6 +376,20 @@ export const ticketDashboardCaseStudy = {
         {
           type: "p",
           text: "The existing experience required agents to manually scan the ticket list to identify urgency, which increased cognitive load and led to missed SLAs. The redesigned solution introduces a structured prioritization layer and clearer execution tools to enable faster and more confident decision-making.",
+        },
+        {
+          type: "image",
+          src: "/cs-before-ticket-list.png",
+          alt: "Original ticket list packed with creation and issue date/time columns and no SLA urgency indicator",
+          caption:
+            "**Before** — the original list led with creation and issue timestamps; nothing signalled which tickets were close to breaching.",
+        },
+        {
+          type: "image",
+          src: "/cs-before-analytics.png",
+          alt: "Original summary view with donut charts breaking tickets down by type, severity, and status",
+          caption:
+            "**Before** — the existing summary view aggregated tickets by type and severity, but never surfaced the specific tickets at risk.",
         },
         { type: "h3", text: "Dashboard Redesign — Before" },
         {

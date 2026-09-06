@@ -22,7 +22,7 @@ function Tag({ children }) {
 }
 
 export default function ProjectCard({ project, onClick, className = "" }) {
-  const { number, large, filled, tags, title, description, slotLabel } =
+  const { number, large, filled, cover, tags, title, description, slotLabel } =
     project;
 
   return (
@@ -32,7 +32,13 @@ export default function ProjectCard({ project, onClick, className = "" }) {
       className={`group relative flex h-full w-full flex-col overflow-hidden rounded-3xl border border-neutral-800 bg-neutral-900 text-left transition hover:border-neutral-700 ${className}`}
     >
       <div className="relative min-h-0 flex-1 overflow-hidden">
-        {filled ? (
+        {cover ? (
+          <img
+            src={cover}
+            alt={title}
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        ) : filled ? (
           <div className="absolute inset-0 flex items-start justify-center overflow-hidden bg-[radial-gradient(ellipse_at_top,_#6b6f76_0%,_#3a3c40_45%,_#1a1b1d_100%)] px-6 pb-6 pt-16">
             <TicketDashboardMockup />
           </div>

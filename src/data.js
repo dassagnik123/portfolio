@@ -40,6 +40,7 @@ export const projects = [
     large: true,
     filled: true,
     tags: ["UI/UX", "SAAS", "DASHBOARD", "CUSTOMER SUPPORT"],
+    cover: "/customer-support-cover.jpg",
     title:
       "Agents couldn't see which tickets were about to breach — so I made urgency impossible to miss",
     description:
