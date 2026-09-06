@@ -6,8 +6,9 @@ export const modes = {
     toggleLabel: "9-5",
     badges: ["PROBLEM SOLVER", "PRODUCT DESIGNER", "USER-FIRST"],
     name: ["Sagnik", "Das"],
+    roles: ["UX Designer", "Product Designer", "UX Engineer"],
     lead:
-      "UX & Product Designer — but above all, a problem solver turning real challenges into intuitive experiences.",
+      " — but above all, a problem solver turning real challenges into intuitive experiences.",
     sub:
       "I dig into how people actually work, find where the friction is, and design the structure that removes it — then ship it.",
   },

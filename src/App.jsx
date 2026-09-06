@@ -9,6 +9,7 @@ import {
 } from "./components/icons";
 import ModeToggle from "./components/ModeToggle";
 import Polaroid from "./components/Polaroid";
+import RotatingText from "./components/RotatingText";
 import ProjectCard from "./components/ProjectCard";
 import ProjectDetail from "./components/ProjectDetail";
 import { contact, hobbyColumns, modes, projects, socials } from "./data";
@@ -40,10 +41,18 @@ export default function App() {
 
   return (
     <div
-      className={`flex min-h-dvh flex-col overflow-x-hidden border-t-4 border-black transition-colors duration-500 lg:h-dvh lg:overflow-hidden ${
+      className={`relative isolate flex min-h-dvh flex-col overflow-x-hidden border-t-4 border-black transition-colors duration-500 lg:h-dvh lg:overflow-hidden ${
         isPersonal ? "bg-cream text-neutral-900" : "bg-neutral-950 text-white"
       }`}
     >
+      {!isPersonal && (
+        <div aria-hidden className="work-backdrop">
+          <div className="work-aurora work-aurora-1" />
+          <div className="work-aurora work-aurora-2" />
+          <div className="work-grid" />
+        </div>
+      )}
+
       <header className="flex shrink-0 flex-wrap items-center justify-between gap-4 px-6 py-5 sm:px-10 lg:px-14">
         <span className="font-display text-2xl font-extrabold">SD.</span>
         <div className="flex flex-wrap items-center gap-4 text-xs font-medium tracking-wide sm:gap-6 sm:text-sm">
@@ -98,6 +107,7 @@ export default function App() {
           </h1>
 
           <p className="max-w-md text-base leading-relaxed opacity-90 lg:text-lg">
+            {content.roles && <RotatingText items={content.roles} />}
             {content.lead}
           </p>
           <p className="max-w-md text-sm leading-relaxed opacity-60 lg:text-base">

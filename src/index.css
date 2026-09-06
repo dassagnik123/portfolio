@@ -49,3 +49,125 @@ body {
   transform: rotate(0deg) scale(1.06) !important;
   box-shadow: 0 22px 34px -10px rgba(0, 0, 0, 0.4);
 }
+
+/* 9-5 (work) mode ambient background */
+.work-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.work-aurora {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(100px);
+  opacity: 0.2;
+  will-change: transform;
+}
+
+.work-aurora-1 {
+  top: -25%;
+  left: -12%;
+  width: 60vw;
+  height: 60vw;
+  background: radial-gradient(circle at 30% 30%, #c9f24d, transparent 70%);
+  animation: aurora-drift-1 24s ease-in-out infinite;
+}
+
+.work-aurora-2 {
+  right: -15%;
+  bottom: -30%;
+  width: 55vw;
+  height: 55vw;
+  background: radial-gradient(circle at 60% 40%, #4f7cff, transparent 70%);
+  animation: aurora-drift-2 30s ease-in-out infinite;
+}
+
+.work-grid {
+  position: absolute;
+  inset: -2px;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 46px 46px;
+  mask-image: radial-gradient(
+    ellipse at 50% 35%,
+    black 10%,
+    transparent 72%
+  );
+  animation: grid-pan 14s linear infinite;
+}
+
+@keyframes aurora-drift-1 {
+  0%,
+  100% {
+    transform: translate3d(-8%, -6%, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(14%, 8%, 0) scale(1.18);
+  }
+}
+
+@keyframes aurora-drift-2 {
+  0%,
+  100% {
+    transform: translate3d(6%, 10%, 0) scale(1.12);
+  }
+  50% {
+    transform: translate3d(-14%, -8%, 0) scale(0.94);
+  }
+}
+
+@keyframes grid-pan {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 46px 46px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-aurora,
+  .work-grid {
+    animation: none;
+  }
+}
+
+/* Rotating role title in the 9-5 lead line */
+.rotating-text {
+  --rt-step: 1.5em;
+  display: inline-flex;
+  height: var(--rt-step);
+  overflow: hidden;
+  vertical-align: bottom;
+  transition: width 0.52s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.rotating-text__track {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transform: translateY(calc(var(--rt-index, 0) * -1 * var(--rt-step)));
+  transition: transform 0.52s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.rotating-text__item {
+  display: block;
+  height: var(--rt-step);
+  line-height: var(--rt-step);
+  white-space: nowrap;
+  font-weight: 600;
+  color: var(--color-accent-work);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rotating-text {
+    transition: none;
+  }
+  .rotating-text__track {
+    transition: none;
+  }
+}
