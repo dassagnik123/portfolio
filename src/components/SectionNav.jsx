@@ -17,15 +17,15 @@ export default function SectionNav({ sections, activeId, onNavigate }) {
             <span
               className={`h-2 w-2 shrink-0 rounded-full border transition-all duration-200 ${
                 isActive
-                  ? "scale-125 border-accent-work bg-accent-work"
-                  : "border-neutral-600 bg-transparent group-hover:border-accent-work group-hover:bg-accent-work/50"
+                  ? "scale-125 border-[#ff810a] bg-[#ff810a]"
+                  : "border-neutral-600 bg-transparent group-hover:border-[#ff810a] group-hover:bg-[#ff810a]/50"
               }`}
             />
             <span
               className={`whitespace-nowrap text-xs font-medium transition-colors duration-200 ${
                 isActive
-                  ? "text-accent-work"
-                  : "text-neutral-500 group-hover:text-neutral-300"
+                  ? "text-[#ff810a]"
+                  : "text-neutral-500 group-hover:text-[#ff810a]"
               }`}
             >
               {section.heading}

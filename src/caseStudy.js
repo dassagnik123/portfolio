@@ -137,14 +137,21 @@ export const ticketDashboardCaseStudy = {
         },
         {
           type: "image",
-          src: "/cs-dashboard-sla-table.png",
-          alt: "Dashboard prioritization tables showing the most at-risk and unclaimed tickets, each capped to a short list",
+          src: "/cs-dashboard.png",
+          alt: "Dashboard showing SLA-at-risk and unassigned ticket tables, workload stat tiles, and a ticket status breakdown, all visible at login",
           caption:
-            "Round 2 — the dashboard surfaces the most urgent and unclaimed tickets at login, capped so it stays actionable.",
+            "Round 2 — the dashboard surfaces the most urgent and unclaimed tickets at login, capped so it stays actionable, alongside workload stats at a glance.",
         },
         {
           type: "p",
           text: "The SLA column from round 1 stayed — the dashboard added to it rather than replacing it. Bulk actions took care of the repetitive updates that used to eat into fixing time.",
+        },
+        {
+          type: "image",
+          src: "/cs-bulk-actions.png",
+          alt: "Ticket list with a Take Action menu open, showing Change Status and Assign as bulk actions applied to several selected rows",
+          caption:
+            "Selecting multiple tickets surfaces bulk actions — status changes and assignment no longer need to be done one row at a time.",
         },
       ],
     },
@@ -179,13 +186,6 @@ export const ticketDashboardCaseStudy = {
           alt: "Original ticket list packed with creation and issue date/time columns and no SLA urgency indicator",
           caption:
             "**Before** — the old list led with timestamps; nothing flagged which tickets were close to breaching.",
-        },
-        {
-          type: "image",
-          src: "/cs-before-analytics.png",
-          alt: "Original summary view with donut charts breaking tickets down by type, severity, and status",
-          caption:
-            "**Before** — the summary view aggregated tickets by type and severity, but never surfaced the ones at risk.",
         },
       ],
     },

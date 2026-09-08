@@ -66,19 +66,59 @@ export const projects = [
   },
 ];
 
-export const hobbyColumns = [
-  [
-    { label: "Cooking", emoji: "🍳", color: "#f6c98a", rotate: -7, offset: 6 },
-    { label: "Anime", emoji: "📺", color: "#b9c6f5", rotate: 6, offset: -16 },
-    { label: "Travel", emoji: "✈️", color: "#a3ded4", rotate: -5, offset: 12 },
-  ],
-  [
-    { label: "Painting", emoji: "🎨", color: "#f5a9c0", rotate: 5, offset: -14 },
-    { label: "Music", emoji: "🎧", color: "#f6d675", rotate: -6, offset: 10 },
-    { label: "Photography", emoji: "📷", color: "#f3b8d6", rotate: 4, offset: -8 },
-  ],
-  [
-    { label: "Cricket", emoji: "🏏", color: "#a9d99b", rotate: -4, offset: 10 },
-    { label: "Gaming", emoji: "🎮", color: "#c9b3ef", rotate: 7, offset: -12 },
-  ],
+function imageSet(slug, count) {
+  return Array.from({ length: count }, (_, i) => `/personal/${slug}/${i + 1}.jpg`);
+}
+
+export const hobbies = [
+  {
+    label: "Cooking",
+    emoji: "🍳",
+    color: "#f6c98a",
+    rotate: -6,
+    offset: 6,
+    shiftX: -14,
+    stagger: 8,
+    images: imageSet("cooking", 6),
+  },
+  {
+    label: "Travel",
+    emoji: "✈️",
+    color: "#a3ded4",
+    rotate: -13,
+    offset: 12,
+    shiftX: 10,
+    stagger: 38,
+    images: imageSet("travel", 16),
+  },
+  {
+    label: "Anime",
+    emoji: "📺",
+    color: "#b9c6f5",
+    rotate: 7,
+    offset: -16,
+    shiftX: 18,
+    stagger: -16,
+    images: imageSet("anime", 17),
+  },
+  {
+    label: "Painting",
+    emoji: "🎨",
+    color: "#f5a9c0",
+    rotate: -16,
+    offset: -14,
+    shiftX: -20,
+    stagger: 20,
+    images: imageSet("painting", 6),
+  },
+  {
+    label: "Sports & Gaming",
+    emoji: "🎮",
+    color: "#c9b3ef",
+    rotate: 4,
+    offset: -12,
+    shiftX: 14,
+    stagger: -28,
+    images: imageSet("sports-gaming", 9),
+  },
 ];

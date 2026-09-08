@@ -13,7 +13,7 @@ import ShaderBackground from "./components/ShaderBackground";
 import RotatingText from "./components/RotatingText";
 import ProjectCard from "./components/ProjectCard";
 import ProjectDetail from "./components/ProjectDetail";
-import { contact, hobbyColumns, modes, projects, socials } from "./data";
+import { contact, hobbies, modes, projects, socials } from "./data";
 
 function Badge({ children, active, accentClass }) {
   return (
@@ -103,7 +103,7 @@ export default function App() {
             {content.name[1]}
           </h1>
 
-          <p className="max-w-md text-base leading-relaxed opacity-90 lg:text-lg">
+          <p className="min-h-[4.875em] max-w-md text-base leading-relaxed opacity-90 lg:text-lg">
             {content.roles && <RotatingText items={content.roles} />}
             {content.lead}
           </p>
@@ -142,22 +142,17 @@ export default function App() {
 
         <section className="lg:min-h-0">
           {isPersonal ? (
-            <div className="grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3 sm:gap-x-10 lg:h-full lg:gap-y-6 lg:p-8">
-              {hobbyColumns.map((column, colIndex) => (
-                <div
-                  key={colIndex}
-                  className="flex flex-col justify-center gap-6 sm:gap-8 lg:h-full lg:gap-10"
-                >
-                  {column.map((hobby, itemIndex) => (
-                    <Polaroid
-                      key={hobby.label}
-                      {...hobby}
-                      delay={colIndex * 0.4 + itemIndex * 0.7}
-                      onClick={() => setActiveHobby(hobby)}
-                      className={colIndex === 2 ? "hidden sm:flex" : ""}
-                    />
-                  ))}
-                </div>
+            <div className="flex flex-wrap content-center items-start justify-center gap-x-6 gap-y-4 sm:gap-x-10 lg:h-full lg:content-center lg:gap-y-6 lg:p-8">
+              {hobbies.map((hobby, itemIndex) => (
+                <Polaroid
+                  key={hobby.label}
+                  {...hobby}
+                  delay={itemIndex * 0.5}
+                  onClick={() => setActiveHobby(hobby)}
+                  className={`w-[calc(50%-0.75rem)] sm:w-[28%] lg:w-[30%] ${
+                    itemIndex >= 4 ? "hidden sm:flex" : ""
+                  }`}
+                />
               ))}
             </div>
           ) : (

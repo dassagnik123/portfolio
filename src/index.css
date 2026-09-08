@@ -4,7 +4,7 @@
 @theme {
   --font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --color-accent-work: #ff810a;
+  --color-accent-work: #ffffff;
   --color-accent-personal: #e2583f;
   --color-cream: #f7e8d2;
 }
@@ -27,16 +27,18 @@ body {
 @keyframes float {
   0%,
   100% {
-    transform: rotate(var(--rotate, 0deg)) translateY(var(--offset, 0px));
+    transform: translateX(var(--shift-x, 0px)) rotate(var(--rotate, 0deg))
+      translateY(var(--offset, 0px));
   }
   50% {
-    transform: rotate(var(--rotate, 0deg))
+    transform: translateX(var(--shift-x, 0px)) rotate(var(--rotate, 0deg))
       translateY(calc(var(--offset, 0px) - 8px));
   }
 }
 
 .polaroid-float {
-  transform: rotate(var(--rotate, 0deg)) translateY(var(--offset, 0px));
+  transform: translateX(var(--shift-x, 0px)) rotate(var(--rotate, 0deg))
+    translateY(var(--offset, 0px));
   animation: float 4.5s ease-in-out infinite;
   animation-delay: var(--float-delay, 0s);
   transition:
@@ -73,7 +75,8 @@ body {
   height: var(--rt-step);
   line-height: var(--rt-step);
   white-space: nowrap;
-  font-weight: 600;
+  font-weight: 700;
+  text-decoration: underline;
   color: var(--color-accent-work);
 }
 

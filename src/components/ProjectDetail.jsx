@@ -283,7 +283,7 @@ export default function ProjectDetail({ project, onBack }) {
         <button
           type="button"
           onClick={onBack}
-          className="flex w-fit items-center gap-2 rounded-full border-2 border-accent-work px-5 py-2.5 text-sm font-semibold text-accent-work transition hover:bg-accent-work hover:text-neutral-950"
+          className="flex w-fit items-center gap-2 rounded-full border-2 border-[#ff810a] px-5 py-2.5 text-sm font-semibold text-[#ff810a] transition hover:bg-[#ff810a] hover:text-neutral-950"
         >
           <BackIcon />
           Back

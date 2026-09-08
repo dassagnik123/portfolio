@@ -22,40 +22,65 @@ export default function Polaroid({
   color,
   rotate,
   offset = 0,
+  shiftX = 0,
+  stagger = 0,
   delay = 0,
+  images,
   onClick,
   className = "",
 }) {
+  const cover = images?.[0];
+  const backLeft = images?.[1] ?? cover;
+  const backRight = images?.[2] ?? cover;
+
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`group relative mx-auto flex w-full max-w-[180px] aspect-[4/5] cursor-pointer flex-col text-left lg:aspect-auto lg:min-h-0 lg:max-h-[228px] lg:flex-1 ${className}`}
+      style={{ marginTop: stagger }}
+      className={`group relative flex aspect-[3/4] max-w-[180px] cursor-pointer flex-col text-left lg:aspect-auto lg:min-h-0 lg:max-h-[254px] ${className}`}
     >
       <span
         aria-hidden
-        className="absolute inset-0 z-0 translate-x-0 translate-y-0 scale-90 rotate-[-14deg] rounded-sm bg-white p-2 pb-2.5 opacity-0 shadow-md transition-all duration-300 ease-out group-hover:translate-x-[-30px] group-hover:translate-y-[16px] group-hover:rotate-[-22deg] group-hover:scale-100 group-hover:opacity-100"
+        className="absolute inset-0 z-0 translate-x-0 translate-y-0 scale-90 rotate-[-14deg] overflow-hidden rounded-sm bg-white p-2 pb-2.5 opacity-0 shadow-md transition-all duration-300 ease-out group-hover:translate-x-[-30px] group-hover:translate-y-[16px] group-hover:rotate-[-22deg] group-hover:scale-100 group-hover:opacity-100"
       >
-        <span
-          className="block h-full w-full rounded-sm"
-          style={{ backgroundColor: color }}
-        />
+        {backLeft ? (
+          <img
+            src={backLeft}
+            alt=""
+            className="block h-full w-full rounded-sm object-cover"
+          />
+        ) : (
+          <span
+            className="block h-full w-full rounded-sm"
+            style={{ backgroundColor: color }}
+          />
+        )}
       </span>
       <span
         aria-hidden
-        className="absolute inset-0 z-[1] translate-x-0 translate-y-0 scale-95 rotate-[12deg] rounded-sm bg-white p-2 pb-2.5 opacity-0 shadow-md transition-all duration-300 ease-out group-hover:translate-x-[30px] group-hover:translate-y-[12px] group-hover:rotate-[18deg] group-hover:scale-100 group-hover:opacity-100"
+        className="absolute inset-0 z-[1] translate-x-0 translate-y-0 scale-95 rotate-[12deg] overflow-hidden rounded-sm bg-white p-2 pb-2.5 opacity-0 shadow-md transition-all duration-300 ease-out group-hover:translate-x-[30px] group-hover:translate-y-[12px] group-hover:rotate-[18deg] group-hover:scale-100 group-hover:opacity-100"
       >
-        <span
-          className="block h-full w-full rounded-sm"
-          style={{ backgroundColor: color }}
-        />
+        {backRight ? (
+          <img
+            src={backRight}
+            alt=""
+            className="block h-full w-full rounded-sm object-cover"
+          />
+        ) : (
+          <span
+            className="block h-full w-full rounded-sm"
+            style={{ backgroundColor: color }}
+          />
+        )}
       </span>
 
       <span
-        className="polaroid-float relative z-10 flex min-h-0 flex-1 flex-col rounded-sm bg-white p-2.5 pb-3 shadow-[0_12px_24px_-8px_rgba(0,0,0,0.25)]"
+        className="polaroid-float relative z-10 flex min-h-0 flex-1 flex-col rounded-sm bg-white p-2.5 pb-4 shadow-[0_12px_24px_-8px_rgba(0,0,0,0.25)]"
         style={{
           "--rotate": `${rotate}deg`,
           "--offset": `${offset}px`,
+          "--shift-x": `${shiftX}px`,
           "--float-delay": `${delay}s`,
         }}
       >
@@ -63,12 +88,13 @@ export default function Polaroid({
           <ImageSlot
             label={label}
             placeholder={color}
+            initial={cover}
             showLabel={false}
             uploadable={false}
             className="h-full w-full"
           />
         </div>
-        <p className="mt-2.5 flex shrink-0 items-center justify-between gap-1.5 text-sm text-neutral-700">
+        <p className="mt-3 flex shrink-0 items-center justify-between gap-1.5 py-0.5 text-sm text-neutral-700">
           <span className="flex items-center gap-1.5">
             <span>{emoji}</span>
             <span>{label}</span>

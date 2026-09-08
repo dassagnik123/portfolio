@@ -15,6 +15,8 @@ const BackIcon = () => (
 const SLOT_COUNT = 8;
 
 export default function Gallery({ hobby, onBack }) {
+  const slots = hobby.images?.length ? hobby.images : Array(SLOT_COUNT).fill(null);
+
   return (
     <div className="fixed inset-0 z-50 flex flex-col overflow-y-auto bg-cream p-6 text-neutral-900 sm:p-10">
       <div className="mb-8 flex shrink-0 flex-wrap items-center justify-between gap-4">
@@ -33,7 +35,7 @@ export default function Gallery({ hobby, onBack }) {
       </div>
 
       <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
-        {Array.from({ length: SLOT_COUNT }).map((_, i) => (
+        {slots.map((src, i) => (
           <div
             key={i}
             className="rounded-sm bg-white p-3 pb-4 shadow-[0_16px_30px_-12px_rgba(0,0,0,0.3)]"
@@ -41,6 +43,7 @@ export default function Gallery({ hobby, onBack }) {
             <ImageSlot
               label={hobby.label}
               placeholder={hobby.color}
+              initial={src}
               uploadable={false}
               className="aspect-square w-full"
             />
