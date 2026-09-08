@@ -9,6 +9,7 @@ import {
 } from "./components/icons";
 import ModeToggle from "./components/ModeToggle";
 import Polaroid from "./components/Polaroid";
+import ShaderBackground from "./components/ShaderBackground";
 import RotatingText from "./components/RotatingText";
 import ProjectCard from "./components/ProjectCard";
 import ProjectDetail from "./components/ProjectDetail";
@@ -45,19 +46,9 @@ export default function App() {
         isPersonal ? "bg-cream text-neutral-900" : "bg-neutral-950 text-white"
       }`}
     >
-      {isPersonal ? (
-        <div aria-hidden className="personal-backdrop">
-          <div className="personal-blob personal-blob-1" />
-          <div className="personal-blob personal-blob-2" />
-          <div className="personal-blob personal-blob-3" />
-        </div>
-      ) : (
-        <div aria-hidden className="work-backdrop">
-          <div className="work-aurora work-aurora-1" />
-          <div className="work-aurora work-aurora-2" />
-          <div className="work-grid" />
-        </div>
-      )}
+      <div aria-hidden>
+        <ShaderBackground mode={isPersonal ? "personal" : "work"} />
+      </div>
 
       <header className="flex shrink-0 flex-wrap items-center justify-between gap-4 px-6 py-5 sm:px-10 lg:px-14">
         <span className="font-display text-2xl font-extrabold">SD.</span>
