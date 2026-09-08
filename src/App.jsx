@@ -149,9 +149,7 @@ export default function App() {
                   {...hobby}
                   delay={itemIndex * 0.5}
                   onClick={() => setActiveHobby(hobby)}
-                  className={`w-[calc(50%-0.75rem)] sm:w-[28%] lg:w-[30%] ${
-                    itemIndex >= 4 ? "hidden sm:flex" : ""
-                  }`}
+                  className="w-[calc(50%-0.75rem)] sm:w-[28%] lg:w-[30%]"
                 />
               ))}
             </div>
