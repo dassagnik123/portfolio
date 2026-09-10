@@ -43,6 +43,28 @@ function Rich({ text }) {
   );
 }
 
+function CaseStudyImage({ src, alt }) {
+  const [failed, setFailed] = useState(false);
+
+  if (failed) {
+    return (
+      <div className="flex aspect-video items-center justify-center bg-neutral-900 p-6 text-center text-xs text-neutral-500">
+        Image unavailable — {alt}
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={src}
+      alt={alt}
+      loading="lazy"
+      className="w-full"
+      onError={() => setFailed(true)}
+    />
+  );
+}
+
 function Block({ block }) {
   switch (block.type) {
     case "h3":
@@ -93,12 +115,7 @@ function Block({ block }) {
       return (
         <figure className="my-2 flex flex-col gap-2">
           <div className="overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900">
-            <img
-              src={block.src}
-              alt={block.alt}
-              loading="lazy"
-              className="w-full"
-            />
+            <CaseStudyImage src={block.src} alt={block.alt} />
           </div>
           {block.caption && (
             <figcaption className="text-xs leading-relaxed text-neutral-500 sm:text-sm">
@@ -176,6 +193,7 @@ export default function ProjectDetail({ project, onBack }) {
     : [];
 
   const [activeId, setActiveId] = useState(navSections[0]?.id ?? null);
+  const [coverFailed, setCoverFailed] = useState(false);
   const scrollRef = useRef(null);
 
   useEffect(() => {
@@ -314,11 +332,18 @@ export default function ProjectDetail({ project, onBack }) {
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-6 pb-16 pt-4 sm:px-10">
         {cover ? (
           <div className="relative overflow-hidden rounded-3xl border border-neutral-800">
-            <img
-              src={cover}
-              alt={title}
-              className="w-full object-cover"
-            />
+            {coverFailed ? (
+              <div className="flex min-h-[220px] items-center justify-center bg-neutral-900 p-6 text-center text-xs text-neutral-500">
+                Image unavailable
+              </div>
+            ) : (
+              <img
+                src={cover}
+                alt={title}
+                className="w-full object-cover"
+                onError={() => setCoverFailed(true)}
+              />
+            )}
             <span className="absolute left-6 top-6 font-display text-sm font-bold text-accent-work">
               {number}
             </span>

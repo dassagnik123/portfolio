@@ -1,3 +1,4 @@
+import { useState } from "react";
 import ImageSlot from "./ImageSlot";
 
 const ExpandIcon = () => (
@@ -32,6 +33,8 @@ export default function Polaroid({
   const cover = images?.[0];
   const backLeft = images?.[1] ?? cover;
   const backRight = images?.[2] ?? cover;
+  const [backLeftFailed, setBackLeftFailed] = useState(false);
+  const [backRightFailed, setBackRightFailed] = useState(false);
 
   return (
     <button
@@ -44,11 +47,12 @@ export default function Polaroid({
         aria-hidden
         className="absolute inset-0 z-0 translate-x-0 translate-y-0 scale-90 rotate-[-14deg] overflow-hidden rounded-sm bg-white p-2 pb-2.5 opacity-0 shadow-md transition-all duration-300 ease-out group-hover:translate-x-[-30px] group-hover:translate-y-[16px] group-hover:rotate-[-22deg] group-hover:scale-100 group-hover:opacity-100"
       >
-        {backLeft ? (
+        {backLeft && !backLeftFailed ? (
           <img
             src={backLeft}
             alt=""
             className="block h-full w-full rounded-sm object-cover"
+            onError={() => setBackLeftFailed(true)}
           />
         ) : (
           <span
@@ -61,11 +65,12 @@ export default function Polaroid({
         aria-hidden
         className="absolute inset-0 z-[1] translate-x-0 translate-y-0 scale-95 rotate-[12deg] overflow-hidden rounded-sm bg-white p-2 pb-2.5 opacity-0 shadow-md transition-all duration-300 ease-out group-hover:translate-x-[30px] group-hover:translate-y-[12px] group-hover:rotate-[18deg] group-hover:scale-100 group-hover:opacity-100"
       >
-        {backRight ? (
+        {backRight && !backRightFailed ? (
           <img
             src={backRight}
             alt=""
             className="block h-full w-full rounded-sm object-cover"
+            onError={() => setBackRightFailed(true)}
           />
         ) : (
           <span

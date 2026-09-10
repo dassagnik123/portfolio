@@ -1,3 +1,4 @@
+import { useState } from "react";
 import ImageSlot from "./ImageSlot";
 import TicketDashboardMockup from "./TicketDashboardMockup";
 
@@ -24,6 +25,7 @@ function Tag({ children }) {
 export default function ProjectCard({ project, onClick, className = "" }) {
   const { number, large, filled, cover, tags, title, description, slotLabel } =
     project;
+  const [coverFailed, setCoverFailed] = useState(false);
 
   return (
     <button
@@ -32,12 +34,17 @@ export default function ProjectCard({ project, onClick, className = "" }) {
       className={`group relative flex h-full w-full flex-col overflow-hidden rounded-3xl border border-neutral-800 bg-neutral-900 text-left transition hover:border-neutral-700 ${className}`}
     >
       <div className="relative min-h-0 flex-1 overflow-hidden">
-        {cover ? (
+        {cover && !coverFailed ? (
           <img
             src={cover}
             alt={title}
             className="absolute inset-0 h-full w-full object-cover"
+            onError={() => setCoverFailed(true)}
           />
+        ) : cover && coverFailed ? (
+          <div className="absolute inset-0 flex items-center justify-center bg-neutral-800/60 p-6 text-center text-xs text-neutral-500">
+            Image unavailable
+          </div>
         ) : filled ? (
           <div className="absolute inset-0 flex items-start justify-center overflow-hidden bg-[radial-gradient(ellipse_at_top,_#6b6f76_0%,_#3a3c40_45%,_#1a1b1d_100%)] px-6 pb-6 pt-16">
             <TicketDashboardMockup />

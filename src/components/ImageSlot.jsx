@@ -25,32 +25,48 @@ export default function ImageSlot({
   uploadable = true,
 }) {
   const [src, setSrc] = useState(initial);
+  const [failed, setFailed] = useState(false);
   const inputRef = useRef(null);
 
   function handleFile(e) {
     const file = e.target.files?.[0];
     if (!file) return;
+    setFailed(false);
     setSrc(URL.createObjectURL(file));
   }
+
+  const showImage = src && !failed;
 
   if (!uploadable) {
     return (
       <div
         className={`relative flex flex-col items-center justify-center gap-3 overflow-hidden ${className}`}
-        style={src ? undefined : placeholder ? { backgroundColor: placeholder } : undefined}
+        style={showImage ? undefined : placeholder ? { backgroundColor: placeholder } : undefined}
       >
-        {src ? (
-          <img src={src} alt={label} className="h-full w-full object-cover" />
+        {showImage ? (
+          <img
+            src={src}
+            alt={label}
+            className="h-full w-full object-cover"
+            onError={() => setFailed(true)}
+          />
         ) : (
-          <span className={iconClassName}>
-            <ImageIcon />
-          </span>
+          <>
+            <span className={iconClassName}>
+              <ImageIcon />
+            </span>
+            {failed && showLabel && (
+              <span className="px-4 text-center text-xs leading-snug text-neutral-500">
+                {label} image failed to load
+              </span>
+            )}
+          </>
         )}
       </div>
     );
   }
 
-  if (src) {
+  if (showImage) {
     return (
       <label
         className={`group relative block cursor-pointer overflow-hidden ${className}`}
@@ -66,6 +82,7 @@ export default function ImageSlot({
           src={src}
           alt={label}
           className="h-full w-full object-cover transition group-hover:brightness-90"
+          onError={() => setFailed(true)}
         />
       </label>
     );

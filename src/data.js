@@ -30,8 +30,7 @@ export const contact = {
 };
 
 export const socials = {
-  linkedin: "https://linkedin.com/in/sagnikdas",
-  twitter: "https://twitter.com/sagnikdas",
+  linkedin: "https://www.linkedin.com/in/sagnik-das-42b6261a3",
   resume: "/resume.pdf",
 };
 

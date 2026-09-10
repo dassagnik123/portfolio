@@ -5,7 +5,6 @@ import {
   LinkedInIcon,
   PhoneIcon,
   ResumeIcon,
-  TwitterIcon,
 } from "./components/icons";
 import ModeToggle from "./components/ModeToggle";
 import Polaroid from "./components/Polaroid";
@@ -62,15 +61,6 @@ export default function App() {
               className="opacity-70 transition hover:opacity-100"
             >
               <LinkedInIcon />
-            </a>
-            <a
-              href={socials.twitter}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Twitter"
-              className="opacity-70 transition hover:opacity-100"
-            >
-              <TwitterIcon />
             </a>
             <a
               href={socials.resume}
@@ -163,7 +153,7 @@ export default function App() {
               <ProjectCard
                 project={projects[0]}
                 onClick={() => setActiveProject(projects[0])}
-                className="min-h-[420px] lg:h-full lg:min-h-0 lg:flex-1"
+                className="min-h-[360px] lg:h-[85%] lg:min-h-0 lg:flex-1 lg:self-center"
               />
             </div>
           )}
