@@ -301,10 +301,16 @@ export default function ProjectDetail({ project, onBack }) {
         <button
           type="button"
           onClick={onBack}
-          className="flex w-fit items-center gap-2 rounded-full border-2 border-[#ff810a] px-5 py-2.5 text-sm font-semibold text-[#ff810a] transition hover:bg-[#ff810a] hover:text-neutral-950"
+          className="group relative flex w-fit items-center gap-2 overflow-hidden rounded-full border-2 border-accent-work px-5 py-2.5 text-sm font-semibold text-accent-work transition-colors duration-300 hover:text-neutral-950"
         >
-          <BackIcon />
-          Back
+          <span
+            aria-hidden
+            className="absolute inset-0 origin-left scale-x-0 bg-accent-work transition-transform duration-300 ease-out group-hover:scale-x-100"
+          />
+          <span className="relative z-10 flex items-center gap-2">
+            <BackIcon />
+            Back
+          </span>
         </button>
       </div>
 

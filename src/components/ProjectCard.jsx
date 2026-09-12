@@ -31,7 +31,7 @@ export default function ProjectCard({ project, onClick, className = "" }) {
     <button
       type="button"
       onClick={onClick}
-      className={`group relative flex h-full w-full flex-col overflow-hidden rounded-3xl border border-neutral-800 bg-neutral-900 text-left transition hover:border-neutral-700 ${className}`}
+      className={`group relative flex h-full w-full flex-col overflow-hidden rounded-3xl border border-neutral-800 bg-neutral-900 text-left transition duration-300 ease-out hover:z-10 hover:scale-[1.03] hover:border-neutral-700 ${className}`}
     >
       <div className="relative min-h-0 flex-1 overflow-hidden">
         {cover && !coverFailed ? (

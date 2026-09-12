@@ -105,12 +105,18 @@ export default function App() {
             <div className="flex flex-wrap items-center gap-3">
               <a
                 href={`mailto:${contact.email}`}
-                className={`flex items-center gap-2 rounded-full border-2 px-6 py-3 text-sm font-semibold transition hover:text-neutral-950 ${accentClass.border} ${accentClass.text} ${
-                  isPersonal ? "hover:bg-accent-personal" : "hover:bg-accent-work"
-                }`}
+                className={`group relative flex items-center gap-2 overflow-hidden rounded-full border-2 px-6 py-3 text-sm font-semibold transition-colors duration-300 hover:text-neutral-950 ${accentClass.border} ${accentClass.text}`}
               >
-                <EmailIcon />
-                Email me
+                <span
+                  aria-hidden
+                  className={`absolute inset-0 origin-left scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100 ${
+                    isPersonal ? "bg-accent-personal" : "bg-accent-work"
+                  }`}
+                />
+                <span className="relative z-10 flex items-center gap-2">
+                  <EmailIcon />
+                  Email me
+                </span>
               </a>
               <a
                 href={`tel:${contact.phone}`}
@@ -146,7 +152,7 @@ export default function App() {
           ) : (
             <div className="flex gap-3 lg:h-full">
               <div className="flex w-6 shrink-0 items-center justify-center">
-                <span className="[writing-mode:vertical-rl] rotate-180 text-xs font-semibold tracking-[0.3em] text-neutral-500">
+                <span className="[writing-mode:vertical-rl] rotate-180 text-xs font-semibold tracking-[0.3em] text-white">
                   PROJECTS
                 </span>
               </div>

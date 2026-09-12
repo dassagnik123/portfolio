@@ -1,10 +1,11 @@
-@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=DynaPuff:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
 @theme {
   --font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --color-accent-work: #ffffff;
+  --font-heading: "DynaPuff", cursive;
+  --color-accent-work: #c9f24d;
   --color-accent-personal: #e2583f;
   --color-cream: #f7e8d2;
 }
