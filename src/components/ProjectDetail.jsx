@@ -166,12 +166,12 @@ function SectionSlide({ section }) {
 
   return (
     <div className="flex flex-col gap-8 lg:h-full lg:flex-row lg:items-stretch">
-      <div className="flex shrink-0 flex-col gap-5 lg:h-full lg:w-[46%] lg:min-h-0 lg:overflow-y-auto lg:pr-2">
+      <div className="order-2 flex shrink-0 flex-col gap-5 lg:order-none lg:h-full lg:w-[46%] lg:min-h-0 lg:overflow-y-auto lg:pr-2">
         {images.map((block, i) => (
           <Block key={i} block={block} />
         ))}
       </div>
-      <div className="flex flex-1 flex-col gap-6 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:pr-2">
+      <div className="order-1 flex flex-1 flex-col gap-6 lg:order-none lg:h-full lg:min-h-0 lg:overflow-y-auto lg:pr-2">
         <h3 className="font-display text-3xl font-extrabold text-white sm:text-4xl lg:text-5xl">
           {section.heading}
         </h3>
