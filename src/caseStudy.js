@@ -170,7 +170,7 @@ export const ticketDashboardCaseStudy = {
       ],
     },
     {
-      heading: "Before → after",
+      heading: "Before -> After",
       blocks: [
         {
           type: "p",
@@ -186,6 +186,13 @@ export const ticketDashboardCaseStudy = {
           alt: "Original ticket list packed with creation and issue date/time columns and no SLA urgency indicator",
           caption:
             "**Before** — the old list led with timestamps; nothing flagged which tickets were close to breaching.",
+        },
+        {
+          type: "image",
+          src: "/cs-dashboard.png",
+          alt: "Redesigned dashboard showing SLA-at-risk and unassigned ticket tables plus workload stat tiles at login",
+          caption:
+            "**After** — the dashboard opens straight into at-risk, breached and unclaimed tickets, with workload visible at a glance.",
         },
       ],
     },
