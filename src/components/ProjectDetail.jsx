@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ImageSlot from "./ImageSlot";
 import TicketDashboardMockup from "./TicketDashboardMockup";
 
@@ -317,6 +317,32 @@ export default function ProjectDetail({ project, onBack }) {
     if (!isFirst) goTo(slide - 1);
   }
 
+  const touchStart = useRef(null);
+
+  function handleTouchStart(e) {
+    const t = e.touches[0];
+    touchStart.current = { x: t.clientX, y: t.clientY };
+  }
+
+  function handleTouchEnd(e) {
+    if (!touchStart.current) return;
+    const t = e.changedTouches[0];
+    const deltaX = t.clientX - touchStart.current.x;
+    const deltaY = t.clientY - touchStart.current.y;
+    touchStart.current = null;
+
+    const SWIPE_THRESHOLD = 50;
+    if (Math.abs(deltaX) < SWIPE_THRESHOLD || Math.abs(deltaX) < Math.abs(deltaY) * 1.5) {
+      return;
+    }
+
+    if (deltaX < 0) {
+      nextSlide();
+    } else {
+      prevSlide();
+    }
+  }
+
   useEffect(() => {
     if (!caseStudy) return undefined;
 
@@ -416,6 +442,8 @@ export default function ProjectDetail({ project, onBack }) {
         <>
           <div
             key={slide}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
             className={`relative z-10 flex flex-1 px-6 pb-6 pt-4 sm:px-10 ${
               currentHasImages
                 ? "items-stretch overflow-y-auto lg:overflow-hidden"
@@ -492,6 +520,13 @@ export default function ProjectDetail({ project, onBack }) {
                 </span>
               </button>
             </div>
+
+            <p className="hidden text-[11px] text-neutral-600 sm:block">
+              Use ← → keys to navigate
+            </p>
+            <p className="text-[11px] text-neutral-600 sm:hidden">
+              Swipe left or right to navigate
+            </p>
           </div>
         </>
       ) : (
