@@ -1,17 +1,157 @@
-@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=DynaPuff:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=DynaPuff:wght@400;500;600;700&family=Oswald:wght@500;600&family=Instrument+Serif:ital@0;1&display=swap");
 @import "tailwindcss";
 
 @theme {
   --font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-heading: "DynaPuff", cursive;
-  --color-accent-work: #c9f24d;
+  --font-condensed: "Oswald", "Arial Narrow", sans-serif;
+  --color-accent-work: #f6b93b;
   --color-accent-personal: #e2583f;
   --color-cream: #f7e8d2;
 }
 
+/* 9-5 theme (HSL channels, shadcn-style) */
+:root {
+  --background: 0 0% 0%;
+  --foreground: 0 0% 100%;
+  --muted-foreground: 240 4% 66%;
+  --primary: 0 0% 100%;
+  --primary-foreground: 0 0% 4%;
+  --secondary: 0 0% 10%;
+  --muted: 0 0% 10%;
+  --accent: 0 0% 10%;
+  --border: 0 0% 18%;
+  --input: 0 0% 18%;
+}
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-muted: hsl(var(--muted));
+  --color-accent: hsl(var(--accent));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+}
+
 * {
   box-sizing: border-box;
+}
+
+/* Scoped to the 9-5 page so the case-study overlay keeps its own fonts. */
+.work-theme {
+  --font-display: "Instrument Serif", serif;
+  --font-body: "Inter", sans-serif;
+  font-family: var(--font-body);
+}
+
+.liquid-glass {
+  background: rgba(255, 255, 255, 0.01);
+  background-blend-mode: luminosity;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: none;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+.liquid-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.4px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0.15) 20%,
+    rgba(255, 255, 255, 0) 40%,
+    rgba(255, 255, 255, 0) 60%,
+    rgba(255, 255, 255, 0.15) 80%,
+    rgba(255, 255, 255, 0.45) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+@keyframes fade-rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-rise {
+  animation: fade-rise 0.8s ease-out both;
+}
+.animate-fade-rise-delay {
+  animation: fade-rise 0.8s ease-out 0.2s both;
+}
+.animate-fade-rise-delay-2 {
+  animation: fade-rise 0.8s ease-out 0.4s both;
+}
+
+/* Phones in landscape: keep the whole hero within the short screen. */
+@media (max-height: 520px) and (orientation: landscape) {
+  .hero-copy {
+    padding-top: 0.5rem;
+    padding-bottom: 2.5rem;
+  }
+  .hero-title {
+    font-size: 2.75rem;
+    letter-spacing: -1.2px;
+  }
+}
+
+/* Custom cursor, shared by 9-5 and 5-9 (fine pointers only). */
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 300;
+  width: 19px;
+  height: 19px;
+  margin: -9.5px 0 0 -9.5px;
+  border-radius: 50%;
+  background: rgba(214, 212, 209, 0.9);
+  border: 1px solid transparent;
+  mix-blend-mode: difference;
+  pointer-events: none;
+  transition:
+    width 0.35s ease,
+    height 0.35s ease,
+    margin 0.35s ease,
+    background 0.35s ease,
+    border-color 0.35s ease;
+}
+.cursor-dot.wide {
+  width: 52px;
+  height: 52px;
+  margin: -26px 0 0 -26px;
+  background: rgba(244, 242, 239, 0.14);
+  border-color: rgba(244, 242, 239, 0.75);
+}
+@media (hover: none), (pointer: coarse) {
+  .cursor-dot {
+    display: none;
+  }
+}
+
+/* Hide the fixed 5-9 controls while a photo is open. */
+body.lit .top-controls-fixed {
+  opacity: 0;
+  pointer-events: none;
 }
 
 body {

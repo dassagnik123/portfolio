@@ -1,180 +1,81 @@
-import { useState } from "react";
-import Gallery from "./components/Gallery";
-import {
-  EmailIcon,
-  LinkedInIcon,
-  PhoneIcon,
-  ResumeIcon,
-} from "./components/icons";
-import ModeToggle from "./components/ModeToggle";
-import Polaroid from "./components/Polaroid";
-import ShaderBackground from "./components/ShaderBackground";
-import RotatingText from "./components/RotatingText";
-import ProjectCard from "./components/ProjectCard";
+import { useEffect, useRef, useState } from "react";
+import CustomCursor from "./components/CustomCursor";
+import PersonalArchive from "./components/PersonalArchive";
 import ProjectDetail from "./components/ProjectDetail";
-import { contact, hobbies, modes, projects, socials } from "./data";
-
-function Badge({ children, active, accentClass }) {
-  return (
-    <span
-      className={`whitespace-nowrap rounded-full border px-3 py-1.5 text-xs font-semibold tracking-wide ${
-        active
-          ? `${accentClass.border} ${accentClass.text}`
-          : "border-current/25 text-current/70"
-      }`}
-    >
-      {children}
-    </span>
-  );
-}
+import TopControls from "./components/TopControls";
+import WorkPage from "./components/WorkPage";
 
 export default function App() {
   const [mode, setMode] = useState("work");
-  const [activeHobby, setActiveHobby] = useState(null);
+  // The switch flips first (so its slide is visible), then the page crossfades through black.
+  const [switchMode, setSwitchMode] = useState("work");
+  const [fading, setFading] = useState(false);
+  const switching = useRef(false);
   const [activeProject, setActiveProject] = useState(null);
   const isPersonal = mode === "personal";
-  const content = modes[mode];
 
-  const accentClass = isPersonal
-    ? { text: "text-accent-personal", border: "border-accent-personal" }
-    : { text: "text-accent-work", border: "border-accent-work" };
+  // The case study is a fixed overlay; keep the page behind it from scrolling.
+  useEffect(() => {
+    if (!activeProject) return;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [activeProject]);
+
+  const toggleMode = () => {
+    if (switching.current) return;
+    const next = switchMode === "work" ? "personal" : "work";
+    const swap = () => {
+      setActiveProject(null);
+      setMode(next);
+      window.scrollTo(0, 0);
+    };
+    setSwitchMode(next);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      swap();
+      return;
+    }
+    switching.current = true;
+    setTimeout(() => setFading(true), 260);
+    setTimeout(() => {
+      swap();
+      requestAnimationFrame(() => {
+        setFading(false);
+        switching.current = false;
+      });
+    }, 260 + 340);
+  };
 
   return (
-    <div
-      className={`relative isolate flex min-h-dvh flex-col overflow-x-hidden border-t-4 border-black transition-colors duration-500 lg:h-dvh lg:overflow-hidden ${
-        isPersonal ? "bg-cream text-neutral-900" : "bg-neutral-950 text-white"
-      }`}
-    >
-      <div aria-hidden>
-        <ShaderBackground mode={isPersonal ? "personal" : "work"} />
-      </div>
-
-      <header className="flex shrink-0 flex-wrap items-center justify-between gap-4 px-6 py-5 sm:px-10 lg:px-14">
-        <span className="font-display text-2xl font-extrabold">SD.</span>
-        <div className="flex flex-wrap items-center gap-4 text-xs font-medium tracking-wide sm:gap-6 sm:text-sm">
-          <div className="flex items-center gap-3.5">
-            <a
-              href={socials.linkedin}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="LinkedIn"
-              className="opacity-70 transition hover:opacity-100"
-            >
-              <LinkedInIcon />
-            </a>
-            <a
-              href={socials.resume}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Resume"
-              className="flex items-center gap-1.5 opacity-70 transition hover:opacity-100"
-            >
-              <ResumeIcon />
-              <span>Resume</span>
-            </a>
-          </div>
-          <ModeToggle mode={mode} onToggle={() => setMode(isPersonal ? "work" : "personal")} />
-        </div>
-      </header>
-
-      <main className="flex flex-1 flex-col gap-10 px-6 pb-10 sm:px-10 lg:grid lg:min-h-0 lg:grid-cols-[minmax(0,480px)_1fr] lg:items-stretch lg:gap-10 lg:overflow-hidden lg:px-14 lg:pb-6">
-        <section className="flex flex-col justify-start gap-5 pt-4 sm:pt-6 lg:min-h-0 lg:overflow-hidden lg:pt-16">
-          <div className="flex flex-wrap gap-1.5 lg:flex-nowrap">
-            {content.badges.map((badge, i) => (
-              <Badge key={badge} active={i === 0} accentClass={accentClass}>
-                {badge}
-              </Badge>
-            ))}
-          </div>
-
-          <h1 className="font-display text-5xl font-extrabold leading-[0.95] tracking-tight sm:text-6xl lg:text-7xl">
-            {content.name[0]}
-            <br />
-            {content.name[1]}
-          </h1>
-
-          <p className="min-h-[4.875em] max-w-md text-base leading-relaxed opacity-90 lg:text-lg">
-            {content.roles && <RotatingText items={content.roles} />}
-            {content.lead}
-          </p>
-          <p className="max-w-md text-sm leading-relaxed opacity-60 lg:text-base">
-            {content.sub}
-          </p>
-
-          <div className="flex flex-col gap-3 pt-2">
-            <div className="flex flex-wrap items-center gap-3">
-              <a
-                href={`mailto:${contact.email}`}
-                className={`group relative flex items-center gap-2 overflow-hidden rounded-full border-2 px-6 py-3 text-sm font-semibold transition-colors duration-300 hover:text-neutral-950 ${accentClass.border} ${accentClass.text}`}
-              >
-                <span
-                  aria-hidden
-                  className={`absolute inset-0 origin-left scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100 ${
-                    isPersonal ? "bg-accent-personal" : "bg-accent-work"
-                  }`}
-                />
-                <span className="relative z-10 flex items-center gap-2">
-                  <EmailIcon />
-                  Email me
-                </span>
-              </a>
-              <a
-                href={`tel:${contact.phone}`}
-                className="flex items-center gap-2 rounded-full border-2 border-current/20 px-6 py-3 text-sm font-semibold opacity-80"
-              >
-                <PhoneIcon />
-                {contact.phone}
-              </a>
-            </div>
-            <a
-              href={`mailto:${contact.email}`}
-              className="flex w-fit items-center gap-1.5 text-sm opacity-60 transition hover:opacity-100 hover:underline"
-            >
-              <EmailIcon className="h-3.5 w-3.5" />
-              {contact.email}
-            </a>
-          </div>
-        </section>
-
-        <section className="lg:min-h-0">
-          {isPersonal ? (
-            <div className="flex flex-wrap content-center items-start justify-center gap-x-6 gap-y-4 sm:gap-x-10 lg:h-full lg:content-center lg:gap-y-6 lg:p-8">
-              {hobbies.map((hobby, itemIndex) => (
-                <Polaroid
-                  key={hobby.label}
-                  {...hobby}
-                  delay={itemIndex * 0.5}
-                  onClick={() => setActiveHobby(hobby)}
-                  className="w-[calc(50%-0.75rem)] sm:w-[28%] lg:w-[30%]"
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="flex gap-3 lg:h-full">
-              <div className="flex w-6 shrink-0 items-center justify-center">
-                <span className="[writing-mode:vertical-rl] rotate-180 text-xs font-semibold tracking-[0.3em] text-white">
-                  PROJECTS
-                </span>
-              </div>
-              <ProjectCard
-                project={projects[0]}
-                onClick={() => setActiveProject(projects[0])}
-                className="min-h-[360px] lg:h-[85%] lg:min-h-0 lg:flex-1 lg:self-center"
-              />
-            </div>
+    <>
+      {isPersonal ? (
+        <>
+          <PersonalArchive />
+          <TopControls
+            mode={switchMode}
+            onToggle={toggleMode}
+            className="top-controls-fixed fixed right-6 top-[calc(22px+env(safe-area-inset-top))] z-[95] transition-opacity sm:right-10 lg:right-14"
+          />
+        </>
+      ) : (
+        <>
+          <WorkPage
+            controls={<TopControls mode={switchMode} onToggle={toggleMode} />}
+            onOpenProject={setActiveProject}
+          />
+          {activeProject && (
+            <ProjectDetail project={activeProject} onBack={() => setActiveProject(null)} />
           )}
-        </section>
-      </main>
-
-      {activeHobby && (
-        <Gallery hobby={activeHobby} onBack={() => setActiveHobby(null)} />
+        </>
       )}
-      {activeProject && (
-        <ProjectDetail
-          project={activeProject}
-          onBack={() => setActiveProject(null)}
-        />
-      )}
-    </div>
+      <div
+        aria-hidden
+        className={`pointer-events-none fixed inset-0 z-[200] bg-black transition-opacity ease-in-out ${
+          fading ? "opacity-100 duration-300" : "opacity-0 duration-500"
+        }`}
+      />
+      <CustomCursor />
+    </>
   );
 }

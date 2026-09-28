@@ -380,7 +380,7 @@ export default function ProjectDetail({ project, onBack }) {
       )}
 
       {caseStudy && (
-        <div className="absolute inset-x-0 top-0 z-20 h-1 bg-neutral-900 lg:hidden">
+        <div className="absolute inset-x-0 top-0 z-20 h-1 bg-neutral-900 xl:hidden">
           <div
             className="h-full bg-accent-work transition-all duration-500 ease-out"
             style={{ width: `${((slide + 1) / total) * 100}%` }}
@@ -388,7 +388,7 @@ export default function ProjectDetail({ project, onBack }) {
         </div>
       )}
 
-      <div className="relative z-30 grid shrink-0 grid-cols-[auto_1fr] items-center gap-x-4 px-6 py-4 sm:px-10 lg:grid-cols-[auto_1fr_auto]">
+      <div className="relative z-30 grid shrink-0 grid-cols-[auto_1fr] items-center gap-x-4 px-6 py-4 sm:px-10 xl:grid-cols-[auto_1fr_auto]">
         <button
           type="button"
           onClick={onBack}
@@ -408,7 +408,7 @@ export default function ProjectDetail({ project, onBack }) {
           <>
             <nav
               aria-label="Slides"
-              className="hidden items-center gap-x-1.5 overflow-x-auto whitespace-nowrap [scrollbar-width:none] lg:flex lg:justify-center [&::-webkit-scrollbar]:hidden"
+              className="hidden items-center gap-x-1.5 overflow-x-auto whitespace-nowrap [scrollbar-width:none] xl:flex xl:justify-center [&::-webkit-scrollbar]:hidden"
             >
               {slideLabels.map((label, i) => (
                 <button
@@ -427,11 +427,11 @@ export default function ProjectDetail({ project, onBack }) {
               ))}
             </nav>
 
-            <span className="hidden text-right font-display text-xs font-semibold tracking-widest text-neutral-500 lg:block">
+            <span className="hidden text-right font-display text-xs font-semibold tracking-widest text-neutral-500 xl:block">
               {String(slide + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
             </span>
 
-            <span className="text-right font-display text-xs font-semibold tracking-widest text-neutral-500 lg:hidden">
+            <span className="text-right font-display text-xs font-semibold tracking-widest text-neutral-500 xl:hidden">
               {String(slide + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
             </span>
           </>

@@ -121,3 +121,39 @@ export const hobbies = [
     images: imageSet("sports-gaming", 9),
   },
 ];
+
+const hobbyNotes = {
+  Cooking: "Something new on the stove most weekends. Some of it works; all of it gets eaten.",
+  Travel: "Trips half-planned in a notes app and finished somewhere on the road.",
+  Anime: "Whatever is mid-season right now, plus the ones I keep coming back to.",
+  Painting: "Messing around with paint — no plan, just seeing where the colour goes.",
+  "Sports & Gaming": "A cricket match on the TV, a controller in hand, and a lot of yelling at both.",
+};
+
+// Round-robin across hobbies so every part of the sphere mixes them.
+function interleave(groups) {
+  const out = [];
+  const longest = Math.max(...groups.map((g) => g.length));
+  for (let i = 0; i < longest; i++) {
+    for (const group of groups) if (group[i]) out.push(group[i]);
+  }
+  return out;
+}
+
+export const archive = {
+  name: ["Sagnik", "Das"],
+  headline: ["What", "I", "Do", "After", "Five"],
+  tag: "After Hours 2026",
+  bio: modes.personal.lead.trim(),
+  avatar: "/signature.png",
+  shots: interleave(
+    hobbies.map((hobby) =>
+      hobby.images.map((src, i) => ({
+        src,
+        title: `${hobby.label} ${String(i + 1).padStart(2, "0")}`,
+        place: `5-9 · ${hobby.label}`,
+        note: hobbyNotes[hobby.label],
+      })),
+    ),
+  ),
+};
