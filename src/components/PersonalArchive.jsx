@@ -489,11 +489,11 @@ export default function PersonalArchive() {
     <div className="va" ref={rootRef}>
       <div id="scrolltrack" aria-hidden="true" />
 
-      <div id="stage">
+      <div id="stage" data-cursor="Drag">
         <div id="world">
           <div id="orb">
             {SHOTS.map((shot, i) => (
-              <div className="card" data-idx={i} key={shot.src}>
+              <div className="card" data-idx={i} key={shot.src} data-cursor="View photo">
                 <figure>
                   <img alt={shot.title} draggable={false} />
                 </figure>
@@ -528,7 +528,7 @@ export default function PersonalArchive() {
       <div id="grid">
         <div className="rows">
           {SHOTS.map((shot, i) => (
-            <figure data-idx={i} key={shot.src}>
+            <figure data-idx={i} key={shot.src} data-cursor="View photo">
               <img alt={shot.title} loading="lazy" />
               <figcaption>{shot.title}</figcaption>
             </figure>

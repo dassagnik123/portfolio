@@ -34,6 +34,7 @@ function FeaturedProject({ project, onOpen }) {
     <button
       type="button"
       onClick={onOpen}
+      data-cursor="View case study"
       className="liquid-glass group grid w-full cursor-pointer gap-8 rounded-[2rem] p-4 text-left transition-transform duration-300 ease-out hover:scale-[1.03] sm:p-5 lg:grid-cols-[1.35fr_1fr] lg:gap-10"
     >
       <div className="relative aspect-[16/10] overflow-hidden rounded-[1.5rem] bg-white/5">
@@ -497,7 +498,7 @@ export default function WorkPage({ controls, onOpenProject, showLoader = false }
               <em className="not-italic text-muted-foreground">use software all day.</em>
             </h1>
             <p className="animate-fade-rise-delay mt-6 max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground sm:mt-8 sm:text-lg">
-              I'm Sagnik — a UX designer for B2B products. For 4+ years I've designed and built
+              I'm Sagnik — a Product designer for B2B products. For 4+ years I've designed and built
               dashboards, support tools, procurement flows and HR portals, turning complex, multi-role
               workflows into interfaces teams can move through without thinking.
             </p>
