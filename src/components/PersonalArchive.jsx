@@ -11,6 +11,9 @@ const DENSITY = Math.min(1, Math.sqrt(21 / N) * 0.85);
 const HEAD_Z = 1 - (1 - 0.62) * Math.min(1, 21 / N);
 const BODY_STATES = ["va-on", "revealed", "deep", "gridview", "lit"];
 
+const LOADER_MIN = 1000;
+const LOADER_MAX = 6000;
+
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 
 function Wordmark() {
@@ -241,24 +244,50 @@ export default function PersonalArchive() {
       });
     }
 
+    /* ---------- loader ---------- */
+    // Held for at least LOADER_MIN and until every photo is ready (or LOADER_MAX passes),
+    // so the sphere appears complete instead of popping in photo by photo.
+    const loader = $("#loader");
+    const loaderBar = $("#loaderBar");
+    const born = performance.now();
+    let ready = 0;
+    let finished = false;
+
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      loaderBar.style.transform = "scaleX(1)";
+      later(() => {
+        layout(true);
+        loader.classList.add("out");
+        body.classList.add("revealed");
+        later(() => (loader.style.display = "none"), 650);
+      }, 250);
+    };
+    const report = () => {
+      ready++;
+      loaderBar.style.transform = `scaleX(${ready / N})`;
+      if (ready >= N) later(finish, Math.max(0, LOADER_MIN - (performance.now() - born)));
+    };
+    later(finish, LOADER_MAX);
+
     SHOTS.forEach((shot, i) => {
-      cardImgs[i].onload = () => cardImgs[i].classList.add("in");
       downscale(shot.src, capFor(window.innerWidth)).then((url) => {
         if (!alive) return;
         decoded[i] = url;
-        cardImgs[i].src = url;
+        const img = cardImgs[i];
+        const done = () => {
+          img.classList.add("in");
+          report();
+        };
+        img.onload = done;
+        img.onerror = report;
+        img.src = url;
         gridImgs[i].src = url;
       });
     });
     downscale(archive.avatar, 160).then((url) => {
       if (alive) $("#avatar").src = url;
-    });
-
-    // No splash or intro film: the sphere is laid out and revealed straight away.
-    requestAnimationFrame(() => {
-      if (!alive) return;
-      layout(true);
-      body.classList.add("revealed");
     });
 
     /* ---------- drag ---------- */
@@ -485,6 +514,16 @@ export default function PersonalArchive() {
       </div>
 
       <div className="vig" aria-hidden="true" />
+
+      <div id="loader" role="status" aria-label="Loading photos">
+        <div className="mark">
+          <Wordmark />
+        </div>
+        <div className="bar">
+          <s id="loaderBar" />
+        </div>
+        <div className="tag">{archive.tag}</div>
+      </div>
 
       <div id="grid">
         <div className="rows">

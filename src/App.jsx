@@ -10,6 +10,8 @@ export default function App() {
   // The switch flips first (so its slide is visible), then the page crossfades through black.
   const [switchMode, setSwitchMode] = useState("work");
   const [fading, setFading] = useState(false);
+  // 9-5 shows its loader when you come back to it from 5-9 (not on the first visit).
+  const [returnedToWork, setReturnedToWork] = useState(false);
   const switching = useRef(false);
   const [activeProject, setActiveProject] = useState(null);
   const isPersonal = mode === "personal";
@@ -28,6 +30,7 @@ export default function App() {
     const next = switchMode === "work" ? "personal" : "work";
     const swap = () => {
       setActiveProject(null);
+      if (next === "work") setReturnedToWork(true);
       setMode(next);
       window.scrollTo(0, 0);
     };
@@ -63,6 +66,7 @@ export default function App() {
           <WorkPage
             controls={<TopControls mode={switchMode} onToggle={toggleMode} />}
             onOpenProject={setActiveProject}
+            showLoader={returnedToWork}
           />
           {activeProject && (
             <ProjectDetail project={activeProject} onBack={() => setActiveProject(null)} />

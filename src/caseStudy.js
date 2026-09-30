@@ -7,7 +7,7 @@ export const ticketDashboardCaseStudy = {
   overview: [
     {
       label: "Role",
-      text: "Solo designer — I did the research, the interaction design, the UI and the prototype",
+      text: "Solo designer — I did the research, the interaction design and the UI. I was also one of the developers who built it, in the product's React, Next.js and TypeScript codebase",
     },
     { label: "Timeline", text: "One week, internal sprint" },
     {
@@ -166,6 +166,27 @@ export const ticketDashboardCaseStudy = {
             "**Saved filters vs a dashboard** — saving filters was cheaper but wasn't possible in the time; the dashboard is one more screen to maintain, but it answers several questions at once",
             "**Five tickets vs the full list** — capping it keeps things manageable, but an agent can't tell how big the at-risk pile is without opening the full list",
           ],
+        },
+      ],
+    },
+    {
+      heading: "How I built it",
+      blocks: [
+        {
+          type: "p",
+          text: "I wasn't only the designer — I was also one of the developers who built it, in the product's existing Next.js, React and TypeScript codebase. Being on both sides changed the design itself:",
+        },
+        {
+          type: "ul",
+          items: [
+            "**Feasibility came early, not at handoff.** Because I was also helping build it, I knew on day one that saved filters needed backend work. That ruled them out inside the week and pointed me to the dashboard, instead of surfacing as a surprise halfway through.",
+            "**Frontend-only by design.** The SLA column and the dashboard both read SLA data the platform already had, so the whole change shipped without touching the backend.",
+            "**Decisions made in the browser.** Where there were no design files, I made layout calls directly in the live UI — with real tickets on screen instead of placeholder rows.",
+          ],
+        },
+        {
+          type: "quote",
+          text: "Knowing how it would be built shaped what I designed — the dashboard exists partly because I knew what the week could and couldn't hold.",
         },
       ],
     },

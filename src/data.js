@@ -157,3 +157,24 @@ export const archive = {
     ),
   ),
 };
+
+// From the CV: design first, with engineering as the way I prototype and ship.
+export const skills = [
+  {
+    label: "Design",
+    note: "How I find and shape the problem",
+    items: [
+      "Figma",
+      "Wireframing",
+      "Rapid prototyping",
+      "User research",
+      "Interaction design",
+      "User-centred design",
+    ],
+  },
+  {
+    label: "Build",
+    note: "How I prototype and ship what I design",
+    items: ["React.js", "Next.js", "TypeScript", "JavaScript", "HTML & CSS", "Design-to-code handoff"],
+  },
+];

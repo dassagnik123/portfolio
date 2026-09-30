@@ -433,6 +433,55 @@ body.lit .va #lit { opacity: 1; pointer-events: auto; }
   .va header.chrome { padding-left: calc(56px + var(--safe-left)); padding-right: calc(56px + var(--safe-right)); }
 }
 
+/* ---------- loader ---------- */
+.va #loader {
+  position: fixed; inset: 0;
+  z-index: 250;
+  background: #000;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 26px;
+  transition: opacity 0.6s ease;
+}
+.va #loader.out { opacity: 0; pointer-events: none; }
+.va #loader .mark {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(32px, 4.4vw, 56px);
+  letter-spacing: -0.01em;
+  color: #f4f2ef;
+  opacity: 0;
+  animation: va-riseIn 0.9s ease 0.05s forwards;
+}
+.va #loader .bar {
+  position: relative;
+  width: clamp(120px, 17vw, 210px);
+  height: 1px;
+  background: rgba(244, 242, 239, 0.16);
+  overflow: hidden;
+}
+.va #loader .bar s {
+  position: absolute; inset: 0;
+  display: block;
+  background: #f4f2ef;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.45s ease;
+}
+.va #loader .tag {
+  font-size: 10px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(244, 242, 239, 0.38);
+  opacity: 0;
+  animation: va-riseIn 0.9s ease 0.3s forwards;
+}
+@keyframes va-riseIn {
+  from { opacity: 0; transform: translateY(9px); }
+  to { opacity: 1; transform: none; }
+}
+
 /* ---------- responsive ---------- */
 @media (max-width: 900px) {
   .va .bio { max-width: min(420px, calc(100vw - var(--pad) * 2 - var(--safe-left) - var(--safe-right))); }

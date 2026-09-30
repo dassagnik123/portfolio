@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { EmailIcon, PhoneIcon } from "./icons";
-import { contact, projects } from "../data";
+import { contact, projects, skills } from "../data";
 
 const HERO_VIDEO =
   "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4";
@@ -262,11 +262,82 @@ function StarField() {
   );
 }
 
-export default function WorkPage({ controls, onOpenProject }) {
+const LOADER_MIN = 1000;
+const LOADER_MAX = 6000;
+
+// Same loading screen as 5-9: name, a line that fills as the page's media arrives, and a tag.
+function PageLoader({ progress, visible, onGone }) {
+  return (
+    <div
+      role="status"
+      aria-label="Loading"
+      onTransitionEnd={(e) => e.target === e.currentTarget && !visible && onGone()}
+      className={`fixed inset-0 z-[150] grid place-items-center content-center gap-[26px] bg-black transition-opacity duration-[600ms] ${
+        visible ? "opacity-100" : "pointer-events-none opacity-0"
+      }`}
+    >
+      <div className="animate-fade-rise text-[clamp(32px,4.4vw,56px)] tracking-[-0.01em] text-[#f4f2ef]" style={serif}>
+        Sagnik Das
+      </div>
+      <div className="relative h-px w-[clamp(120px,17vw,210px)] overflow-hidden bg-[rgba(244,242,239,0.16)]">
+        <span
+          className="absolute inset-0 origin-left bg-[#f4f2ef] transition-transform duration-[450ms] ease-out"
+          style={{ transform: `scaleX(${progress})` }}
+        />
+      </div>
+      <div className="animate-fade-rise-delay text-[10px] uppercase tracking-[0.26em] text-[rgba(244,242,239,0.38)]">
+        Selected Work 2026
+      </div>
+    </div>
+  );
+}
+
+export default function WorkPage({ controls, onOpenProject, showLoader = false }) {
   const cancelScroll = useRef(() => {});
   const rootRef = useRef(null);
   const navRef = useRef(null);
   const [active, setActive] = useState("#top");
+  const [loading, setLoading] = useState(showLoader);
+  const [loaderMounted, setLoaderMounted] = useState(showLoader);
+  const [progress, setProgress] = useState(0);
+
+  // Hold the loader for at least LOADER_MIN and until the hero video, the headline font and the
+  // project cover are ready (or LOADER_MAX passes), so the page never appears half-loaded.
+  useEffect(() => {
+    if (!showLoader) return;
+    const root = rootRef.current;
+    const video = root.querySelector('[data-px="hero-bg"] video');
+    const cover = root.querySelector('[data-px="media"] img');
+    const whenReady = (el, ready, events) =>
+      new Promise((resolve) => {
+        if (!el || ready(el)) return resolve();
+        events.forEach((type) => el.addEventListener(type, resolve, { once: true }));
+      });
+    const tasks = [
+      whenReady(video, (v) => v.readyState >= 3, ["canplay", "error"]),
+      document.fonts.load("40px 'Instrument Serif'").catch(() => {}),
+      whenReady(cover, (img) => img.complete, ["load", "error"]),
+    ];
+    const born = performance.now();
+    let alive = true;
+    let done = 0;
+    tasks.forEach((task) =>
+      task.then(() => {
+        if (alive) setProgress(++done / tasks.length);
+      }),
+    );
+    const finish = () => alive && setLoading(false);
+    const backstop = setTimeout(finish, LOADER_MAX);
+    let settle = 0;
+    Promise.all(tasks).then(() => {
+      settle = setTimeout(finish, Math.max(0, LOADER_MIN - (performance.now() - born)) + 250);
+    });
+    return () => {
+      alive = false;
+      clearTimeout(backstop);
+      clearTimeout(settle);
+    };
+  }, [showLoader]);
 
   // Scroll-driven layers: the fixed nav's backdrop, which nav link is current, and a
   // parallax where the hero scene, card cover and footer scene move at different speeds.
@@ -368,125 +439,173 @@ export default function WorkPage({ controls, onOpenProject }) {
   const [featured] = projects;
 
   return (
-    <div
-      id="top"
-      ref={rootRef}
-      onClick={handleAnchorClick}
-      className="work-theme relative isolate min-h-dvh bg-background text-foreground"
-    >
-      <StarField />
-
-      {/* Stays pinned while scrolling; gains a soft dark backdrop once the page moves. */}
-      <nav
-        ref={navRef}
-        data-scrolled="false"
-        className="fixed inset-x-0 top-0 z-40 flex w-full items-center justify-between gap-6 px-6 pb-4 pt-[calc(22px+env(safe-area-inset-top))] transition-[background-color,backdrop-filter,box-shadow] duration-500 data-[scrolled=true]:bg-black/75 data-[scrolled=true]:shadow-[0_1px_0_rgba(255,255,255,0.06)] data-[scrolled=true]:backdrop-blur-md sm:px-10 lg:px-14"
+    <>
+      {loaderMounted && (
+        <PageLoader progress={progress} visible={loading} onGone={() => setLoaderMounted(false)} />
+      )}
+      <div
+        id="top"
+        ref={rootRef}
+        onClick={handleAnchorClick}
+        data-loading={loading ? "true" : undefined}
+        className="work-theme relative isolate min-h-dvh bg-background text-foreground"
       >
-        <a href="#top" className="text-2xl tracking-tight text-foreground sm:text-3xl" style={serif}>
-          Sagnik Das
-        </a>
-        <div className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 lg:flex">
-          {NAV_LINKS.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              aria-current={active === link.href ? "true" : undefined}
-              className={`text-sm transition-colors hover:text-foreground ${
-                active === link.href ? "text-foreground" : "text-muted-foreground"
-              }`}
-            >
-              {link.label}
-            </a>
-          ))}
-        </div>
-        {controls}
-      </nav>
+        <StarField />
 
-      {/* Landing */}
-      <section className="relative z-10 flex min-h-dvh flex-col overflow-hidden">
-        <SkyScene />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-[22vh] bg-gradient-to-b from-transparent to-black"
-        />
-
-        <div aria-hidden className="h-[calc(74px+env(safe-area-inset-top))] shrink-0" />
-
-        <div data-px="hero-copy" className="hero-copy relative z-10 flex flex-1 flex-col items-center justify-center px-6 pb-[24vh] pt-10 text-center sm:pt-12">
-          <h1
-            className="hero-title animate-fade-rise max-w-7xl text-5xl font-normal leading-[0.95] tracking-[-2.46px] sm:text-7xl md:text-8xl"
-            style={serif}
-          >
-            Where <em className="not-italic text-muted-foreground">friction</em> turns into{" "}
-            <em className="not-italic text-muted-foreground">quiet clarity.</em>
-          </h1>
-          <p className="animate-fade-rise-delay mt-6 max-w-2xl sm:mt-8 text-base leading-relaxed text-muted-foreground sm:text-lg">
-            I'm Sagnik — a UX designer, product designer and UX engineer. I dig into how people
-            actually work, find where the friction is, and design the structure that removes it —
-            then ship it.
-          </p>
-          <a
-            href="#projects"
-            className="liquid-glass animate-fade-rise-delay-2 mt-10 cursor-pointer rounded-full px-12 py-4 text-base sm:mt-12 sm:px-14 sm:py-5 text-foreground transition-transform hover:scale-[1.03]"
-          >
-            View my work
+        {/* Stays pinned while scrolling; gains a soft dark backdrop once the page moves. */}
+        <nav
+          ref={navRef}
+          data-scrolled="false"
+          className="fixed inset-x-0 top-0 z-40 flex w-full items-center justify-between gap-6 px-6 pb-4 pt-[calc(22px+env(safe-area-inset-top))] transition-[background-color,backdrop-filter,box-shadow] duration-500 data-[scrolled=true]:bg-black/75 data-[scrolled=true]:shadow-[0_1px_0_rgba(255,255,255,0.06)] data-[scrolled=true]:backdrop-blur-md sm:px-10 lg:px-14"
+        >
+          <a href="#top" className="text-2xl tracking-tight text-foreground sm:text-3xl" style={serif}>
+            Sagnik Das
           </a>
-        </div>
-      </section>
+          <div className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 lg:flex">
+            {NAV_LINKS.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                aria-current={active === link.href ? "true" : undefined}
+                className={`text-sm transition-colors hover:text-foreground ${
+                  active === link.href ? "text-foreground" : "text-muted-foreground"
+                }`}
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
+          {controls}
+        </nav>
 
-      {/* Projects */}
-      <section id="projects" data-scroll-fit="[data-scroll-fit-target]" className="relative z-10 scroll-mt-6 px-6 py-24 sm:px-10 sm:py-32 lg:px-14">
-        <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+        {/* Landing */}
+        <section className="relative z-10 flex min-h-dvh flex-col overflow-hidden">
+          <SkyScene />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-[22vh] bg-gradient-to-b from-transparent to-black"
+          />
+
+          <div aria-hidden className="h-[calc(74px+env(safe-area-inset-top))] shrink-0" />
+
+          <div data-px="hero-copy" className="hero-copy relative z-10 flex flex-1 flex-col items-center justify-center px-6 pb-[24vh] pt-10 text-center sm:pt-12">
+            <h1
+              className="hero-title animate-fade-rise max-w-6xl text-balance text-5xl font-normal leading-[0.95] tracking-[-2.46px] sm:text-7xl md:text-[5.25rem]"
+              style={serif}
+            >
+              I design for the people who{" "}
+              <em className="not-italic text-muted-foreground">use software all day.</em>
+            </h1>
+            <p className="animate-fade-rise-delay mt-6 max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground sm:mt-8 sm:text-lg">
+              I'm Sagnik — a UX designer for B2B products. For 4+ years I've designed and built
+              dashboards, support tools, procurement flows and HR portals, turning complex, multi-role
+              workflows into interfaces teams can move through without thinking.
+            </p>
+            <a
+              href="#projects"
+              className="liquid-glass animate-fade-rise-delay-2 mt-10 cursor-pointer rounded-full px-12 py-4 text-base sm:mt-12 sm:px-14 sm:py-5 text-foreground transition-transform hover:scale-[1.03]"
+            >
+              View my work
+            </a>
+          </div>
+        </section>
+
+        {/* Projects */}
+        <section id="projects" data-scroll-fit="[data-scroll-fit-target]" className="relative z-10 scroll-mt-6 px-6 py-24 sm:px-10 sm:py-32 lg:px-14">
+          <div className="mx-auto max-w-7xl">
+            <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+              <h2
+                className="max-w-3xl text-4xl font-normal leading-[0.95] tracking-[-1.5px] sm:text-6xl"
+                style={serif}
+              >
+                Selected work, <em className="not-italic text-muted-foreground">built around real problems.</em>
+              </h2>
+              <p className="max-w-sm text-sm leading-relaxed text-muted-foreground sm:text-base">
+                Each project starts with how people actually work — then removes whatever is in their way.
+              </p>
+            </div>
+
+            <div data-scroll-fit-target className="mt-14 sm:mt-20">
+              <FeaturedProject project={featured} onOpen={() => onOpenProject(featured)} />
+            </div>
+          </div>
+        </section>
+
+        {/* Skills: design first, engineering as the way I prototype and ship. */}
+        <section id="skills" className="relative z-10 px-6 pb-8 pt-4 sm:px-10 sm:pb-16 lg:px-14">
+          <div className="mx-auto max-w-7xl">
             <h2
               className="max-w-3xl text-4xl font-normal leading-[0.95] tracking-[-1.5px] sm:text-6xl"
               style={serif}
             >
-              Selected work, <em className="not-italic text-muted-foreground">built around real problems.</em>
+              Design it. <em className="not-italic text-muted-foreground">Then build it.</em>
             </h2>
-            <p className="max-w-sm text-sm leading-relaxed text-muted-foreground sm:text-base">
-              Each project starts with how people actually work — then removes whatever is in their way.
+            <div className="mt-12 grid gap-6 md:grid-cols-2">
+              {skills.map((group) => (
+                <div key={group.label} className="liquid-glass rounded-[2rem] p-6 sm:p-8">
+                  <div className="flex items-baseline justify-between gap-4">
+                    <h3 className="text-3xl text-foreground" style={serif}>
+                      {group.label}
+                    </h3>
+                    <span className="text-right text-sm text-muted-foreground">{group.note}</span>
+                  </div>
+                  <ul className="mt-6 flex flex-wrap gap-2">
+                    {group.items.map((item) => (
+                      <li key={item}>
+                        <Tag>{item}</Tag>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Contact: the hero's books and flowers (without the characters) frame the bottom edge. */}
+        <section
+          id="contact"
+          className="relative z-10 flex flex-col overflow-hidden px-6 sm:px-10 lg:px-14"
+        >
+          <FooterScene />
+          <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col items-center pb-[clamp(150px,17vw,260px)] pt-24 text-center sm:pt-32">
+            <span className="liquid-glass mb-8 flex items-center gap-2.5 rounded-full px-4 py-2 text-xs tracking-wide text-foreground sm:text-sm">
+              <span aria-hidden className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60 motion-reduce:animate-none" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+              </span>
+              Open to UX / Product Design roles
+            </span>
+            <h2
+              className="max-w-4xl text-4xl font-normal leading-[0.95] tracking-[-1.5px] sm:text-6xl"
+              style={serif}
+            >
+              Looking for a designer <em className="not-italic text-muted-foreground">who can also ship?</em>
+            </h2>
+            <p className="mt-6 max-w-3xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+              Frontend engineer turned UX designer, looking for full-time{" "}
+              <span className="whitespace-nowrap">UX / Product Design</span> roles.
             </p>
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+              <a
+                href={`mailto:${contact.email}`}
+                className="liquid-glass flex items-center gap-2 rounded-full px-8 py-4 text-sm text-foreground transition-transform hover:scale-[1.03] sm:text-base"
+              >
+                <EmailIcon />
+                {contact.email}
+              </a>
+              <a
+                href={`tel:${contact.phone}`}
+                className="flex items-center gap-2 px-4 py-4 text-sm text-muted-foreground transition-colors hover:text-foreground sm:text-base"
+              >
+                <PhoneIcon />
+                {contact.phone}
+              </a>
+            </div>
+            <p className="mt-10 text-xs text-muted-foreground">© 2026 Sagnik Das</p>
           </div>
-
-          <div data-scroll-fit-target className="mt-14 sm:mt-20">
-            <FeaturedProject project={featured} onOpen={() => onOpenProject(featured)} />
-          </div>
-        </div>
-      </section>
-
-      {/* Contact: the hero's books and flowers (without the characters) frame the bottom edge. */}
-      <section
-        id="contact"
-        className="relative z-10 flex flex-col overflow-hidden px-6 sm:px-10 lg:px-14"
-      >
-        <FooterScene />
-        <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col items-center pb-[clamp(150px,17vw,260px)] pt-24 text-center sm:pt-32">
-          <h2
-            className="max-w-4xl text-4xl font-normal leading-[0.95] tracking-[-1.5px] sm:text-6xl"
-            style={serif}
-          >
-            Have a problem <em className="not-italic text-muted-foreground">worth solving?</em>
-          </h2>
-          <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
-            <a
-              href={`mailto:${contact.email}`}
-              className="liquid-glass flex items-center gap-2 rounded-full px-8 py-4 text-sm text-foreground transition-transform hover:scale-[1.03] sm:text-base"
-            >
-              <EmailIcon />
-              {contact.email}
-            </a>
-            <a
-              href={`tel:${contact.phone}`}
-              className="flex items-center gap-2 px-4 py-4 text-sm text-muted-foreground transition-colors hover:text-foreground sm:text-base"
-            >
-              <PhoneIcon />
-              {contact.phone}
-            </a>
-          </div>
-          <p className="mt-10 text-xs text-muted-foreground">© 2026 Sagnik Das</p>
-        </div>
-      </section>
-    </div>
+        </section>
+      </div>
+    </>
   );
 }

@@ -102,6 +102,13 @@
   animation: fade-rise 0.8s ease-out 0.4s both;
 }
 
+/* While the 9-5 loader is up, hold the hero's entrance until the page is revealed. */
+.work-theme[data-loading="true"] .animate-fade-rise,
+.work-theme[data-loading="true"] .animate-fade-rise-delay,
+.work-theme[data-loading="true"] .animate-fade-rise-delay-2 {
+  animation-play-state: paused;
+}
+
 /* Phones in landscape: keep the whole hero within the short screen. */
 @media (max-height: 520px) and (orientation: landscape) {
   .hero-copy {
