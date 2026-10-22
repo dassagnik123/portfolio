@@ -3,7 +3,7 @@ export const ticketDashboardCaseStudy = {
     "Agents couldn't see which tickets were about to breach — so I made urgency impossible to miss",
   created: "February 16, 2026 · 11:16 AM",
   duration: "1 week",
-  tags: ["Customer Support", "Dashboard", "SaaS", "UI/UX"],
+  tags: ["Customer Support", "Dashboard", "UI/UX"],
   overview: [
     {
       label: "Role",

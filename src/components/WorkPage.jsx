@@ -151,12 +151,16 @@ function SkyScene() {
 // Soft-edged regions of the frame with no characters in them (percent of the video box):
 // the two book stacks, the flower beds beside them, and the flower strip along the bottom.
 const FOOTER_MASK = [
-  "radial-gradient(ellipse 19% 70% at 0% 100%, #000 62%, transparent 100%)",
-  "radial-gradient(ellipse 20% 56% at 100% 100%, #000 62%, transparent 100%)",
+  "radial-gradient(ellipse 19% 70% at 0% 100%, #000 40%, transparent 100%)",
+  "radial-gradient(ellipse 20% 56% at 100% 100%, #000 40%, transparent 100%)",
   "radial-gradient(ellipse 18% 21% at 21% 100%, #000 50%, transparent 100%)",
   "radial-gradient(ellipse 18% 21% at 71% 100%, #000 50%, transparent 100%)",
   "linear-gradient(to bottom, transparent 89%, #000 96%)",
 ].join(", ");
+
+// A short fade at the top so the book stacks never end in the section's hard clip line,
+// even while the parallax shifts the scene.
+const FOOTER_EDGE_FADE = "linear-gradient(to bottom, transparent 0, #000 180px)";
 
 // Footer: the scene's books and flowers without the people, framing the contact section.
 function FooterScene() {
@@ -164,7 +168,12 @@ function FooterScene() {
   useVisiblePlayback(videoRef);
 
   return (
-    <div data-px="footer-bg" aria-hidden className="pointer-events-none absolute inset-0 z-0 will-change-transform">
+    <div
+      data-px="footer-bg"
+      aria-hidden
+      className="pointer-events-none absolute inset-0 z-0 will-change-transform"
+      style={{ maskImage: FOOTER_EDGE_FADE, WebkitMaskImage: FOOTER_EDGE_FADE }}
+    >
       {/* Shown larger and anchored to the bottom edge, so the flowers reach high and fill to the bottom. */}
       <div
         className="absolute bottom-0 left-1/2 aspect-video w-[max(125%,1000px)] -translate-x-1/2"
@@ -185,6 +194,109 @@ function FooterScene() {
       </div>
     </div>
   );
+}
+
+const METEOR_GAP = [2200, 5500];
+
+function spawnMeteor(now, w, skyHeight) {
+  const dir = Math.random() < 0.5 ? -1 : 1;
+  const angle = ((18 + Math.random() * 20) * Math.PI) / 180;
+  const speed = 0.7 + Math.random() * 0.5;
+  return {
+    x: w * (dir > 0 ? 0.1 + Math.random() * 0.5 : 0.4 + Math.random() * 0.5),
+    y: Math.random() * skyHeight * 0.6,
+    vx: Math.cos(angle) * speed * dir,
+    vy: Math.sin(angle) * speed,
+    len: 90 + Math.random() * 90,
+    born: now,
+    life: 800 + Math.random() * 500,
+  };
+}
+
+function drawMeteor(ctx, m, now) {
+  const age = now - m.born;
+  const p = age / m.life;
+  // Quick fade in, slow fade out.
+  const alpha = p < 0.15 ? p / 0.15 : 1 - (p - 0.15) / 0.85;
+  const hx = m.x + m.vx * age;
+  const hy = m.y + m.vy * age;
+  const speed = Math.hypot(m.vx, m.vy);
+  const tx = hx - (m.vx / speed) * m.len;
+  const ty = hy - (m.vy / speed) * m.len;
+  const tail = ctx.createLinearGradient(hx, hy, tx, ty);
+  tail.addColorStop(0, "rgba(255,255,255,0.9)");
+  tail.addColorStop(0.3, "rgba(223,230,255,0.35)");
+  tail.addColorStop(1, "rgba(223,230,255,0)");
+  ctx.globalAlpha = Math.max(0, alpha);
+  ctx.strokeStyle = tail;
+  ctx.lineWidth = 1.2;
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(hx, hy);
+  ctx.lineTo(tx, ty);
+  ctx.stroke();
+  ctx.fillStyle = "#ffffff";
+  ctx.beginPath();
+  ctx.arc(hx, hy, 1.3, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+// Occasional shooting stars across the top `sky` fraction of the parent section. Rendered after
+// the section's scene so they cross over its video, and under the z-10 content.
+function ShootingStars({ sky = 0.5 }) {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    let w = 0;
+    let h = 0;
+    let raf = 0;
+    let meteors = [];
+    let nextMeteor = performance.now() + 1200;
+
+    const resize = () => {
+      w = canvas.clientWidth;
+      h = canvas.clientHeight;
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+
+    const loop = (t) => {
+      ctx.clearRect(0, 0, w, h);
+      if (t >= nextMeteor) {
+        meteors.push(spawnMeteor(t, w, h * sky));
+        nextMeteor = t + METEOR_GAP[0] + Math.random() * (METEOR_GAP[1] - METEOR_GAP[0]);
+      }
+      meteors = meteors.filter((m) => t - m.born < m.life);
+      for (const m of meteors) drawMeteor(ctx, m, t);
+      raf = requestAnimationFrame(loop);
+    };
+
+    // Only animate while the section is on screen.
+    const observer = new IntersectionObserver(([entry]) => {
+      cancelAnimationFrame(raf);
+      raf = 0;
+      if (entry.isIntersecting) {
+        meteors = [];
+        nextMeteor = performance.now() + 800;
+        raf = requestAnimationFrame(loop);
+      }
+    });
+    resize();
+    observer.observe(canvas);
+    window.addEventListener("resize", resize);
+    return () => {
+      cancelAnimationFrame(raf);
+      observer.disconnect();
+      window.removeEventListener("resize", resize);
+    };
+  }, [sky]);
+
+  return <canvas ref={canvasRef} aria-hidden className="pointer-events-none absolute inset-0 z-0 h-full w-full" />;
 }
 
 // Fixed, softly twinkling star field behind the whole page, matching the video's black sky.
@@ -287,7 +399,7 @@ function PageLoader({ progress, visible, onGone }) {
         />
       </div>
       <div className="animate-fade-rise-delay text-[10px] uppercase tracking-[0.26em] text-[rgba(244,242,239,0.38)]">
-        Selected Work 2026
+        Selected Work
       </div>
     </div>
   );
@@ -482,6 +594,7 @@ export default function WorkPage({ controls, onOpenProject, showLoader = false }
         {/* Landing */}
         <section className="relative z-10 flex min-h-dvh flex-col overflow-hidden">
           <SkyScene />
+          <ShootingStars sky={0.5} />
           <div
             aria-hidden
             className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-[22vh] bg-gradient-to-b from-transparent to-black"
@@ -498,7 +611,7 @@ export default function WorkPage({ controls, onOpenProject, showLoader = false }
               <em className="not-italic text-muted-foreground">use software all day.</em>
             </h1>
             <p className="animate-fade-rise-delay mt-6 max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground sm:mt-8 sm:text-lg">
-              I'm Sagnik — a Product designer for B2B products. For 4+ years I've designed and built
+              I'm Sagnik — a UX engineer for B2B products. For 4+ years I've designed and built
               dashboards, support tools, procurement flows and HR portals, turning complex, multi-role
               workflows into interfaces teams can move through without thinking.
             </p>
@@ -569,6 +682,7 @@ export default function WorkPage({ controls, onOpenProject, showLoader = false }
           className="relative z-10 flex flex-col overflow-hidden px-6 sm:px-10 lg:px-14"
         >
           <FooterScene />
+          <ShootingStars sky={0.45} />
           <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col items-center pb-[clamp(150px,17vw,260px)] pt-24 text-center sm:pt-32">
             <span className="liquid-glass mb-8 flex items-center gap-2.5 rounded-full px-4 py-2 text-xs tracking-wide text-foreground sm:text-sm">
               <span aria-hidden className="relative flex h-2 w-2">

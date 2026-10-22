@@ -39,7 +39,7 @@ export const projects = [
     number: "01",
     large: true,
     filled: true,
-    tags: ["UI/UX", "SAAS", "DASHBOARD", "CUSTOMER SUPPORT"],
+    tags: ["UI/UX", "DASHBOARD", "CUSTOMER SUPPORT"],
     cover: "/customer-support-cover.jpg",
     title:
       "Agents couldn't see which tickets were about to breach — so I made urgency impossible to miss",
@@ -143,7 +143,7 @@ function interleave(groups) {
 export const archive = {
   name: ["Sagnik", "Das"],
   headline: ["What", "I", "Do", "After", "Five"],
-  tag: "After Hours 2026",
+  tag: "After Hours",
   bio: modes.personal.lead.trim(),
   avatar: "/signature.png",
   shots: interleave(
