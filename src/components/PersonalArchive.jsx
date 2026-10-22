@@ -121,6 +121,8 @@ export default function PersonalArchive() {
     const written = cards.map(() => ({ o: -1, d: -1 }));
     let lastHeadOpacity = -1;
     let deep = false;
+    // 0..1 zoom into the sphere, driven by the wheel (the page itself doesn't scroll).
+    let depth = 0;
 
 
     function frame() {
@@ -136,7 +138,7 @@ export default function PersonalArchive() {
       }
       cam.dragY = clamp(cam.dragY, -PITCH - cam.tilt, PITCH - cam.tilt);
 
-      const p = clamp(window.scrollY / (window.innerHeight * 0.16), 0, 1);
+      const p = depth;
       if (p > 0.35 !== deep) {
         deep = p > 0.35;
         body.classList.toggle("deep", deep);
@@ -446,7 +448,7 @@ export default function PersonalArchive() {
     on($(".wordmark"), "click", (e) => {
       e.preventDefault();
       setGrid(false);
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      depth = 0;
     });
 
     on(window, "keydown", (e) => {
@@ -455,13 +457,13 @@ export default function PersonalArchive() {
       else if (body.classList.contains("gridview")) setGrid(false);
     });
 
-    /* ---------- scroll + resize ---------- */
+    /* ---------- wheel zoom + resize ---------- */
     on(
       window,
-      "scroll",
-      () => {
-        const max = window.innerHeight * 0.16;
-        if (window.scrollY > max + 1) window.scrollTo(0, max);
+      "wheel",
+      (e) => {
+        if (focused >= 0 || body.classList.contains("gridview")) return;
+        depth = clamp(depth + e.deltaY / (window.innerHeight * 0.16), 0, 1);
       },
       { passive: true },
     );
@@ -490,7 +492,6 @@ export default function PersonalArchive() {
 
   return (
     <div className="va" ref={rootRef}>
-      <div id="scrolltrack" aria-hidden="true" />
 
       <div id="stage" data-cursor="Drag">
         <div id="world">

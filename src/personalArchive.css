@@ -20,7 +20,6 @@ html.va-on {
   --serif: "Instrument Serif", "Times New Roman", serif;
   --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
   background: #000;
-  scrollbar-gutter: stable;
 }
 
 body.va-on {
@@ -35,6 +34,8 @@ body.va-on {
   min-height: 100dvh;
   overscroll-behavior-y: none;
 }
+/* The page itself never scrolls; the wheel zooms the sphere instead. */
+html.va-on, body.va-on { overflow: hidden; }
 
 .va img { display: block; max-width: 100%; }
 .va button:not([role="switch"]) {
@@ -50,8 +51,7 @@ body.va-on {
 .va a { -webkit-tap-highlight-color: transparent; }
 .va em { font-style: normal; }
 
-/* ---------- scroll track + stage ---------- */
-.va #scrolltrack { height: 116vh; pointer-events: none; }
+/* ---------- stage ---------- */
 
 .va #stage {
   position: fixed;
