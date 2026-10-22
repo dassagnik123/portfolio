@@ -611,9 +611,10 @@ export default function WorkPage({ controls, onOpenProject, showLoader = false }
               <em className="not-italic text-muted-foreground">use software all day.</em>
             </h1>
             <p className="animate-fade-rise-delay mt-6 max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground sm:mt-8 sm:text-lg">
-              I'm Sagnik — a UX engineer for B2B products. For 4+ years I've designed and built
-              dashboards, support tools, procurement flows and HR portals, turning complex, multi-role
-              workflows into interfaces teams can move through without thinking.
+              I'm Sagnik — a frontend engineer moving into UX. For 4+ years I've worked where design
+              meets code on B2B dashboards, support tools, procurement flows and HR portals, and what I
+              care about most is turning complex, multi-role workflows into interfaces teams can move
+              through without thinking.
             </p>
             <a
               href="#projects"
