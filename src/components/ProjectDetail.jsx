@@ -369,7 +369,7 @@ export default function ProjectDetail({ project, onBack }) {
   }, [caseStudy, total]);
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col overflow-hidden bg-neutral-950 text-white">
+    <div className="fixed inset-0 z-50 flex flex-col overflow-hidden bg-neutral-950 text-white [color-scheme:dark]">
       {caseStudy && (
         <div
           aria-hidden
