@@ -150,6 +150,8 @@ export const archive = {
     hobbies.map((hobby) =>
       hobby.images.map((src, i) => ({
         src,
+        // Small copy for the sphere and grid (scripts/make-thumbs.sh); `src` is for the enlarged view.
+        thumb: src.replace(/\/([^/]+)$/, "/thumbs/$1"),
         title: `${hobby.label} ${String(i + 1).padStart(2, "0")}`,
         place: `5-9 · ${hobby.label}`,
         note: hobbyNotes[hobby.label],

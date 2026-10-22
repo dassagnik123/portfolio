@@ -204,7 +204,6 @@ export default function PersonalArchive() {
 
     /* ---------- image decode ---------- */
     const decoded = new Array(N).fill(null);
-    const capFor = (w) => (w <= 380 ? 420 : w <= 640 ? 520 : w <= 900 ? 640 : 760);
 
     function downscale(src, cap) {
       return new Promise((resolve) => {
@@ -271,20 +270,24 @@ export default function PersonalArchive() {
     };
     later(finish, LOADER_MAX);
 
+    // Pre-sized thumbnails load straight into the cards; a card only counts as ready once
+    // its photo is decoded, so nothing pops in blank after the loader lifts.
     SHOTS.forEach((shot, i) => {
-      downscale(shot.src, capFor(window.innerWidth)).then((url) => {
+      const img = cardImgs[i];
+      img.decoding = "async";
+      img.onload = () => {
         if (!alive) return;
-        decoded[i] = url;
-        const img = cardImgs[i];
-        const done = () => {
+        decoded[i] = shot.thumb;
+        img.decode().catch(() => {}).then(() => {
+          if (!alive) return;
           img.classList.add("in");
+          img.closest("figure")?.classList.add("loaded");
           report();
-        };
-        img.onload = done;
-        img.onerror = report;
-        img.src = url;
-        gridImgs[i].src = url;
-      });
+        });
+      };
+      img.onerror = report;
+      img.src = shot.thumb;
+      gridImgs[i].src = shot.thumb;
     });
     downscale(archive.avatar, 160).then((url) => {
       if (alive) $("#avatar").src = url;

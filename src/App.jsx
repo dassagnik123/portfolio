@@ -4,6 +4,7 @@ import PersonalArchive from "./components/PersonalArchive";
 import ProjectDetail from "./components/ProjectDetail";
 import TopControls from "./components/TopControls";
 import WorkPage from "./components/WorkPage";
+import { archive } from "./data";
 
 export default function App() {
   const [mode, setMode] = useState("work");
@@ -24,6 +25,16 @@ export default function App() {
       document.body.style.overflow = "";
     };
   }, [activeProject]);
+
+  // Warm the cache with the 5-9 thumbnails once 9-5 has settled, so the sphere opens complete.
+  useEffect(() => {
+    const prefetch = () => archive.shots.forEach((shot) => (new Image().src = shot.thumb));
+    const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 1500));
+    const start = () => idle(prefetch);
+    if (document.readyState === "complete") start();
+    else window.addEventListener("load", start, { once: true });
+    return () => window.removeEventListener("load", start);
+  }, []);
 
   const toggleMode = () => {
     if (switching.current) return;
