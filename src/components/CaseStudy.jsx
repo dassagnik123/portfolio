@@ -19,6 +19,7 @@ const WALK_SPEED = 0.5; // px per ms along the track
 const MAX_WALK_MS = 1100; // long jumps still arrive quickly
 const STRIDE_MS = 180;
 const AIM_MS = 450;
+const BOY_SCALE = 0.8; // he is drawn a little smaller here than on the map
 const PLANE_SPEED = 0.85; // px per ms
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -236,7 +237,7 @@ export default function CaseStudy({ project, lit, onClose, onBreak, onFix }) {
     const aboardX = land + PLANE_SEAT;
     setScene((b) => ({ ...b, x: aboardX, y: -PLANE_SEAT_UP, facing: 1 }));
     await wait(290);
-    const boyUp = window.innerHeight - bottom - BOY_H - (glass.bottom + 2); // his head just under the glass
+    const boyUp = window.innerHeight - bottom - BOY_H * BOY_SCALE - (glass.bottom + 2); // his head just under the glass
     const atBulb = { x: Math.round(glassX - BOY_W / 2 - PLANE_SEAT), up: boyUp - PLANE_SEAT_UP };
     const dir = atBulb.x >= land ? 1 : -1;
     await glide(ground, atBulb, true, dir);
@@ -495,7 +496,7 @@ export default function CaseStudy({ project, lit, onClose, onBreak, onFix }) {
         hint={lit ? (!seen.csShoot ? "Tap for something new!" : null) : !seen.csFix && !scene ? "Tap to fix it" : null}
       />
       {plane && <Plane {...plane} />}
-      {scene && <Boy {...scene} placement="screen" boyRef={sceneBoyRef} />}
+      {scene && <Boy {...scene} placement="screen" boyRef={sceneBoyRef} scale={BOY_SCALE} />}
       <canvas ref={fxCanvas} aria-hidden className="cs-fx" />
 
       <header className="cs-bar">
@@ -549,7 +550,7 @@ export default function CaseStudy({ project, lit, onClose, onBreak, onFix }) {
                 <span>{count(i + 1)}</span>
               </button>
             ))}
-            {!scene && <Boy {...boy} y={0} placement="inline" sling={sling} slingRef={slingRef} />}
+            {!scene && <Boy {...boy} y={0} placement="inline" sling={sling} slingRef={slingRef} scale={BOY_SCALE} />}
           </div>
           <p className="cs-hint">
             {count(slide + 1)} / {count(total)}

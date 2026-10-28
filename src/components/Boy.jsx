@@ -226,7 +226,7 @@ export const BOY_H = ART.length * P;
 // rod: "cast" | "pull" (a fishing rod; rodRef is its box, for where the line hangs), or null.
 // placement: "floor" pins him to the map's floor line; "inline" places him at the bottom of
 // whatever positioned box he's in (the case study's track); "screen" pins him `bottom` px up
-// from the bottom of the screen (the case study's repair scene).
+// from the bottom of the screen (the case study's repair scene). scale: 1 is full size.
 export default function Boy({
   x,
   y,
@@ -247,6 +247,7 @@ export default function Boy({
   boyRef,
   placement = "floor",
   bottom = 0,
+  scale = 1,
 }) {
   const stride = pose !== "idle" && step % 2 === 1;
   return (
@@ -256,7 +257,12 @@ export default function Boy({
       className={`boy-root pointer-events-none left-0 z-[5] ${
         placement === "floor" ? "fixed bottom-(--floor)" : placement === "screen" ? "fixed" : "absolute bottom-0"
       }`}
-      style={{ transform: `translate(${x}px, ${y}px)`, ...(placement === "screen" && { bottom }) }}
+      style={{
+        // scale shrinks him about his feet (the case study draws him a little smaller)
+        transform: `translate(${x}px, ${y}px)${scale !== 1 ? ` scale(${scale})` : ""}`,
+        transformOrigin: "50% 100%",
+        ...(placement === "screen" && { bottom }),
+      }}
     >
       <div className={pose === "idle" ? "boy" : ""}>
         <div className="relative" style={{ transform: facing < 0 ? "scaleX(-1)" : undefined }}>
