@@ -742,7 +742,6 @@ export default function App() {
   const onRocketClick = (i) => {
     unlockAudio();
     if (phase !== "broken" || burning === i) return;
-    tried("rocket");
     setPhase("firework");
     shootFirework(i);
   };
@@ -833,7 +832,7 @@ export default function App() {
   }, []);
 
   // First-visit hints (see seen.js): each goes away for good once that thing has been tapped.
-  const [seen, setSeen] = useState(() => ({ shoot: hasSeen("shoot"), fix: hasSeen("fix"), rocket: hasSeen("rocket") }));
+  const [seen, setSeen] = useState(() => ({ shoot: hasSeen("shoot"), fix: hasSeen("fix") }));
   const tried = (name) => {
     markSeen(name);
     setSeen((s) => ({ ...s, [name]: true }));
@@ -950,7 +949,6 @@ export default function App() {
                 onClick={() => onRocketClick(i)}
                 rocketRef={(el) => (rocketRefs.current[i] = el)}
                 burning={burning === i}
-                hint={i === 0 && !seen.rocket && phase === "broken" ? "Tap something new!" : null}
               />
             ),
         )}

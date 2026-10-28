@@ -69,7 +69,7 @@ const KINDS = {
 // type: "rocket" | "charki" | "tubri"; colors: overrides for the palette (another rocket colour).
 // left/bottom: where it stands; `burning`: it's lit (the charki spins while it burns).
 // offset: how far it has skittered from its spot while burning (the charki), in px.
-export default function Firecracker({ type, colors, left, bottom, offset, onClick, rocketRef, burning, hint = null }) {
+export default function Firecracker({ type, colors, left, bottom, offset, onClick, rocketRef, burning }) {
   const kind = KINDS[type];
   return (
     <button
@@ -86,7 +86,6 @@ export default function Firecracker({ type, colors, left, bottom, offset, onClic
         transform: offset ? `translate(${offset.x}px, ${offset.y}px)` : undefined,
       }}
     >
-      {hint && <span className="tap-hint tap-hint-above">{hint}</span>}
       <PixelArt art={kind.art} palette={{ ...kind.palette, ...colors }} pixel={P} />
     </button>
   );

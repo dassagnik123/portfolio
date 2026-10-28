@@ -224,11 +224,7 @@ body::after {
 .tap-hint-left::after { left: 100%; top: 50%; translate: 0 -50%; border-left-color: var(--ui-ink); }
 .tap-hint-below { top: calc(100% + 8px); right: -10px; }
 .tap-hint-below::after { bottom: 100%; right: 16px; border-bottom-color: var(--ui-ink); }
-.tap-hint-above { bottom: calc(100% - 2px); left: 0; }
-.tap-hint-above::after { top: 100%; left: 22px; border-top-color: var(--ui-ink); }
 @keyframes tap-hint { 50% { transform: translateX(-3px); } }
-.tap-hint-above { animation-name: tap-hint-up; }
-@keyframes tap-hint-up { 50% { transform: translateY(-3px); } }
 @media (prefers-reduced-motion: reduce) { .tap-hint { animation: none; } }
 
 /* Trail stops: a pixel-font label over a flag. */
