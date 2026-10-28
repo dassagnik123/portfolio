@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { about, contact, experience, projects, skills } from "../content";
+import { STOP_NAMES } from "../path";
 import { sfx, unlockAudio } from "../sound";
 import Arrow from "./Arrow";
 import Hobbies from "./Hobbies";
@@ -225,7 +226,9 @@ function Contact() {
 
 const PANELS = { START: Start, WORK: Work, EXPERIENCE: Experience, SKILLS: Skills, HOBBIES: Hobbies, CONTACT: Contact };
 
-export default function StopPanel({ label, side, onOpenCase }) {
+// next / onNext: the stop after this one, shown on phones as a "NEXT" chip above the box, since
+// the box covers the path below him there.
+export default function StopPanel({ label, side, onOpenCase, next, onNext }) {
   // Its height goes in --panel-h, so on phones (where it runs across the bottom) the fireworks
   // can stand just above it.
   const box = useRef(null);
@@ -243,8 +246,16 @@ export default function StopPanel({ label, side, onOpenCase }) {
   const Content = PANELS[label];
   if (!Content) return null;
   return (
-    <section ref={box} aria-live="polite" className={`stop-panel stop-panel-${side}`}>
-      <Content onOpenCase={onOpenCase} />
-    </section>
+    <>
+      <section ref={box} aria-live="polite" data-stop={label} className={`stop-panel stop-panel-${side}`}>
+        <Content onOpenCase={onOpenCase} />
+      </section>
+      {next && (
+        <button type="button" className="next-chip" data-stop={label} onClick={onNext}>
+          <span>NEXT: {STOP_NAMES[next] ?? next}</span>
+          <Arrow dir="right" />
+        </button>
+      )}
+    </>
   );
 }

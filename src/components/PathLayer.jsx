@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { STOP_NAMES } from "../path";
 import ButterflyBushes from "./ButterflyBushes";
 import FishPond from "./FishPond";
 import TreasureDig from "./TreasureDig";
@@ -39,9 +40,6 @@ const COLORS = {
   // Dark mode (the bulb is out): a dusky slate path that still reads against the night.
   night: { edge: "#3d4260", surface: "#2c3048", middle: "#363b56", pebble: "#4b516f", fleck: "#6a7194" },
 };
-
-// What a flag says, where it differs from the stop's name in the code.
-const STOP_NAMES = { HOBBIES: "THE REAL ME" };
 
 export default function PathLayer({
   path,

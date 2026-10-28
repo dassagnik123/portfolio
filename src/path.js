@@ -3,6 +3,8 @@
 // follows him so his feet stay at the floor line while the road slides past.
 
 export const FLOOR = 0.6; // fraction of the viewport below his feet
+// What a flag says, where it differs from the stop's name in the code.
+export const STOP_NAMES = { HOBBIES: "THE REAL ME" };
 export const STOPS = ["START", "WORK", "EXPERIENCE", "SKILLS", "HOBBIES", "CONTACT"];
 const SCROLL_PER_PX = 1.3; // scroll distance per pixel walked (higher = he moves less per scroll)
 

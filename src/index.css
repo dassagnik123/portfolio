@@ -313,6 +313,8 @@ html::-webkit-scrollbar-button,
 @supports not selector(::-webkit-scrollbar) {
   .stop-panel { scrollbar-color: var(--ui-tag) var(--ui-stripe-a); scrollbar-width: thin; }
 }
+/* "NEXT: <stop>" chip: only on phones, where the info box hides the path below him. */
+.next-chip { display: none; }
 .stop-panel-left { right: calc(50% + var(--panel-gap)); }
 .stop-panel-right { left: calc(50% + var(--panel-gap)); }
 @keyframes panel-pop {
@@ -693,6 +695,26 @@ html::-webkit-scrollbar-button,
   .top-btn { padding: 0 5px; border-width: 2px; font-size: 6px; box-shadow: 2px 2px 0 var(--ui-shadow); }
   .top-bar .sound-btn { padding: 4px 5px; box-shadow: 2px 2px 0 var(--ui-shadow); }
   .top-bar .sound-btn svg { width: 18px; height: auto; }
+  .next-chip {
+    position: fixed;
+    right: 16px;
+    bottom: calc(3vh + var(--panel-h, 0px) + 8px);
+    z-index: 26;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 8px 5px;
+    border: 2px solid var(--ui-ink);
+    background: var(--ui-tag);
+    color: var(--ui-ink);
+    font-family: "Press Start 2P", monospace;
+    font-size: 7px;
+    line-height: 1;
+    box-shadow: 2px 2px 0 var(--ui-shadow);
+    animation: next-bob 1.2s steps(2, end) infinite;
+  }
+  .next-chip svg { transform: rotate(90deg); }
+  @keyframes next-bob { 50% { translate: 0 3px; } }
   .firecracker { --fc-spread: 0.8; --fc-lift: calc(3vh + var(--panel-h, 0px)); }
   .stop-panel {
     top: auto;
@@ -992,6 +1014,12 @@ html::-webkit-scrollbar-button,
 @keyframes foot-swap-b { 0%, 49.9% { opacity: 0; } 50%, 100% { opacity: 1; } }
 @media (max-width: 700px) {
   .foot-ride { left: 52%; scale: 0.85; }
+  /* The last stop: the info box rides above the footer scene so the cyclist and the sky show
+     below it, and it drops its long paragraph to stay short. */
+  :root { --foot-h: clamp(150px, 24vh, 200px); }
+  .foot-scene { height: var(--foot-h); min-height: 0; }
+  .stop-panel[data-stop="CONTACT"] { bottom: calc(var(--foot-h) + 12px); }
+  .stop-panel[data-stop="CONTACT"] p:not(.panel-lead) { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .foot-ufo, .foot-ufo-fly, .foot-ufo-beam, .foot-ufo-lights, .foot-star, .foot-drift, .foot-bob, .foot-layer, .foot-road, .foot-ride-bob, .foot-wheel, .foot-swap-a, .foot-swap-b { animation: none; }

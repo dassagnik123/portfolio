@@ -959,6 +959,8 @@ export default function App() {
           label={path.stops[shown].label}
           side={PANEL_SIDE[path.stops[shown].label]}
           onOpenCase={openCase}
+          next={path.stops[shown + 1]?.label}
+          onNext={() => onStop(shown + 1)}
         />
       )}
       <TopBar onContact={SHOW_PATH ? () => onStop(path.stops.findIndex((s) => s.label === "CONTACT")) : undefined} />
