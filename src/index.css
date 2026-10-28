@@ -1,313 +1,1291 @@
-@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=DynaPuff:wght@400;500;600;700&family=Oswald:wght@500;600&family=Instrument+Serif:ital@0;1&display=swap");
 @import "tailwindcss";
 
-@theme {
-  --font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-heading: "DynaPuff", cursive;
-  --font-condensed: "Oswald", "Arial Narrow", sans-serif;
-  --color-accent-work: #f6b93b;
-  --color-accent-personal: #e2583f;
-  --color-cream: #f7e8d2;
-}
-
-/* 9-5 theme (HSL channels, shadcn-style) */
+/* Where the bulb's glass sits, so the room's light radiates from it (matches Bulb.jsx). */
 :root {
-  --background: 0 0% 0%;
-  --foreground: 0 0% 100%;
-  --muted-foreground: 240 4% 66%;
-  --primary: 0 0% 100%;
-  --primary-foreground: 0 0% 4%;
-  --secondary: 0 0% 10%;
-  --muted: 0 0% 10%;
-  --accent: 0 0% 10%;
-  --border: 0 0% 18%;
-  --input: 0 0% 18%;
+  /* The bulb hangs 300px right of the path's centre line (where he stands at START), close to
+     him on any screen. --bulb-x is the glass's centre. */
+  --bulb-x: calc(50% + 300px);
+  /* The bulb's cord: 60px on a desktop, 45px on a phone (see the phone rules below). */
+  --cord: 60px;
+  --bulb-y: calc(var(--cord) + 18px);
+  /* Height of the floor the boy walks on; App sets it from FLOOR in path.js. */
+  --floor: 60vh;
 }
 
-@theme inline {
-  --color-background: hsl(var(--background));
-  --color-foreground: hsl(var(--foreground));
-  --color-muted-foreground: hsl(var(--muted-foreground));
-  --color-primary: hsl(var(--primary));
-  --color-primary-foreground: hsl(var(--primary-foreground));
-  --color-secondary: hsl(var(--secondary));
-  --color-muted: hsl(var(--muted));
-  --color-accent: hsl(var(--accent));
-  --color-border: hsl(var(--border));
-  --color-input: hsl(var(--input));
+/* UI colours for the info boxes, flag labels and sound button. The bulb going out switches
+   the page to [data-theme="dark"] (set by App), and these flip to their night versions. */
+:root {
+  --ui-bg: #fbf6e9;
+  --ui-ink: #2a2a33;
+  --ui-muted: #6d6a74;
+  --ui-accent: #d9342b;
+  --ui-tag: #f6c445;
+  --ui-stripe-a: #ece4cf;
+  --ui-stripe-b: #f6f0dc;
+  --ui-shadow: rgba(42, 42, 51, 0.18);
+}
+:root[data-theme="dark"] {
+  --ui-bg: #1d2033;
+  --ui-ink: #e8e2cf;
+  --ui-muted: #9c9ab0;
+  --ui-accent: #ff8a5c;
+  --ui-tag: #4a3f73;
+  --ui-stripe-a: #262a40;
+  --ui-stripe-b: #2d3249;
+  --ui-shadow: rgba(0, 0, 0, 0.45);
 }
 
-* {
-  box-sizing: border-box;
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background-color: #d6e8f1;
+  /* Warm light pooling around the bulb, cooling to pale blue in the far corners. */
+  background-image: radial-gradient(
+    circle at var(--bulb-x) var(--bulb-y),
+    #fffbea 0%,
+    #fff4cc 12%,
+    #fbf0d2 28%,
+    #eef0e0 46%,
+    #e0ecee 66%,
+    #d3e6f0 100%
+  );
+  background-attachment: fixed;
 }
 
-/* Scoped to the 9-5 page so the case-study overlay keeps its own fonts. */
-.work-theme {
-  --font-display: "Instrument Serif", serif;
-  --font-body: "Inter", sans-serif;
-  font-family: var(--font-body);
+/* Pixel cursors: an arrow everywhere, a pointing hand on anything clickable.
+   (public/cursors; the numbers are each cursor's hotspot: the arrow tip, the fingertip.) */
+html {
+  cursor: url("/cursors/arrow.svg") 1 1, default;
+}
+button,
+a,
+[role="button"] {
+  cursor: url("/cursors/hand.svg") 9 1, pointer;
 }
 
-.liquid-glass {
-  background: rgba(255, 255, 255, 0.01);
-  background-blend-mode: luminosity;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  border: none;
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
-  position: relative;
+/* Faint CRT scanlines over the whole screen for the 8-bit feel. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  background: repeating-linear-gradient(to bottom, rgba(40, 50, 70, 0.035) 0 1px, transparent 1px 3px);
+}
+
+/* Hanging bulb: swings from where the cord meets the ceiling, in choppy retro frames. */
+.bulb {
+  left: calc(var(--bulb-x) - 11px); /* 11px: half the glass, so it's centred on --bulb-x */
+  transform-origin: 50% 0;
+  animation: bulb-sway 2.4s steps(1, end) infinite;
+}
+@keyframes bulb-sway {
+  0% { transform: rotate(0deg); }
+  12.5% { transform: rotate(1.5deg); }
+  25% { transform: rotate(3deg); }
+  37.5% { transform: rotate(1.5deg); }
+  50% { transform: rotate(0deg); }
+  62.5% { transform: rotate(-1.5deg); }
+  75% { transform: rotate(-3deg); }
+  87.5% { transform: rotate(-1.5deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* Hard-edged rings instead of a smooth blur, like a palette-limited light. */
+.bulb-glow {
+  background: radial-gradient(
+    circle,
+    rgba(255, 210, 63, 0.26) 0 22%,
+    rgba(255, 190, 50, 0.14) 22% 38%,
+    rgba(255, 170, 40, 0.07) 38% 54%,
+    transparent 54%
+  );
+  animation: bulb-flicker 3.2s steps(1, end) infinite;
+}
+@keyframes bulb-flicker {
+  0%, 100% { opacity: 1; }
+  46% { opacity: 0.8; }
+  50% { opacity: 1; }
+  88% { opacity: 0.9; }
+  92% { opacity: 1; }
+}
+
+/* Hit by the pebble: a hard jolt on the cord that settles back into the usual sway. */
+.bulb.is-broken {
+  animation:
+    bulb-jolt 1.6s steps(16, end) 1,
+    bulb-sway 2.4s steps(1, end) 1.6s infinite;
+}
+@keyframes bulb-jolt {
+  0% { transform: rotate(0deg); }
+  10% { transform: rotate(-16deg); }
+  25% { transform: rotate(11deg); }
+  42% { transform: rotate(-7deg); }
+  60% { transform: rotate(4deg); }
+  80% { transform: rotate(-2deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* Lights out: the room flickers, then goes dark. */
+.room-dark {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: #070a14;
+  opacity: 0;
+}
+.room-dark.on {
+  animation: lights-out 0.9s steps(1, end) forwards;
+}
+@keyframes lights-out {
+  0% { opacity: 0.55; }
+  12% { opacity: 0.1; }
+  24% { opacity: 0.7; }
+  36% { opacity: 0.3; }
+  52% { opacity: 0.8; }
+  100% { opacity: 0.86; }
+}
+
+/* The light coming back: a few flickers, then full brightness. */
+.room-dark.lighting {
+  animation: lights-on 0.7s steps(1, end) forwards;
+}
+@keyframes lights-on {
+  0% { opacity: 0.86; }
+  15% { opacity: 0.2; }
+  30% { opacity: 0.7; }
+  45% { opacity: 0.1; }
+  60% { opacity: 0.45; }
+  100% { opacity: 0; }
+}
+
+/* Pixel ladder: two wooden rails with rungs every 16px. */
+.plane-bob { animation: plane-bob 0.5s steps(2, end) infinite; }
+.plane-prop {
+  width: 6px;
+  height: 40px;
+  background: #2a2a33;
+  animation: plane-spin 0.1s steps(2, end) infinite alternate;
+}
+@keyframes plane-bob { 50% { transform: translateY(3px); } }
+@keyframes plane-spin { to { transform: scaleY(0.35); } }
+@media (prefers-reduced-motion: reduce) { .plane-bob, .plane-prop { animation: none; } }
+.ladder {
+  background:
+    linear-gradient(#6b4226, #6b4226) left / 6px 100% no-repeat,
+    linear-gradient(#6b4226, #6b4226) right / 6px 100% no-repeat,
+    repeating-linear-gradient(to bottom, transparent 0 10px, #8b5a2b 10px 16px);
+}
+
+/* Top-left quick links, matching the sound button. */
+.top-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 12px;
+  border: 2px solid var(--ui-ink);
+  background: var(--ui-bg);
+  color: var(--ui-ink);
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
+  line-height: 1;
+  text-decoration: none;
+  box-shadow: 3px 3px 0 var(--ui-shadow);
+  transition:
+    background-color 0.3s steps(3, end),
+    color 0.3s steps(3, end),
+    border-color 0.3s steps(3, end);
+}
+.top-btn:hover,
+.top-btn:focus-visible {
+  background: var(--ui-ink);
+  color: var(--ui-bg);
+}
+.top-btn:active { transform: translate(1px, 1px); box-shadow: 2px 2px 0 var(--ui-shadow); }
+
+/* First-visit hints ("Tap here"): a small gold label with a pointer, blinking in steps. */
+.tap-hint {
+  position: absolute;
+  z-index: 3;
+  padding: 5px 7px 4px;
+  border: 2px solid var(--ui-ink);
+  background: var(--ui-tag);
+  color: var(--ui-ink);
+  font-family: "Press Start 2P", monospace;
+  font-size: 8px;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: tap-hint 1s steps(1, end) infinite;
+}
+.tap-hint::after { content: ""; position: absolute; border: 5px solid transparent; }
+.tap-hint-left { right: calc(100% + 12px); top: 50%; translate: 0 -50%; }
+.tap-hint-left::after { left: 100%; top: 50%; translate: 0 -50%; border-left-color: var(--ui-ink); }
+.tap-hint-below { top: calc(100% + 8px); right: -10px; }
+.tap-hint-below::after { bottom: 100%; right: 16px; border-bottom-color: var(--ui-ink); }
+.tap-hint-above { bottom: calc(100% - 2px); left: 0; }
+.tap-hint-above::after { top: 100%; left: 22px; border-top-color: var(--ui-ink); }
+@keyframes tap-hint { 50% { transform: translateX(-3px); } }
+.tap-hint-above { animation-name: tap-hint-up; }
+@keyframes tap-hint-up { 50% { transform: translateY(-3px); } }
+@media (prefers-reduced-motion: reduce) { .tap-hint { animation: none; } }
+
+/* Trail stops: a pixel-font label over a flag. */
+.stop-label {
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
+  line-height: 1;
+  color: var(--ui-ink);
+  background: var(--ui-bg);
+  border: 2px solid var(--ui-ink);
+  padding: 5px 7px 4px;
+  white-space: nowrap;
+}
+.stop:hover .stop-label,
+.stop:focus-visible .stop-label {
+  background: var(--ui-ink);
+  color: var(--ui-bg);
+}
+.stop[aria-current] .stop-label {
+  background: var(--ui-tag);
+}
+
+/* Content box at each stop: an RPG dialog with a double pixel border. */
+.stop-panel {
+  position: fixed;
+  /* Level with him (his feet are at 40vh, mid-screen across), centred on his height. */
+  top: 44vh;
+  translate: 0 -50%;
+  z-index: 25;
+  /* Fixed beside the path, clear of it: --panel-gap is from the screen centre to the box's
+     inner edge: the path's widest swing (min(10vw, 150px), see centerPath.js), plus half the
+     path's / his width, plus a clear gap. */
+  --panel-gap: calc(min(10vw, 150px) + 90px);
+  width: min(440px, calc(50% - var(--panel-gap) - 16px));
+  max-height: 72vh;
+  overflow-y: auto;
+  padding: 20px 22px 18px;
+  background: var(--ui-bg);
+  color: var(--ui-ink);
+  border: 4px solid var(--ui-ink);
+  box-shadow:
+    inset 0 0 0 3px var(--ui-bg),
+    inset 0 0 0 5px var(--ui-ink),
+    6px 6px 0 var(--ui-shadow);
+  font-family: "VT323", monospace;
+  font-size: 22px;
+  line-height: 1.15;
+  animation: panel-pop 0.32s steps(4, end) both;
+}
+/* The page's own scrollbar, and the case study's slide scroller, in the same pixel style (a wider thumb, outlined in the theme's ink). */
+html::-webkit-scrollbar,
+.cs-stage::-webkit-scrollbar { width: 16px; }
+html::-webkit-scrollbar-track,
+.cs-stage::-webkit-scrollbar-track {
+  background: repeating-linear-gradient(0deg, var(--ui-stripe-a) 0 4px, var(--ui-stripe-b) 4px 8px);
+  border-left: 3px solid var(--ui-ink);
+}
+html::-webkit-scrollbar-thumb,
+.cs-stage::-webkit-scrollbar-thumb {
+  background: var(--ui-tag);
+  border: 3px solid var(--ui-ink);
+  box-shadow: inset 2px 2px 0 rgba(255, 255, 255, 0.45), inset -2px -2px 0 rgba(0, 0, 0, 0.18);
+}
+html::-webkit-scrollbar-thumb:hover,
+.cs-stage::-webkit-scrollbar-thumb:hover { background: var(--ui-accent); }
+html::-webkit-scrollbar-button,
+.cs-stage::-webkit-scrollbar-button { display: none; }
+@supports not selector(::-webkit-scrollbar) {
+  html, .cs-stage { scrollbar-color: var(--ui-tag) var(--ui-stripe-a); }
+}
+
+/* Pixel scrollbar for the info boxes: a striped track and a gold, square-cornered thumb,
+   outlined in the theme's ink, so it follows the day / night colours. */
+.stop-panel::-webkit-scrollbar { width: 14px; }
+.stop-panel::-webkit-scrollbar-track {
+  background: repeating-linear-gradient(0deg, var(--ui-stripe-a) 0 4px, var(--ui-stripe-b) 4px 8px);
+  border-left: 3px solid var(--ui-ink);
+}
+.stop-panel::-webkit-scrollbar-thumb {
+  background: var(--ui-tag);
+  border: 3px solid var(--ui-ink);
+  box-shadow: inset 2px 2px 0 rgba(255, 255, 255, 0.45), inset -2px -2px 0 rgba(0, 0, 0, 0.18);
+}
+.stop-panel::-webkit-scrollbar-thumb:hover { background: var(--ui-accent); }
+.stop-panel::-webkit-scrollbar-button { display: none; }
+@supports not selector(::-webkit-scrollbar) {
+  .stop-panel { scrollbar-color: var(--ui-tag) var(--ui-stripe-a); scrollbar-width: thin; }
+}
+.stop-panel-left { right: calc(50% + var(--panel-gap)); }
+.stop-panel-right { left: calc(50% + var(--panel-gap)); }
+@keyframes panel-pop {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+.stop-panel p { margin: 0 0 10px; }
+.stop-panel .panel-title {
+  margin: 0 0 14px;
+  font-family: "Press Start 2P", monospace;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  color: var(--ui-accent);
+}
+.stop-panel .panel-name {
+  margin: 0 0 10px;
+  font-family: "Press Start 2P", monospace;
+  font-size: 30px;
+  line-height: 1.25;
+  letter-spacing: 0.02em;
+  color: var(--ui-ink);
+}
+.stop-panel .panel-lead { font-size: 26px; line-height: 1.05; }
+.stop-panel .panel-hint { color: var(--ui-muted); font-size: 19px; }
+.stop-panel .panel-cover {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: contain; /* the whole picture shows, never cropped */
+  background: var(--ui-stripe-b);
+  margin-bottom: 10px;
+  border: 3px solid var(--ui-ink);
+}
+.stop-panel .panel-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 10px;
+  padding: 0;
+  list-style: none;
+}
+.stop-panel .panel-tags li {
+  padding: 1px 7px;
+  border: 2px solid var(--ui-ink);
+  background: var(--ui-tag);
+  font-size: 18px;
+}
+.stop-panel .panel-facts { margin: 4px 0 10px; }
+.stop-panel .panel-facts div { margin-bottom: 6px; }
+.stop-panel .panel-facts dt {
+  font-family: "Press Start 2P", monospace;
+  font-size: 9px;
+  margin-bottom: 2px;
+}
+.stop-panel .panel-facts dd { margin: 0; }
+.stop-panel .panel-roles { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.stop-panel .role-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 10px; }
+.stop-panel .role-head h3 { margin: 0; font-family: "Press Start 2P", monospace; font-size: 10px; line-height: 1.5; }
+.stop-panel .role-head span { color: var(--ui-muted); font-size: 17px; }
+.stop-panel .panel-roles ul { margin: 4px 0 0; padding-left: 18px; list-style: square; }
+.stop-panel .panel-roles ul li { margin-bottom: 2px; font-size: 20px; line-height: 1.08; }
+.stop-panel .panel-skills { display: grid; gap: 12px; }
+.stop-panel .panel-skills h3 {
+  margin: 0;
+  font-family: "Press Start 2P", monospace;
+  font-size: 11px;
+}
+.stop-panel .panel-skills .panel-hint { margin-bottom: 6px; }
+.stop-panel .panel-links { margin: 8px 0 0; padding: 0; list-style: none; }
+.stop-panel .panel-links li { margin-bottom: 4px; }
+.stop-panel .panel-links a { color: var(--ui-ink); text-decoration: none; }
+.stop-panel .panel-links a:hover,
+.stop-panel .panel-links a:focus-visible { background: var(--ui-ink); color: var(--ui-bg); }
+.stop-panel .panel-links .with-copy { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.stop-panel .panel-links .with-copy a { min-width: 0; overflow-wrap: anywhere; }
+.stop-panel .copy-btn {
+  flex-shrink: 0;
+  min-width: 74px;
+  padding: 4px 7px 3px;
+  border: 2px solid var(--ui-ink);
+  background: var(--ui-tag);
+  color: var(--ui-ink);
+  font-family: "Press Start 2P", monospace;
+  font-size: 8px;
+  box-shadow: 2px 2px 0 var(--ui-shadow);
+}
+.stop-panel .copy-btn:hover,
+.stop-panel .copy-btn:focus-visible { background: var(--ui-ink); color: var(--ui-bg); }
+.stop-panel .copy-btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--ui-shadow); }
+
+.stop-panel [hidden] { display: none; }
+
+/* WORK: level select. Three cartridges, the picked one raised with a gold frame. */
+.stop-panel .levels {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 4px 0 14px;
+}
+.stop-panel .level {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 0;
+  border: 3px solid var(--ui-ink);
+  background: var(--ui-ink);
+  box-shadow: 3px 3px 0 rgba(42, 42, 51, 0.25);
+  transition: transform 0.08s steps(2, end);
+}
+.stop-panel .level[aria-selected="true"] {
+  border-color: var(--ui-tag);
+  outline: 3px solid var(--ui-ink);
+  transform: translateY(-3px);
+}
+.stop-panel .level:focus-visible { outline: 3px dashed var(--ui-accent); outline-offset: 2px; }
+.stop-panel .level-thumb {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 3;
   overflow: hidden;
+  background: repeating-linear-gradient(45deg, var(--ui-stripe-a) 0 6px, var(--ui-stripe-b) 6px 12px);
+  color: var(--ui-ink);
 }
-.liquid-glass::before {
+.stop-panel .level-thumb img { width: 100%; height: 100%; object-fit: contain; }
+.stop-panel .level-number {
+  padding: 4px 0 3px;
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
+  color: var(--ui-bg);
+  text-align: center;
+}
+.stop-panel .level[aria-selected="true"] .level-number { background: var(--ui-tag); color: var(--ui-ink); }
+.stop-panel .level-detail .panel-cover { aspect-ratio: 16 / 9; }
+.stop-panel .level-locked {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 2px dashed var(--ui-ink);
+  color: var(--ui-muted);
+}
+.stop-panel .level-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+  padding-top: 10px;
+  border-top: 2px dashed rgba(42, 42, 51, 0.3);
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
+}
+.stop-panel .level-nav button {
+  padding: 4px 9px;
+  border: 2px solid var(--ui-ink);
+  background: var(--ui-bg);
+  font-size: 12px;
+  color: var(--ui-ink);
+}
+.stop-panel .level-nav button:hover,
+.stop-panel .level-nav button:focus-visible { background: var(--ui-ink); color: var(--ui-bg); }
+
+/* WORK box: the way into a full case study. */
+.stop-panel .panel-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin: 0 0 12px;
+  padding: 8px 10px 7px;
+  border: 3px solid var(--ui-ink);
+  background: var(--ui-ink);
+  color: var(--ui-bg);
+  font-family: "Press Start 2P", monospace;
+  font-size: 11px;
+  box-shadow: 3px 3px 0 var(--ui-shadow);
+}
+.stop-panel .panel-cta:hover,
+.stop-panel .panel-cta:focus-visible { background: var(--ui-tag); color: var(--ui-ink); }
+
+/* HOBBIES: a row of tabs, the picked one's animated scene, then its text beside a photo reel. */
+.stop-panel .hobbies-intro { margin: -6px 0 8px; font-size: 19px; line-height: 1.1; }
+.stop-panel .hobby-tabs { display: flex; flex-wrap: wrap; gap: 4px; margin: -4px 0 10px; }
+.stop-panel .hobby-tab {
+  flex: 1 1 auto;
+  padding: 6px 3px 5px;
+  border: 2px solid var(--ui-ink);
+  background: var(--ui-bg);
+  box-shadow: 2px 2px 0 var(--ui-shadow);
+  font-family: "Press Start 2P", monospace;
+  font-size: 7px;
+  color: var(--ui-ink);
+}
+.stop-panel .hobby-tab:hover { background: var(--ui-ink); color: var(--ui-bg); }
+.stop-panel .hobby-tab[aria-selected="true"] { background: var(--ui-tag); color: var(--ui-ink); transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--ui-shadow); }
+.stop-panel .hobby-tab:focus-visible { outline: 3px dashed var(--ui-accent); outline-offset: 2px; }
+.stop-panel .hobby-body { display: flex; gap: 14px; align-items: flex-start; }
+.stop-panel .hobby-body > div { flex: 1; min-width: 0; }
+.stop-panel .hobby-body .panel-lead { margin-bottom: 6px; }
+/* It has more to show than the other boxes, so it may run a little taller. */
+.stop-panel:has(.hobby-tabs) { max-height: 84vh; }
+.stop-panel .reel .level-nav { margin-top: 6px; padding-top: 0; border-top: 0; font-size: 8px; }
+.stop-panel .reel .level-nav button { padding: 3px 6px; font-size: 10px; }
+.stop-panel .hobby-detail { animation: panel-pop 0.32s steps(4, end) both; }
+.stop-panel .hobby-detail .scene-box { border: 3px solid var(--ui-ink); margin-bottom: 10px; }
+
+.scene-box { position: relative; width: 100%; overflow: hidden; }
+.scene { position: relative; width: 100%; height: 100%; overflow: hidden; }
+.scene-floor { position: absolute; left: 0; right: 0; bottom: 0; height: 40px; }
+
+@keyframes photo-in { from { opacity: 0; filter: brightness(2); } to { opacity: 1; filter: none; } }
+.tv-screen, .game-screen { overflow: hidden; }
+
+/* The photo reel under a hobby scene, and the full-size view. */
+.stop-panel .reel { flex: 0 0 43%; }
+.stop-panel:has(.hobby-tabs) { width: min(520px, calc(50% - var(--panel-gap) - 16px)); }
+.stop-panel .reel-photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  padding: 0;
+  overflow: hidden;
+  border: 3px solid var(--ui-ink);
+  background: var(--ui-ink);
+  box-shadow: 4px 4px 0 var(--ui-shadow);
+}
+.stop-panel .reel-photo img { width: 100%; height: 100%; object-fit: contain; animation: photo-in 0.3s steps(3, end) both; }
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 24px;
+  background: rgba(16, 18, 30, 0.88);
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
+  color: #f6f0dc;
+}
+.lightbox img { max-width: min(92vw, 1100px); max-height: 80vh; border: 4px solid #f6f0dc; box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.4); }
+
+/* TV: the screen flickers through bright anime colours, with scanlines. */
+.tv-screen {
+  background: #ff7eb6;
+  animation: tv-flick 1.8s steps(1, end) infinite;
+}
+.tv-screen::after, .game-screen::after {
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: inherit;
-  padding: 1.4px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.45) 0%,
-    rgba(255, 255, 255, 0.15) 20%,
-    rgba(255, 255, 255, 0) 40%,
-    rgba(255, 255, 255, 0) 60%,
-    rgba(255, 255, 255, 0.15) 80%,
-    rgba(255, 255, 255, 0.45) 100%
-  );
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
+  z-index: 1;
+  background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.18) 0 1px, transparent 1px 3px);
+}
+@keyframes tv-flick {
+  0% { background: #ff7eb6; }
+  20% { background: #6bb6ff; }
+  40% { background: #ffd23f; }
+  55% { background: #ffffff; }
+  60% { background: #9b6bff; }
+  80% { background: #7dff8a; }
 }
 
-@keyframes fade-rise {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Games: a tiny runner hops a block on his phone screen; the phone in his hand jiggles. */
+.game-screen { background: #10131f; overflow: hidden; }
+.game-hero, .game-block { position: absolute; bottom: 3px; }
+.game-hero { left: 8px; width: 6px; height: 6px; background: #7dff8a; animation: game-jump 1.2s steps(6, end) infinite; }
+.game-block { right: -6px; width: 4px; height: 6px; background: #ff5c7a; animation: game-slide 1.2s linear infinite; }
+@keyframes game-jump {
+  0%, 30%, 70%, 100% { transform: translateY(0); }
+  45%, 55% { transform: translateY(-11px); }
 }
-.animate-fade-rise {
-  animation: fade-rise 0.8s ease-out both;
+@keyframes game-slide { from { transform: translateX(0); } to { transform: translateX(-54px); } }
+/* Sports: cricket. The ball is bowled in, bounces, and he swings it away over the top. */
+.pitch { background-image: repeating-linear-gradient(90deg, transparent 0 24px, rgba(255, 255, 255, 0.12) 24px 48px) !important; }
+.stumps { background: linear-gradient(90deg, #f6f0dc 0 4px, transparent 4px 6px, #f6f0dc 6px 10px, transparent 10px 12px, #f6f0dc 12px 16px); border-top: 2px solid #c9a46a; }
+.bat { transform-origin: 4px 2px; animation: bat-swing 1.8s steps(1, end) infinite; }
+@keyframes bat-swing {
+  0%, 30% { transform: rotate(-15deg); }
+  35% { transform: rotate(60deg); }
+  40% { transform: rotate(120deg); }
+  44% { transform: rotate(60deg); }
+  46% { transform: rotate(-10deg); }
+  50% { transform: rotate(-70deg); }
+  54%, 70% { transform: rotate(-120deg); }
+  80% { transform: rotate(-60deg); }
+  90%, 100% { transform: rotate(-15deg); }
 }
-.animate-fade-rise-delay {
-  animation: fade-rise 0.8s ease-out 0.2s both;
+.cricket-ball { animation: bowl 1.8s linear infinite; }
+@keyframes bowl {
+  0% { transform: translate(190px, -46px); opacity: 1; }
+  30% { transform: translate(70px, 0); }
+  46% { transform: translate(0, -6px); }
+  70% { transform: translate(150px, -150px); opacity: 1; }
+  71%, 100% { transform: translate(150px, -150px); opacity: 0; }
 }
-.animate-fade-rise-delay-2 {
-  animation: fade-rise 0.8s ease-out 0.4s both;
-}
+.phone-screen .game-hero { left: 6px; bottom: 6px; }
+.phone-screen .game-block { bottom: 6px; }
+.phone-coin { position: absolute; left: 50%; top: 14px; width: 6px; height: 6px; margin-left: -3px; background: #ffd23f; animation: coin-spin 0.6s steps(2, end) infinite; }
+@keyframes coin-spin { 50% { transform: scaleX(0.3); } }
+.in-hand { animation: pad-jiggle 0.3s steps(1, end) infinite; }
+@keyframes pad-jiggle { 50% { transform: translate(1px, -1px); } }
 
-/* While the 9-5 loader is up, hold the hero's entrance until the page is revealed. */
-.work-theme[data-loading="true"] .animate-fade-rise,
-.work-theme[data-loading="true"] .animate-fade-rise-delay,
-.work-theme[data-loading="true"] .animate-fade-rise-delay-2 {
-  animation-play-state: paused;
-}
-
-/* Phones in landscape: keep the whole hero within the short screen. */
-@media (max-height: 520px) and (orientation: landscape) {
-  .hero-copy {
-    padding-top: 0.5rem;
-    padding-bottom: 2.5rem;
-  }
-  .hero-title {
-    font-size: 2.75rem;
-    letter-spacing: -1.2px;
-  }
-}
-
-/* Custom cursor, shared by 9-5 and 5-9 (fine pointers only). */
-.cursor-dot {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 300;
-  width: 19px;
-  height: 19px;
-  margin: -9.5px 0 0 -9.5px;
-  border-radius: 50%;
-  background: rgba(214, 212, 209, 0.9);
-  border: 1px solid transparent;
-  mix-blend-mode: difference;
-  pointer-events: none;
-  transition:
-    width 0.35s ease,
-    height 0.35s ease,
-    margin 0.35s ease,
-    background 0.35s ease,
-    border-color 0.35s ease;
-}
-.cursor-dot.wide {
-  width: 52px;
-  height: 52px;
-  margin: -26px 0 0 -26px;
-  background: rgba(244, 242, 239, 0.14);
-  border-color: rgba(244, 242, 239, 0.75);
-}
-/* Label pill that rides just below the cursor (flips above near the bottom edge). */
-.cursor-label {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 300;
-  pointer-events: none;
-}
-.cursor-label span {
+/* Travel by night (bulb out): dark sky, stars, the moon for the sun, the land dimmed. */
+.sky-scene { background: linear-gradient(#9fd3f5, #e3f3fb); }
+.sky-scene .stars, .sky-scene .moon { display: none; }
+:root[data-theme="dark"] .sky-scene { background: linear-gradient(#141a33, #2c3560); }
+:root[data-theme="dark"] .sky-scene .sun { display: none; }
+:root[data-theme="dark"] .sky-scene .moon { display: block; }
+:root[data-theme="dark"] .sky-scene .stars {
+  display: block;
   position: absolute;
   left: 0;
-  top: 34px;
-  transform: translate(-50%, 6px) scale(0.9);
-  padding: 7px 14px;
-  border-radius: 999px;
-  background: #f4f2ef;
-  color: #0a0a0a;
-  font-family: "Inter", sans-serif;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  white-space: nowrap;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-  opacity: 0;
-  transition:
-    opacity 0.25s ease,
-    transform 0.35s cubic-bezier(0.34, 1.3, 0.64, 1),
-    top 0.25s ease;
+  top: 0;
+  width: 2px;
+  height: 2px;
+  background: #f6f0dc;
+  box-shadow: 30px 18px #f6f0dc, 74px 40px #f6f0dc, 120px 14px #f6f0dc, 168px 52px #f6f0dc, 212px 24px #f6f0dc, 250px 60px #f6f0dc, 330px 30px #f6f0dc, 96px 70px #f6f0dc, 190px 8px #f6f0dc, 270px 12px #f6f0dc;
+  animation: twinkle 1.6s steps(2, end) infinite;
 }
-.cursor-label.show span {
-  opacity: 1;
-  transform: translate(-50%, 0) scale(1);
-}
-.cursor-label.above span {
-  top: -66px;
-}
-@media (hover: none), (pointer: coarse) {
-  .cursor-dot,
-  .cursor-label {
-    display: none;
-  }
+@keyframes twinkle { 50% { opacity: 0.5; } }
+:root[data-theme="dark"] .sky-scene .clouds { opacity: 0.25; }
+:root[data-theme="dark"] .sky-scene .mountains,
+:root[data-theme="dark"] .sky-scene .scene-floor { filter: brightness(0.45) saturate(0.7); }
+
+/* Travel: mountains, clouds and the road roll past while he walks. */
+.mountains { animation: scroll-160 6s linear infinite; }
+.clouds { animation: scroll-160 14s linear infinite; }
+@keyframes scroll-160 { to { transform: translateX(-160px); } }
+.road { background-image: repeating-linear-gradient(90deg, transparent 0 20px, #e3c993 20px 32px) !important; background-size: 32px 4px !important; background-repeat: repeat-x !important; background-position: 0 18px; animation: road-roll 0.5s linear infinite; }
+@keyframes road-roll { to { background-position: -32px 18px; } }
+
+/* Pen & sketch: the drawing inks itself in, a stroke at a time, while the pen sweeps over. */
+.paint-art { position: absolute; left: 4px; top: 4px; width: 48px; height: 32px; overflow: hidden; }
+.paint-art span { position: absolute; display: block; }
+.pa-sky { inset: 0; background: #ece6d4; animation: pa-sky 7s steps(8, end) infinite; }
+.pa-hill { left: 0; right: 0; bottom: 0; height: 12px; background: #8a8a99; border-top: 2px solid #2a2a33; animation: pa-hill 7s steps(8, end) infinite; }
+.pa-sun { right: 6px; top: 5px; width: 10px; height: 10px; border: 2px solid #2a2a33; border-radius: 0; animation: pa-sun 7s steps(5, end) infinite; }
+.pa-flower { left: 10px; bottom: 6px; width: 6px; height: 6px; background: #2a2a33; box-shadow: 14px 2px 0 #2a2a33, 26px -1px 0 #2a2a33; animation: pa-flower 7s steps(4, end) infinite; }
+@keyframes pa-sky { 0% { clip-path: inset(0 100% 0 0); } 20%, 90% { clip-path: inset(0); opacity: 1; } 100% { clip-path: inset(0); opacity: 0; } }
+@keyframes pa-hill { 0%, 20% { clip-path: inset(0 100% 0 0); } 40%, 90% { clip-path: inset(0); opacity: 1; } 100% { clip-path: inset(0); opacity: 0; } }
+@keyframes pa-sun { 0%, 40% { clip-path: inset(0 100% 0 0); } 55%, 90% { clip-path: inset(0); opacity: 1; } 100% { clip-path: inset(0); opacity: 0; } }
+@keyframes pa-flower { 0%, 55% { clip-path: inset(0 100% 0 0); } 70%, 90% { clip-path: inset(0); opacity: 1; } 100% { clip-path: inset(0); opacity: 0; } }
+.brush { animation: brush-stroke 0.9s steps(6, end) infinite alternate; }
+@keyframes brush-stroke { from { transform: translate(0, 0) rotate(-8deg); } to { transform: translate(26px, -12px) rotate(8deg); } }
+@media (prefers-reduced-motion: reduce) { .pa-sky, .pa-hill, .pa-sun, .pa-flower, .brush { animation: none; } }
+
+/* Cooking: flames flicker, food hops in the pan, steam drifts up. */
+.flames { display: flex; justify-content: space-between; align-items: flex-end; }
+.flames span { width: 8px; height: 8px; background: #ff8a3c; animation: flame 0.24s steps(1, end) infinite; }
+.flames span:nth-child(2) { animation-delay: 0.08s; background: #ffd23f; }
+.flames span:nth-child(3) { animation-delay: 0.16s; }
+@keyframes flame { 50% { height: 4px; background: #ffd23f; } }
+.food { animation: food-hop 0.9s steps(5, end) infinite; }
+@keyframes food-hop { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+.steam { width: 6px; height: 6px; background: rgba(255, 255, 255, 0.85); animation: steam 1.6s steps(8, end) infinite; }
+.steam.s2 { animation-delay: 0.5s; }
+.steam.s3 { animation-delay: 1s; }
+@keyframes steam {
+  from { transform: translateY(0); opacity: 0.9; }
+  to { transform: translateY(-46px); opacity: 0; }
 }
 
-/* Hide the fixed 5-9 controls while a photo is open. */
-body.lit .top-controls-fixed {
+/* Wide screens: the fireworks stand in from the corner, 560–680px left of him (mid-screen),
+   instead of out at the far edge. Keep in step with WIDE in App.jsx. */
+@media (min-width: 1401px) {
+  .firecracker { --fc-x: calc(50vw - 680px); }
+}
+
+/* Phones: the box sits across the bottom of the screen instead of beside him; the bulb hangs in
+   the top-right corner past a slimmer top bar; the fireworks stand just above the box. */
+@media (max-width: 700px) {
+  :root { --bulb-x: calc(100% - 40px); --cord: 45px; }
+  .top-bar { gap: 6px; }
+  .top-btn { padding: 0 7px; font-size: 8px; }
+  .firecracker { --fc-spread: 0.8; --fc-lift: calc(3vh + var(--panel-h, 0px)); }
+  .stop-panel {
+    top: auto;
+    translate: none;
+    bottom: 3vh;
+    left: 16px;
+    right: 16px;
+    width: auto;
+    max-height: 55vh;
+    padding: 14px 16px 12px;
+    font-size: 19px;
+  }
+  .stop-panel .panel-title { margin-bottom: 10px; }
+  .stop-panel .panel-name { font-size: 22px; }
+  .stop-panel .panel-lead { font-size: 22px; }
+  /* WORK: just the hook, the picture and the way in; the case study has the rest. */
+  .stop-panel .panel-more { display: none; }
+  .stop-panel .level-detail .panel-cover { aspect-ratio: 16 / 7; }
+  /* two levels: a slimmer picker, so the WORK box still fits */
+  .stop-panel .panel-hint { display: none; }
+  .stop-panel .level-thumb { aspect-ratio: 16 / 6; }
+  .stop-panel .levels { margin-bottom: 8px; }
+  .stop-panel:has(.hobby-tabs) { top: auto; max-height: 59vh; padding: 12px 14px 10px; }
+  .stop-panel:has(.hobby-tabs) .panel-title { margin-bottom: 10px; }
+  .stop-panel .reel { flex-basis: 34%; }
+  .stop-panel:has(.hobby-tabs) { width: auto; }
+  .stop-panel .hobby-tabs { gap: 3px; flex-wrap: nowrap; }
+  .stop-panel .hobby-tab { padding: 6px 1px 5px; font-size: 6px; letter-spacing: -0.2px; }
+}
+
+/* Night: the boy and the plants dim a little; the info boxes ease between themes in steps. */
+:root[data-theme="dark"] .boy-root { filter: brightness(0.8); }
+:root[data-theme="dark"] .plant { filter: brightness(0.5) saturate(0.7); }
+.stop-panel,
+.stop-label {
+  transition:
+    background-color 0.3s steps(3, end),
+    color 0.3s steps(3, end),
+    border-color 0.3s steps(3, end);
+}
+
+/* A lit charki whirls round (in chunky steps, like an old sprite). */
+.fc-charki.is-burning svg { animation: charki-spin 0.2s steps(8, end) infinite; }
+@keyframes charki-spin { to { transform: rotate(360deg); } }
+/* A tubri rattles in place while it erupts. */
+.fc-tubri.is-burning svg { animation: tubri-shake 0.12s steps(1, end) infinite; }
+@keyframes tubri-shake {
+  0% { transform: translate(-1px, 0); }
+  50% { transform: translate(1px, -1px); }
+}
+
+/* Butterflies: open and shut wing frames, swapped by data-wings. */
+.butterfly .wings-shut { display: none; }
+.butterfly[data-wings="shut"] .wings-open { display: none; }
+.butterfly[data-wings="shut"] .wings-shut { display: block; }
+/* The pond's fish, and the splash ring where one leaves or re-enters the water. */
+.pond-fish { transform-origin: 14px 8px; }
+.pond-ripple {
+  width: 24px;
+  height: 6px;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
   opacity: 0;
   pointer-events: none;
 }
+:root[data-theme="dark"] .pond-ripple { border-color: rgba(168, 200, 255, 0.5); }
 
-body {
-  margin: 0;
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Treasure dig: marked spots on the ground, holes with a hint tag, and the chest. */
+.dig-spot { transition: transform 0.08s steps(2, end); }
+.dig-spot:hover, .dig-spot:focus-visible { transform: translateY(-3px); outline: none; }
+.dig-tag {
+  position: absolute;
+  left: 50%;
+  translate: -50% 0;
+  padding: 3px 4px 2px;
+  border: 2px solid var(--ui-ink);
+  font-family: "Press Start 2P", monospace;
+  font-size: 7px;
+  color: #fff;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: tag-bob 0.9s steps(2, end) infinite;
 }
-
-#root {
-  min-height: 100svh;
+.dig-tag.is-cold { background: #3b82d6; }
+.dig-tag.is-warm { background: #e08a1a; }
+.dig-tag.is-hot { background: #d9342b; }
+.dig-restart {
+  position: absolute;
+  translate: -50% 0;
+  padding: 5px 7px 4px;
+  border: 2px solid var(--ui-ink);
+  background: var(--ui-bg);
+  box-shadow: 2px 2px 0 var(--ui-shadow);
+  font-family: "Press Start 2P", monospace;
+  font-size: 8px;
+  color: var(--ui-ink);
+  white-space: nowrap;
 }
-
-@keyframes float {
-  0%,
-  100% {
-    transform: translateX(var(--shift-x, 0px)) rotate(var(--rotate, 0deg))
-      translateY(var(--offset, 0px));
-  }
-  50% {
-    transform: translateX(var(--shift-x, 0px)) rotate(var(--rotate, 0deg))
-      translateY(calc(var(--offset, 0px) - 8px));
-  }
+.dig-restart:hover,
+.dig-restart:focus-visible { background: var(--ui-ink); color: var(--ui-bg); outline: none; }
+.dig-restart:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--ui-shadow); }
+.dig-hint {
+  position: absolute;
+  left: 50%;
+  translate: -50% 0;
+  padding: 5px 7px 4px;
+  border: 2px solid var(--ui-ink);
+  background: var(--ui-tag);
+  box-shadow: 2px 2px 0 var(--ui-shadow);
+  font-family: "Press Start 2P", monospace;
+  font-size: 8px;
+  color: var(--ui-ink);
+  white-space: nowrap;
+  pointer-events: none;
+  animation: tag-bob 0.9s steps(2, end) infinite;
 }
+@keyframes tag-bob { 50% { transform: translateY(-3px); } }
+.dig-chest.is-found { animation: chest-hop 0.4s steps(2, end) 3; }
+@keyframes chest-hop { 50% { transform: translateY(-8px); } }
+.dig-card-temps { display: flex; justify-content: center; gap: 6px; margin: 2px 0 6px; font-family: "Press Start 2P", monospace; font-size: 8px; }
+.dig-card-temps span { padding: 3px 5px 2px; border: 2px solid var(--ui-ink); color: #fff; }
 
-.polaroid-float {
-  transform: translateX(var(--shift-x, 0px)) rotate(var(--rotate, 0deg))
-    translateY(var(--offset, 0px));
-  animation: float 4.5s ease-in-out infinite;
-  animation-delay: var(--float-delay, 0s);
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
+/* The fish game: the question and the result, a pixel card at the top of the screen. */
+.fish-card {
+  position: fixed;
+  top: clamp(72px, 12vh, 110px);
+  left: 50%;
+  translate: -50% 0;
+  z-index: 28;
+  width: min(440px, calc(100vw - 32px));
+  padding: 14px 16px 12px;
+  background: var(--ui-bg);
+  color: var(--ui-ink);
+  border: 4px solid var(--ui-ink);
+  box-shadow: inset 0 0 0 3px var(--ui-bg), inset 0 0 0 5px var(--ui-ink), 6px 6px 0 var(--ui-shadow);
+  font-family: "VT323", monospace;
+  text-align: center;
+  animation: panel-pop 0.32s steps(4, end) both;
 }
-
-.polaroid-float:hover {
-  animation-play-state: paused;
-  transform: rotate(0deg) scale(1.06) !important;
-  box-shadow: 0 22px 34px -10px rgba(0, 0, 0, 0.4);
-}
-
-/* Rotating role title in the 9-5 lead line */
-.rotating-text {
-  --rt-step: 1.5em;
-  display: inline-flex;
-  height: var(--rt-step);
-  overflow: hidden;
-  vertical-align: bottom;
-  transition: width 0.52s cubic-bezier(0.76, 0, 0.24, 1);
-}
-
-.rotating-text__track {
+.fish-card-title { margin: 0 0 4px; font-family: "Press Start 2P", monospace; font-size: 12px; color: var(--ui-accent); }
+.fish-card-hint { margin: 0 0 10px; font-size: 20px; line-height: 1.1; color: var(--ui-muted); }
+.fish-result.is-win { background: var(--ui-tag); }
+.fish-result.is-win .fish-card-title { color: var(--ui-ink); }
+.fish-result.is-win .fish-card-hint { color: var(--ui-ink); }
+.fish-result .fish-card-hint { margin-bottom: 2px; }
+.fish-options { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.fish-options button {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  transform: translateY(calc(var(--rt-index, 0) * -1 * var(--rt-step)));
-  transition: transform 0.52s cubic-bezier(0.76, 0, 0.24, 1);
+  align-items: center;
+  gap: 6px;
+  padding: 8px 4px 6px;
+  border: 3px solid var(--ui-ink);
+  background: var(--ui-stripe-b);
+  box-shadow: 3px 3px 0 var(--ui-shadow);
+  font-family: "Press Start 2P", monospace;
+  font-size: 8px;
+  color: var(--ui-ink);
 }
+.fish-options button:hover,
+.fish-options button:focus-visible { background: var(--ui-tag); transform: translate(-1px, -1px); outline: none; }
+.fish-options button:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--ui-shadow); }
+.fish-skip { margin-top: 10px; padding: 0; font-family: "Press Start 2P", monospace; font-size: 8px; color: var(--ui-muted); text-decoration: underline; }
+.fish-skip:hover { color: var(--ui-ink); }
+@media (max-width: 480px) {
+  .fish-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (hover: none) { .fish-skip-key { display: none; } }
 
-.rotating-text__item {
-  display: block;
-  height: var(--rt-step);
-  line-height: var(--rt-step);
+/* Under him while he's off the path after a catch. */
+.back-to-path {
+  translate: -50% 0;
+  padding: 6px 8px 5px;
+  border: 2px solid var(--ui-ink);
+  background: var(--ui-tag);
+  box-shadow: 2px 2px 0 var(--ui-shadow);
+  font-family: "Press Start 2P", monospace;
+  font-size: 8px;
+  color: var(--ui-ink);
   white-space: nowrap;
-  font-weight: 700;
+  animation: panel-pop 0.32s steps(4, end) both;
+}
+.back-to-path:hover,
+.back-to-path:focus-visible { background: var(--ui-ink); color: var(--ui-bg); }
+
+/* Fishing: the line, the bobber bobbing (and ducking under at a bite), the fish he's landed. */
+.fishing { color: #2a2a33; }
+:root[data-theme="dark"] .fishing { color: #e8e2cf; }
+.bobber { animation: bob 0.9s steps(2, end) infinite; }
+.bobber.is-bite { animation: bite 0.15s steps(1, end) infinite; }
+@keyframes bob { 50% { transform: translateY(2px); } }
+@keyframes bite { 50% { transform: translateY(6px); } }
+.hooked-fish { transform-origin: 8px 2px; rotate: 90deg; animation: flop 0.25s steps(1, end) infinite; }
+@keyframes flop { 50% { transform: rotate(16deg); } }
+
+/* Fireflies (night): a soft yellow-green glow round the tail, blinking with data-glow. */
+.firefly::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 70%;
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 -20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(240, 255, 120, 0.9) 0 14%, rgba(228, 255, 92, 0.45) 14% 32%, rgba(228, 255, 92, 0.15) 32% 50%, transparent 50%);
+  pointer-events: none;
+}
+.firefly[data-glow="off"]::before { opacity: 0; }
+.firefly[data-glow="off"] svg rect[fill="#e4ff5c"] { fill: #5d6a2a; }
+
+/* Boy idles with a one-pixel bob, two frames like an old sprite. */
+.boy {
+  animation: boy-idle 1s steps(1, end) infinite;
+}
+@keyframes boy-idle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(4px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bulb, .bulb-glow, .boy, .bulb.is-broken, .stop-panel, .fc-charki.is-burning svg, .fc-tubri.is-burning svg { animation: none; }
+  .room-dark.on { animation: none; opacity: 0.86; }
+  .room-dark.lighting { animation: none; opacity: 0; }
+}
+
+/* ---------- Footer scene: a cyclist riding past hills and trees, birds overhead ---------- */
+.foot-scene {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: min(calc(var(--floor) - 20px), 300px);
+  min-height: 250px;
+  overflow: hidden;
+  pointer-events: none;
+}
+:root[data-theme="dark"] .foot-scene > :not(.foot-sky) { filter: brightness(0.5) saturate(0.8); }
+/* At night the sky is unfiltered: no birds, but twinkling stars. */
+:root[data-theme="dark"] .foot-sky .foot-drift:has(.foot-bob) { display: none; }
+:root[data-theme="dark"] .foot-sky .foot-drift svg { filter: brightness(0.45); }
+.foot-ufo { display: none; position: absolute; left: 0; top: 8%; animation: ufo-x 34s ease-in-out -9s infinite alternate; }
+:root[data-theme="dark"] .foot-ufo { display: block; }
+.foot-ufo-fly { position: relative; display: block; animation: ufo-y 7s ease-in-out infinite alternate; }
+.foot-ufo-beam {
+  position: absolute;
+  left: 50%;
+  top: 70%;
+  width: 56px;
+  height: 90px;
+  translate: -50% 0;
+  background: linear-gradient(rgba(158, 247, 214, 0.45), transparent);
+  clip-path: polygon(30% 0, 70% 0, 100% 100%, 0 100%);
+  opacity: 0;
+  animation: ufo-beam 9s steps(1, end) infinite;
+}
+.foot-ufo-lights { position: absolute; left: 0; right: 0; top: 17px; height: 5px; animation: ufo-blink 0.6s steps(1, end) infinite; background: rgba(255, 255, 255, 0.35); mix-blend-mode: overlay; }
+@keyframes ufo-x { 0% { transform: translateX(-12vw); } 35% { transform: translateX(30vw); } 55% { transform: translateX(22vw); } 100% { transform: translateX(100vw); } }
+@keyframes ufo-y { 0% { transform: translateY(0) rotate(-4deg); } 30% { transform: translateY(46px) rotate(3deg); } 60% { transform: translateY(14px) rotate(-3deg); } 100% { transform: translateY(60px) rotate(4deg); } }
+@keyframes ufo-beam { 0%, 55% { opacity: 0; } 55.1%, 75% { opacity: 1; } 75.1%, 100% { opacity: 0; } }
+@keyframes ufo-blink { 50% { opacity: 0; } }
+.foot-star { display: none; position: absolute; background: #fff6c8; box-shadow: 0 0 4px 1px rgba(255, 246, 200, 0.55); animation: foot-twinkle ease-in-out infinite; }
+:root[data-theme="dark"] .foot-star { display: block; }
+@keyframes foot-twinkle { 0%, 100% { opacity: 0.2; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); } }
+.foot-sky { position: absolute; inset: 0 0 150px 0; }
+.foot-drift { position: absolute; left: 0; animation: foot-fly linear infinite; }
+.foot-bob { position: relative; display: block; animation: foot-bob ease-in-out infinite alternate; }
+.foot-layer { position: absolute; left: 0; right: 0; background-repeat: repeat-x; background-size: var(--tile) 100%; animation: foot-scroll linear infinite; }
+.foot-hills { bottom: 96px; height: 84px; animation-duration: 40s; }
+.foot-grass { position: absolute; left: 0; right: 0; bottom: 0; height: 100px; background: #9bd36e; border-top: 4px solid #86c25c; }
+.foot-trees { bottom: 80px; height: 88px; animation-duration: 11s; }
+.foot-road {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 26px;
+  height: 50px;
+  background:
+    repeating-linear-gradient(90deg, #f6f0dc 0 28px, transparent 28px 64px) center / 64px 4px no-repeat repeat-x,
+    #8a8a99;
+  border-top: 4px solid #a9a9b8;
+  border-bottom: 4px solid #6f6f80;
+  animation: foot-dashes 0.4s linear infinite;
+}
+.foot-grass-front { bottom: 0; height: 24px; animation-duration: 3s; }
+.foot-ride { position: absolute; left: 58%; bottom: 36px; width: 112px; height: 104px; scale: 1.15; transform-origin: bottom center; }
+.foot-ride-bob { position: relative; width: 112px; height: 104px; animation: foot-bob 0.42s ease-in-out infinite alternate; }
+.foot-wheel { position: absolute; top: 60px; animation: foot-spin 0.85s linear infinite; }
+.foot-swap-a { animation: foot-swap-a 0.5s linear infinite; }
+.foot-swap-b { animation: foot-swap-b 0.5s linear infinite; }
+@keyframes foot-scroll { to { background-position-x: calc(var(--tile) * -1); } }
+@keyframes foot-dashes { to { background-position-x: -64px, 0; } }
+@keyframes foot-fly { from { transform: translateX(-160px); } to { transform: translateX(calc(100vw + 160px)); } }
+@keyframes foot-bob { from { transform: translateY(0); } to { transform: translateY(-5px); } }
+@keyframes foot-spin { to { transform: rotate(360deg); } }
+@keyframes foot-swap-a { 0%, 49.9% { opacity: 1; } 50%, 100% { opacity: 0; } }
+@keyframes foot-swap-b { 0%, 49.9% { opacity: 0; } 50%, 100% { opacity: 1; } }
+@media (max-width: 700px) {
+  .foot-ride { left: 52%; scale: 0.85; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .foot-ufo, .foot-ufo-fly, .foot-ufo-beam, .foot-ufo-lights, .foot-star, .foot-drift, .foot-bob, .foot-layer, .foot-road, .foot-ride-bob, .foot-wheel, .foot-swap-a, .foot-swap-b { animation: none; }
+  .foot-drift { left: 30%; }
+  .foot-swap-b { opacity: 0; }
+}
+
+/* ---------- Case study page (slides) ----------
+   Pixelify Sans for headings and IBM Plex Mono for reading: still retro, but softer and
+   easier on long text than the map's pixel fonts. Colours follow the light/dark theme. */
+.cs {
+  --cs-head: "Pixelify Sans", "Press Start 2P", monospace;
+  --cs-title: "Jersey 10", "Pixelify Sans", monospace; /* page title and section headings */
+  --cs-body: "IBM Plex Mono", ui-monospace, monospace;
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  background: var(--ui-bg);
+  color: var(--ui-ink);
+  font-family: var(--cs-body);
+  animation: cs-in 0.36s steps(5, end) both;
+}
+@keyframes cs-in {
+  from { clip-path: inset(0 0 100% 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+/* In the top bar just past the slide titles (CaseStudy sets --cs-bulb-x); in the corner otherwise. */
+.cs .bulb { z-index: 3; left: auto; right: clamp(32px, 12vw, 180px); }
+.cs[style*="--cs-bulb-x"] .bulb { left: calc(var(--cs-bulb-x) - 11px); right: auto; }
+.cs-fx { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+/* Top: back button and the slide tabs (kept clear of the bulb on the right). */
+/* Back button on the left, the slide tabs centred on the page, the bulb on the right. */
+.cs-bar {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr minmax(0, auto) 1fr;
+  align-items: center;
+  gap: 16px;
+  padding: 12px clamp(16px, 4vw, 40px);
+  border-bottom: 3px solid var(--ui-ink);
+  background: var(--ui-bg);
+}
+.cs-left { display: flex; align-items: stretch; gap: 8px; justify-self: start; }
+/* Keep the right column at least as wide as the bulb's spot, so the tabs never run under it. */
+.cs-bar::after { content: ""; min-width: calc(clamp(32px, 12vw, 180px) + 24px); }
+.cs-tabs {
+  display: flex;
+  justify-content: safe center;
+  gap: 4px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.cs-tabs::-webkit-scrollbar { display: none; }
+.cs-tabs button {
+  flex-shrink: 0;
+  padding: 5px 9px 4px;
+  border: 2px solid transparent;
+  font-family: var(--cs-head);
+  font-size: 15px;
+  color: var(--ui-muted);
+  white-space: nowrap;
+}
+.cs-tabs button:hover { color: var(--ui-ink); }
+.cs-tabs button[aria-current] {
+  border-color: var(--ui-ink);
+  background: var(--ui-tag);
+  color: var(--ui-ink);
+}
+.cs-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  padding: 8px 12px 7px;
+  border: 2px solid var(--ui-ink);
+  background: var(--ui-bg);
+  color: var(--ui-ink);
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
+  white-space: nowrap;
+  box-shadow: 3px 3px 0 var(--ui-shadow);
+}
+.cs-btn:hover:not(:disabled),
+.cs-btn:focus-visible { background: var(--ui-ink); color: var(--ui-bg); }
+.cs-btn:disabled { opacity: 0.35; box-shadow: none; }
+
+/* The slide itself */
+.cs-stage {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: clamp(20px, 3vw, 36px) clamp(16px, 4vw, 48px);
+}
+.cs-from-right { animation: cs-slide-r 0.3s steps(4, end) both; }
+.cs-from-left { animation: cs-slide-l 0.3s steps(4, end) both; }
+@keyframes cs-slide-r { from { opacity: 0; transform: translateX(48px); } to { opacity: 1; transform: none; } }
+@keyframes cs-slide-l { from { opacity: 0; transform: translateX(-48px); } to { opacity: 1; transform: none; } }
+
+.cs-slide-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(24px, 4vw, 56px);
+  max-width: 1240px;
+  margin: 0 auto;
+  align-items: start;
+}
+.cs-slide-single { max-width: 760px; margin: 0 auto; }
+.cs-col { min-width: 0; }
+
+.cs-stage { font-size: 16px; line-height: 1.7; }
+.cs-stage p { margin: 0 0 14px; }
+.cs-stage strong { font-weight: 600; background: linear-gradient(transparent 62%, color-mix(in srgb, var(--ui-tag) 70%, transparent) 62%); }
+.cs-kicker {
+  margin: 0 0 8px;
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--ui-accent);
+}
+.cs-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 14px; padding: 0; list-style: none; }
+.cs-tags li {
+  padding: 2px 9px;
+  border: 2px solid var(--ui-ink);
+  background: var(--ui-tag);
+  font-family: var(--cs-head);
+  font-size: 14px;
+}
+.cs-stage h1 {
+  margin: 0 0 14px;
+  font-family: var(--cs-title);
+  font-weight: 400;
+  font-size: clamp(38px, 4.6vw, 60px);
+  line-height: 0.95;
+  letter-spacing: 0.01em;
+  text-wrap: balance;
+}
+.cs-stage h2 {
+  margin: 0 0 16px;
+  font-family: var(--cs-title);
+  font-weight: 400;
+  font-size: clamp(44px, 5vw, 68px);
+  line-height: 0.95;
+  letter-spacing: 0.01em;
+}
+.cs-meta { display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 14px; color: var(--ui-muted); }
+.cs-meta b { margin-right: 6px; font-family: "Press Start 2P", monospace; font-size: 9px; font-weight: 400; color: var(--ui-ink); }
+
+.cs-figure { margin: 0 0 20px; }
+.cs-figure img {
+  display: block;
+  width: 100%;
+  max-height: 46vh;
+  object-fit: contain;
+  background: var(--ui-stripe-b);
+  border: 3px solid var(--ui-ink);
+  box-shadow: 6px 6px 0 var(--ui-shadow);
+}
+.cs-figure figcaption { margin-top: 10px; font-size: 13.5px; line-height: 1.55; color: var(--ui-muted); }
+.cs-figure figcaption::before { content: "▲ "; color: var(--ui-accent); }
+.cs-cover { margin-top: 18px; }
+.cs-cover img { aspect-ratio: 16 / 10; object-fit: contain; max-height: 38vh; }
+
+.cs-overview dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0; }
+.cs-overview dl div {
+  padding: 12px 14px;
+  border: 2px solid var(--ui-ink);
+  background: var(--ui-stripe-b);
+  box-shadow: 3px 3px 0 var(--ui-shadow);
+}
+.cs-overview dt { margin-bottom: 6px; font-family: "Press Start 2P", monospace; font-size: 9px; color: var(--ui-accent); }
+.cs-overview dd { margin: 0; font-size: 13.5px; line-height: 1.55; }
+.cs-overview dd a {
+  color: var(--ui-ink);
+  font-weight: 600;
   text-decoration: underline;
-  color: var(--color-accent-work);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+.cs-overview dd a:hover,
+.cs-overview dd a:focus-visible { background: var(--ui-ink); color: var(--ui-bg); text-decoration: none; }
+
+.cs-list { margin: 0 0 14px; padding: 0; list-style: none; }
+.cs-list li { position: relative; margin-bottom: 10px; padding-left: 24px; }
+.cs-list li::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 0.62em;
+  width: 8px;
+  height: 8px;
+  background: var(--ui-accent);
+}
+/* Quote: a pixel speech bubble */
+.cs-quote {
+  position: relative;
+  margin: 24px 0 30px;
+  padding: 16px 20px;
+  border: 3px solid var(--ui-ink);
+  background: var(--ui-stripe-b);
+  font-family: var(--cs-head);
+  font-size: 20px;
+  line-height: 1.4;
+  box-shadow: 5px 5px 0 var(--ui-shadow);
+}
+.cs-quote::after {
+  content: "";
+  position: absolute;
+  left: 28px;
+  bottom: -15px;
+  width: 15px;
+  height: 15px;
+  background: var(--ui-stripe-b);
+  border-right: 3px solid var(--ui-ink);
+  border-bottom: 3px solid var(--ui-ink);
+  transform: skewX(-40deg);
 }
 
+/* Bottom: prev/next around the boy's track. */
+.cs-foot {
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: end;
+  gap: clamp(12px, 3vw, 32px);
+  padding: 8px clamp(16px, 4vw, 40px) 14px;
+  border-top: 3px solid var(--ui-ink);
+}
+.cs-track-wrap {
+  justify-self: center;
+  width: min(100%, 680px);
+  min-width: 0;
+  padding: 0 26px;
+  overflow: hidden;
+}
+.cs-track {
+  position: relative;
+  height: 88px;
+  /* ground line under his feet */
+  background: linear-gradient(var(--ui-ink), var(--ui-ink)) bottom / 100% 4px no-repeat;
+}
+.cs-post {
+  position: absolute;
+  bottom: 4px;
+  translate: -50% 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 28px;
+}
+.cs-post span {
+  padding: 3px 2px 2px;
+  border: 2px solid var(--ui-ink);
+  background: var(--ui-bg);
+  font-family: "Press Start 2P", monospace;
+  font-size: 7px;
+  color: var(--ui-muted);
+}
+.cs-post::after { content: ""; width: 4px; height: 12px; background: var(--ui-ink); }
+.cs-post:hover span { color: var(--ui-ink); }
+.cs-post[aria-current] span { background: var(--ui-tag); color: var(--ui-ink); }
+.cs-hint {
+  margin: 8px 0 0;
+  text-align: center;
+  font-family: "Press Start 2P", monospace;
+  font-size: 9px;
+  color: var(--ui-muted);
+}
+.cs-hint-swipe { display: none; }
+
+/* Phones: swipe between slides instead of PREV / NEXT, and no tab strip (too narrow to read;
+   each slide carries its own title). */
+@media (max-width: 700px) {
+  .cs-tabs { display: none; }
+  .cs-foot > .cs-btn { display: none; }
+  .cs-foot { grid-template-columns: minmax(0, 1fr); }
+  .cs-hint-keys { display: none; }
+  .cs-hint-swipe { display: inline; }
+}
+
+@media (max-width: 900px) {
+  .cs-slide-grid { grid-template-columns: minmax(0, 1fr); }
+  .cs-overview dl { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 560px) {
+  .cs-bar { padding-right: 16px; }
+  .cs-foot { padding-inline: 10px; }
+  .cs-track-wrap { padding: 0 8px; }
+  .cs-post span { display: none; }
+}
 @media (prefers-reduced-motion: reduce) {
-  .rotating-text {
-    transition: none;
-  }
-  .rotating-text__track {
-    transition: none;
-  }
-}
-
-/* Case study slide-deck transitions */
-@keyframes slide-in-right {
-  from {
-    opacity: 0;
-    transform: translateX(32px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes slide-in-left {
-  from {
-    opacity: 0;
-    transform: translateX(-32px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.slide-in-right {
-  animation: slide-in-right 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.slide-in-left {
-  animation: slide-in-left 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .slide-in-right,
-  .slide-in-left {
-    animation: none;
-  }
+  .cs, .cs-from-right, .cs-from-left { animation: none; }
 }
