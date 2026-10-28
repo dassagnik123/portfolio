@@ -40,7 +40,7 @@ export default function SoundToggle() {
       onClick={toggle}
       aria-label={muted ? "Turn sound on" : "Turn sound off"}
       aria-pressed={!muted}
-      className="cursor-pointer border-2 border-(--ui-ink) bg-(--ui-bg) p-2 text-(--ui-ink) shadow-[3px_3px_0_var(--ui-shadow)] transition-transform active:translate-y-px"
+      className="sound-btn cursor-pointer border-2 border-(--ui-ink) bg-(--ui-bg) p-2 text-(--ui-ink) shadow-[3px_3px_0_var(--ui-shadow)] transition-transform active:translate-y-px"
     >
       <PixelArt art={muted ? OFF : ON} palette={PALETTE} pixel={3} />
     </button>

@@ -688,8 +688,11 @@ html::-webkit-scrollbar-button,
    the top-right corner past a slimmer top bar; the fireworks stand just above the box. */
 @media (max-width: 700px) {
   :root { --bulb-x: calc(100% - 40px); --cord: 45px; }
-  .top-bar { gap: 6px; }
-  .top-btn { padding: 0 7px; font-size: 8px; }
+  /* Smaller quick-link buttons on a phone: the sound button, RESUME, LINKEDIN and CONTACT. */
+  .top-bar { gap: 4px; top: 10px; left: 10px; }
+  .top-btn { padding: 0 5px; border-width: 2px; font-size: 6px; box-shadow: 2px 2px 0 var(--ui-shadow); }
+  .top-bar .sound-btn { padding: 4px 5px; box-shadow: 2px 2px 0 var(--ui-shadow); }
+  .top-bar .sound-btn svg { width: 18px; height: auto; }
   .firecracker { --fc-spread: 0.8; --fc-lift: calc(3vh + var(--panel-h, 0px)); }
   .stop-panel {
     top: auto;
