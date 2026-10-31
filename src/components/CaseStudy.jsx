@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { createFx } from "../fx";
 import { sfx, unlockAudio } from "../sound";
 import Boy, { BOY_H, BOY_W } from "./Boy";
@@ -37,6 +38,37 @@ function Rich({ text }) {
 
 const label = (h) => h.replace("->", "→");
 
+// A picture that opens full size over the page when clicked (Esc or a click closes it; the
+// keys and the wheel don't move the slides meanwhile).
+function ZoomImage({ block }) {
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e) => {
+      e.stopImmediatePropagation();
+      if (e.key === "Escape" || e.key === "Enter" || e.key === " ") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey, true);
+    return () => window.removeEventListener("keydown", onKey, true);
+  }, [open]);
+  return (
+    <>
+      <button type="button" className="cs-zoom" onClick={() => setOpen(true)} aria-label={`Open full size: ${block.alt}`}>
+        <img src={block.src} alt={block.alt} />
+      </button>
+      {open &&
+        // In the page body: the slide animates with a transform, which would pin a fixed box to it.
+        createPortal(
+          <div className="cs-lightbox" role="dialog" aria-label={block.alt} onClick={() => setOpen(false)} onWheel={(e) => e.stopPropagation()}>
+            <img src={block.src} alt={block.alt} />
+            <span className="cs-lightbox-hint">Click or press Esc to close</span>
+          </div>,
+          document.body,
+        )}
+    </>
+  );
+}
+
 function Block({ block }) {
   if (block.type === "p")
     return (
@@ -62,8 +94,8 @@ function Block({ block }) {
     );
   if (block.type === "image")
     return (
-      <figure className="cs-figure">
-        <img src={block.src} alt={block.alt} />
+      <figure className={`cs-figure ${block.wide ? "cs-figure-wide" : ""}`}>
+        <ZoomImage block={block} />
         {block.caption && (
           <figcaption>
             <Rich text={block.caption} />

@@ -1172,6 +1172,19 @@ html::-webkit-scrollbar-button,
 .cs-meta b { margin-right: 6px; font-family: "Press Start 2P", monospace; font-size: 9px; font-weight: 400; color: var(--ui-ink); }
 
 .cs-figure { margin: 0 0 20px; }
+.cs-zoom { display: block; width: 100%; padding: 0; border: 0; background: none; cursor: zoom-in; }
+.cs-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(20, 22, 34, 0.86);
+  cursor: zoom-out;
+}
+.cs-lightbox img { max-width: 94vw; max-height: 92vh; border: 4px solid #f6f0dc; box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.4); background: #fbf6e9; }
+.cs-lightbox-hint { position: absolute; bottom: 14px; left: 50%; translate: -50% 0; font-family: "Press Start 2P", monospace; font-size: 9px; color: #f6f0dc; }
 .cs-figure img {
   display: block;
   width: 100%;
@@ -1181,6 +1194,7 @@ html::-webkit-scrollbar-button,
   border: 3px solid var(--ui-ink);
   box-shadow: 6px 6px 0 var(--ui-shadow);
 }
+.cs-figure-wide img { max-height: none; } /* tall diagrams show at full column width (click for full size) */
 .cs-figure figcaption { margin-top: 10px; font-size: 13.5px; line-height: 1.55; color: var(--ui-muted); }
 .cs-figure figcaption::before { content: "▲ "; color: var(--ui-accent); }
 .cs-cover { margin-top: 18px; }

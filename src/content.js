@@ -28,10 +28,10 @@ export const projects = [
         label: "Role",
         text: "Designer and front-end developer: I planned it, designed it in Figma and built it in React.",
       },
-      { label: "Timeline", text: "About 1 week" },
+      { label: "Timeline", text: "About 2 months (5 days to design and test with AI)" },
       {
         label: "Outcome",
-        text: "A working product, live on the web, with sample data. Not tested with real users yet.",
+        text: "In production. Faster to create a job and review a candidate, so HR can tell quickly if someone fits. Time saved not measured yet.",
       },
     ],
     caseStudy: recruitmentCaseStudy,
