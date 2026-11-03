@@ -11,10 +11,12 @@ export default function App() {
   // The switch flips first (so its slide is visible), then the page crossfades through black.
   const [switchMode, setSwitchMode] = useState("work");
   const [fading, setFading] = useState(false);
-  // 9-5 shows its loader when you come back to it from 5-9 (not on the first visit).
-  const [returnedToWork, setReturnedToWork] = useState(false);
   const switching = useRef(false);
+  // The name-and-progress screen shown on the way back to 9-5 (5-9 has its own).
+  const [returning, setReturning] = useState(false);
   const [activeProject, setActiveProject] = useState(null);
+  // Where the opened card sat on screen, so its case study can grow out of (and shrink back into) it.
+  const [origin, setOrigin] = useState(null);
   const isPersonal = mode === "personal";
 
   // The case study is a fixed overlay; keep the page behind it from scrolling.
@@ -41,9 +43,12 @@ export default function App() {
     const next = switchMode === "work" ? "personal" : "work";
     const swap = () => {
       setActiveProject(null);
-      if (next === "work") setReturnedToWork(true);
       setMode(next);
       window.scrollTo(0, 0);
+      if (next === "work") {
+        setReturning(true);
+        setTimeout(() => setReturning(false), 1100);
+      }
     };
     setSwitchMode(next);
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -76,11 +81,13 @@ export default function App() {
         <>
           <WorkPage
             controls={<TopControls mode={switchMode} onToggle={toggleMode} />}
-            onOpenProject={setActiveProject}
-            showLoader={returnedToWork}
+            onOpenProject={(project, rect) => {
+              setOrigin(rect ?? null);
+              setActiveProject(project);
+            }}
           />
           {activeProject && (
-            <ProjectDetail project={activeProject} onBack={() => setActiveProject(null)} />
+            <ProjectDetail project={activeProject} origin={origin} onBack={() => setActiveProject(null)} />
           )}
         </>
       )}
@@ -90,6 +97,24 @@ export default function App() {
           fading ? "opacity-100 duration-300" : "opacity-0 duration-500"
         }`}
       />
+      <div
+        aria-hidden={!returning}
+        role={returning ? "status" : undefined}
+        className={`pointer-events-none fixed inset-0 z-[210] grid place-content-center justify-items-center gap-6 bg-black transition-opacity duration-500 ${
+          returning ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <div
+          className="text-[clamp(32px,4.4vw,56px)] tracking-[-0.01em] text-[#f4f2ef]"
+          style={{ fontFamily: "'Instrument Serif', serif" }}
+        >
+          {archive.name[0]} <em>{archive.name[1]}</em>
+        </div>
+        <div className="relative h-px w-[clamp(120px,17vw,210px)] overflow-hidden bg-[#f4f2ef]/15">
+          {returning && <span className="return-bar absolute inset-0 bg-[#f4f2ef]" />}
+        </div>
+        <div className="text-[10px] uppercase tracking-[0.26em] text-[#f4f2ef]/40">Working hours</div>
+      </div>
       <CustomCursor />
     </>
   );

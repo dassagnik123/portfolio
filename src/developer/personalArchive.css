@@ -63,22 +63,18 @@ html.va-on, body.va-on { overflow: hidden; }
   touch-action: none;
   transition: opacity 0.6s var(--ease), filter 0.6s var(--ease);
 }
-@media (pointer: coarse) {
-  .va #stage { touch-action: pan-y; }
-}
 
 .va #world {
   position: absolute; top: 50%; left: 50%;
   width: 0; height: 0;
-  transform-style: preserve-3d;
-  will-change: transform;
 }
+/* Cards and the headline are flat siblings, each with its own 3D transform, stacked by depth
+   in JS (z-index). No preserve-3d: the browser's own 3D sorting glitched with this many planes. */
 .va #orb {
   position: absolute; top: 0; left: 0;
   width: 0; height: 0;
-  transform-style: preserve-3d;
-  opacity: 1;
-  transform: none;
+  perspective: var(--persp);
+  perspective-origin: 0 0;
 }
 .va #headline {
   position: absolute; top: 0; left: 0;
@@ -140,6 +136,8 @@ body.revealed .va #headline .inner > span {
   transition: transform 0.5s ease;
 }
 .va .card:hover figure { transform: scale(1.045); }
+/* While the sphere is dragged or swiped, cards sliding under the pointer don't react to it. */
+body.spinning .va .card { pointer-events: none; }
 /* Soft shimmer on a card until its photo arrives, instead of a flat blank tile. */
 .va .card figure:not(.loaded) {
   background: linear-gradient(110deg, #0a0a0a 30%, #171717 50%, #0a0a0a 70%) 0 0 / 300% 100%;
@@ -175,62 +173,7 @@ body.revealed .va .card img { transition: opacity 0.8s ease-out; }
   background: radial-gradient(ellipse 88% 92% at 50% 50%, transparent 48%, rgba(0, 0, 0, 0.26) 80%, rgba(0, 0, 0, 0.72) 100%);
   transition: opacity 0.6s ease;
 }
-body.gridview .va .vig,
 body.lit .va .vig { opacity: 0; }
-
-body.gridview .va #stage {
-  opacity: 0;
-  filter: blur(14px);
-  pointer-events: none;
-}
-
-/* ---------- flat grid ---------- */
-.va #grid {
-  position: fixed; inset: 0;
-  z-index: 20;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  padding: calc(var(--pad) * 3.4) var(--pad) calc(var(--pad) * 4);
-  background: #000;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.6s var(--ease);
-}
-body.gridview .va #grid { opacity: 1; pointer-events: auto; }
-.va #grid .rows {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: clamp(10px, 1.4vw, 20px);
-  max-width: 1680px;
-  margin: 0 auto;
-}
-.va #grid figure {
-  position: relative;
-  margin: 0;
-  aspect-ratio: 2 / 3;
-  overflow: hidden;
-  border-radius: 3px;
-  background: #0b0b0b;
-  cursor: pointer;
-}
-.va #grid img {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  opacity: 0.82;
-  transition: transform 0.8s var(--ease), opacity 0.8s var(--ease);
-}
-.va #grid figure:hover img { transform: scale(1.05); opacity: 1; }
-.va #grid figcaption {
-  position: absolute; left: 0; right: 0; bottom: 0;
-  font-family: var(--serif);
-  font-size: 15px;
-  padding: 26px 14px 12px;
-  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.82));
-  opacity: 0;
-  transform: translateY(6px);
-  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
-}
-.va #grid figure:hover figcaption { opacity: 1; transform: none; }
 
 /* ---------- chrome ---------- */
 .va .chrome { opacity: 0; transition: opacity 1.2s var(--ease) 0.15s, transform 0.6s var(--ease); }
@@ -260,17 +203,20 @@ body.revealed .va .chrome { opacity: 1; }
   text-decoration: none;
   white-space: nowrap;
 }
+/* The signature, sized like the 9-5 nav one (h-14 / sm:h-16). */
+.va .wordmark img { display: block; width: 56px; height: 56px; object-fit: contain; margin: -8px 0 0 -4px; }
+@media (min-width: 640px) { .va .wordmark img { width: 64px; height: 64px; } }
 .va .bio {
   position: fixed;
   left: calc(var(--pad) + var(--safe-left));
   bottom: calc(var(--pad) + var(--safe-bottom));
   z-index: 55;
-  max-width: min(320px, 46vw);
+  max-width: min(440px, 52vw);
 }
-.va .bio .who { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+.va .bio .who { display: flex; align-items: center; gap: 18px; margin-bottom: 18px; }
 .va .bio img {
-  width: 52px; height: 52px;
-  border-radius: 3px;
+  width: 84px; height: 84px;
+  border-radius: 4px;
   object-fit: contain;
   background: #f4f2ef;
   filter: grayscale(0.15);
@@ -278,16 +224,15 @@ body.revealed .va .chrome { opacity: 1; }
 .va .bio b {
   font-family: var(--serif);
   font-weight: 400;
-  font-size: 19px;
+  font-size: 30px;
   letter-spacing: 0.01em;
 }
 .va .bio p {
   margin: 0;
-  font-size: 12.5px;
-  line-height: 1.62;
-  color: rgba(244, 242, 239, 0.72);
+  font-size: 16px;
+  line-height: 1.6;
+  color: rgba(244, 242, 239, 0.8);
 }
-body.gridview .va .bio,
 body.lit .va .bio {
   opacity: 0;
   transform: translateY(10px);
@@ -302,37 +247,7 @@ body.lit .va .bio {
   font-size: 12.5px;
   color: rgba(244, 242, 239, 0.72);
 }
-body.deep .va .colophon,
-body.gridview .va .colophon,
 body.lit .va .colophon { opacity: 0; pointer-events: none; }
-
-.va .gridbtn {
-  position: fixed;
-  right: calc(var(--pad) + var(--safe-right));
-  bottom: calc(var(--pad) + var(--safe-bottom));
-  z-index: 56;
-  width: 44px; height: 44px;
-  padding: 5px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  gap: 4px;
-  opacity: 0;
-  transform: translateY(8px);
-  pointer-events: none;
-  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
-}
-.va .gridbtn b {
-  background: #f4f2ef;
-  border-radius: 2px;
-  transition: transform 0.45s var(--ease), background 0.3s ease;
-}
-.va .gridbtn:hover b { background: #fff; transform: scale(0.86); }
-body.revealed.deep .va .gridbtn,
-body.revealed.gridview .va .gridbtn { opacity: 1; transform: none; pointer-events: auto; }
-body.gridview .va .gridbtn b:first-child { transform: translate(3px, 3px); }
-body.gridview .va .gridbtn b:last-child { transform: translate(-3px, -3px); }
-body.lit .va .gridbtn { opacity: 0; pointer-events: none; }
 
 .va .cue {
   position: fixed;
@@ -369,8 +284,6 @@ body.lit .va .gridbtn { opacity: 0; pointer-events: none; }
   55% { transform: translateX(0); }
   100% { transform: translateX(100%); }
 }
-body.deep .va .cue,
-body.gridview .va .cue,
 body.lit .va .cue { opacity: 0; }
 
 /* ---------- lightbox ---------- */
@@ -498,13 +411,10 @@ body.lit .va #lit { opacity: 1; pointer-events: auto; }
   .va .colophon { font-size: 11px; }
   .va .meta { grid-template-columns: 1fr; gap: 10px; padding-top: 14px; }
   .va .plate { width: min(72vw, (100dvh - 220px) / 1.5); }
-  .va #grid .rows { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
-  .va #grid { padding-top: calc(76px + var(--safe-top)); }
 }
 @media (max-width: 768px) {
   .va .colophon { display: none; }
-  /* Leave the bottom-right corner free for the grid button. */
-  .va .bio { max-width: calc(100vw - var(--pad) * 2 - var(--safe-left) - var(--safe-right) - 60px); }
+  .va .bio { max-width: calc(100vw - var(--pad) * 2 - var(--safe-left) - var(--safe-right)); }
   .va #headline { font-size: clamp(22px, 6.4vw, 34px); }
 }
 @media (max-width: 640px) {
@@ -522,16 +432,10 @@ body.lit .va #lit { opacity: 1; pointer-events: auto; }
   .va #litTitle { font-size: clamp(20px, 5.6vw, 26px); }
   .va #litNote { font-size: 12.5px; line-height: 1.58; }
   .va .shot .close { top: 8px; right: 8px; }
-  .va #grid .rows { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-  .va #grid figcaption { opacity: 1; transform: none; font-size: 13px; }
-  .va #grid {
-    padding: calc(76px + var(--safe-top)) calc(var(--pad) + var(--safe-right)) calc(var(--pad) * 4 + var(--safe-bottom)) calc(var(--pad) + var(--safe-left));
-  }
 }
 @media (max-width: 380px) {
   html.va-on { --hw: min(88vw, 320px); }
   .va .bio .who { gap: 10px; margin-bottom: 10px; }
-  .va #grid .rows { grid-template-columns: 1fr; }
 }
 @media (max-height: 520px) and (orientation: landscape) {
   .va .colophon, .va .cue { display: none; }

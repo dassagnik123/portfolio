@@ -1,12 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=DynaPuff:wght@400;500;600;700&family=Oswald:wght@500;600&family=Instrument+Serif:ital@0;1&display=swap");
-@import "tailwindcss";
+@import "tailwindcss" source(".");
 
 @theme {
   --font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-heading: "DynaPuff", cursive;
   --font-condensed: "Oswald", "Arial Narrow", sans-serif;
-  --color-accent-work: #f6b93b;
+  --color-accent-work: #ffffff;
   --color-accent-personal: #e2583f;
   --color-cream: #f7e8d2;
 }
@@ -80,33 +80,6 @@
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
-}
-
-@keyframes fade-rise {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.animate-fade-rise {
-  animation: fade-rise 0.8s ease-out both;
-}
-.animate-fade-rise-delay {
-  animation: fade-rise 0.8s ease-out 0.2s both;
-}
-.animate-fade-rise-delay-2 {
-  animation: fade-rise 0.8s ease-out 0.4s both;
-}
-
-/* While the 9-5 loader is up, hold the hero's entrance until the page is revealed. */
-.work-theme[data-loading="true"] .animate-fade-rise,
-.work-theme[data-loading="true"] .animate-fade-rise-delay,
-.work-theme[data-loading="true"] .animate-fade-rise-delay-2 {
-  animation-play-state: paused;
 }
 
 /* Phones in landscape: keep the whole hero within the short screen. */
@@ -310,4 +283,53 @@ body {
   .slide-in-left {
     animation: none;
   }
+}
+
+/* Progress line of the loading screen shown on the way back to 9-5. */
+@keyframes return-bar {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+.return-bar {
+  transform-origin: left center;
+  animation: return-bar 1s ease-out forwards;
+}
+
+/* The bright segment slides down the line under "Scroll" in the hero. */
+@keyframes scroll-cue {
+  0% { transform: translateY(-100%); }
+  70%, 100% { transform: translateY(300%); }
+}
+.scroll-cue-dot {
+  animation: scroll-cue 1.8s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-cue-dot { animation: none; transform: translateY(100%); }
+}
+
+/* Cards rise into place as they scroll into view (see Reveal in WorkPage). */
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 56px, 0) scale(0.96);
+  transition:
+    opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0ms),
+    transform 0.95s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0ms);
+}
+.reveal-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Case study chrome (top bar, bottom nav) settles in after the page has opened out. */
+@keyframes case-in {
+  from { opacity: 0; transform: translate3d(0, 18px, 0); }
+  to { opacity: 1; transform: none; }
+}
+.case-in {
+  animation: case-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.28s both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .case-in { animation: none; }
 }

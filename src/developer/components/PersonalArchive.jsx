@@ -5,16 +5,59 @@ import { archive } from "../data";
 const SHOTS = archive.shots;
 const N = SHOTS.length;
 // The sphere spec is tuned for 21 landscape frames; shrink cards so 54 portrait frames keep similar breathing room.
+// Overall size of the sphere; lower is smaller.
+const SPHERE_SIZE = 0.85;
 const DENSITY = Math.min(1, Math.sqrt(21 / N) * 0.85);
 // The spec pushes the headline to 0.62R so only ~4 of 21 cards pass in front of it.
 // Keep that same share of the cap in front when there are more cards.
 const HEAD_Z = 1 - (1 - 0.62) * Math.min(1, 21 / N);
-const BODY_STATES = ["va-on", "revealed", "deep", "gridview", "lit"];
+const BODY_STATES = ["va-on", "revealed", "lit", "spinning"];
 
 const LOADER_MIN = 1000;
 const LOADER_MAX = 6000;
 
-const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+// 3x3 rotation matrices, row-major, in CSS axes (same as CSS rotateX / rotateY).
+const toRad = (deg) => (deg * Math.PI) / 180;
+const rotX = (deg) => {
+  const c = Math.cos(toRad(deg));
+  const s = Math.sin(toRad(deg));
+  return [1, 0, 0, 0, c, -s, 0, s, c];
+};
+const rotY = (deg) => {
+  const c = Math.cos(toRad(deg));
+  const s = Math.sin(toRad(deg));
+  return [c, 0, s, 0, 1, 0, -s, 0, c];
+};
+const rotZ = (deg) => {
+  const c = Math.cos(toRad(deg));
+  const s = Math.sin(toRad(deg));
+  return [c, -s, 0, s, c, 0, 0, 0, 1];
+};
+const mul = (a, b) => {
+  const m = new Array(9);
+  for (let r = 0; r < 3; r++)
+    for (let c = 0; c < 3; c++)
+      m[r * 3 + c] = a[r * 3] * b[c] + a[r * 3 + 1] * b[3 + c] + a[r * 3 + 2] * b[6 + c];
+  return m;
+};
+// Keeps rounding errors from slowly skewing the matrix over many frames.
+const orthonormalize = (m) => {
+  let [ax, ay, az] = [m[0], m[3], m[6]];
+  let n = Math.hypot(ax, ay, az);
+  ax /= n; ay /= n; az /= n;
+  let [bx, by, bz] = [m[1], m[4], m[7]];
+  const d = ax * bx + ay * by + az * bz;
+  bx -= d * ax; by -= d * ay; bz -= d * az;
+  n = Math.hypot(bx, by, bz);
+  bx /= n; by /= n; bz /= n;
+  const cx = ay * bz - az * by;
+  const cy = az * bx - ax * bz;
+  const cz = ax * by - ay * bx;
+  return [ax, bx, cx, ay, by, cy, az, bz, cz];
+};
+// CSS matrix3d is column-major.
+const toCss = (m) =>
+  `matrix3d(${m[0]},${m[3]},${m[6]},0,${m[1]},${m[4]},${m[7]},0,${m[2]},${m[5]},${m[8]},0,0,0,0,1)`;
 
 function Wordmark() {
   return (
@@ -34,17 +77,13 @@ export default function PersonalArchive() {
     const body = document.body;
 
     const stage = $("#stage");
-    const world = $("#world");
     const headline = $("#headline");
     const cards = [...root.querySelectorAll("#orb .card")];
     const cardImgs = cards.map((c) => c.querySelector("img"));
-    const gridFigs = [...root.querySelectorAll("#grid figure")];
-    const gridImgs = gridFigs.map((f) => f.querySelector("img"));
     const plate = $(".plate");
     const shotBox = $(".shot");
     const litImg = $("#litImg");
     const lit = $("#lit");
-    const gridBtn = $("#gridBtn");
 
     let alive = true;
     let raf = 0;
@@ -70,8 +109,10 @@ export default function PersonalArchive() {
 
     /* ---------- Fibonacci sphere ---------- */
     const GA = Math.PI * (3 - Math.sqrt(5));
+    // Offset by half a step so no card sits exactly on a pole: there the first and last cards
+    // were crowded against their neighbours and overlapped once the sphere could turn that far.
     const pts = cards.map((_, i) => {
-      const y = 1 - (i / (N - 1)) * 2;
+      const y = 1 - (2 * i + 1) / N;
       const rad = Math.sqrt(Math.max(0, 1 - y * y));
       const theta = i * GA;
       const x = Math.cos(theta) * rad;
@@ -89,6 +130,8 @@ export default function PersonalArchive() {
     let persp = 1150;
     let lastW = 0;
     let lastH = 0;
+    // Each card's place on the sphere; the sphere's rotation is put in front of it every frame.
+    const placed = cards.map(() => "");
 
     function layout(force) {
       const w = window.innerWidth;
@@ -99,82 +142,74 @@ export default function PersonalArchive() {
       const hr = w <= 380 ? 0.38 : w <= 640 ? 0.42 : 0.46;
       const wr = w <= 380 ? 0.4 : w <= 640 ? 0.44 : h > w ? 0.42 : 0.58;
       const floor = w <= 380 ? 108 : w <= 640 ? 120 : 155;
-      R = Math.max(floor, Math.min(480, h * hr, w * wr));
+      R = Math.max(floor, Math.min(480, h * hr, w * wr)) * SPHERE_SIZE;
       const scale = (w <= 380 ? 0.44 : w <= 640 ? 0.46 : 0.47) * DENSITY;
       const cw = Math.round(Math.max(40, R * scale));
       persp = w <= 380 ? 620 : w <= 640 ? 760 : w <= 900 ? 920 : 1150;
       html.style.setProperty("--persp", `${persp}px`);
       html.style.setProperty("--cw", `${cw}px`);
-      cards.forEach((card, i) => {
-        const p = pts[i];
-        card.style.transform = `translate3d(${p.x * R}px, ${-p.y * R}px, ${p.z * R}px) rotateY(${p.lon}deg) rotateX(${p.lat}deg)`;
+      pts.forEach((p, i) => {
+        placed[i] = `translate3d(${p.x * R}px, ${-p.y * R}px, ${p.z * R}px) rotateY(${p.lon}deg) rotateX(${p.lat}deg)`;
       });
     }
 
     /* ---------- camera loop ---------- */
-    const cam = { spin: 0, tilt: -4, camZ: 0, dragX: 0, dragY: 0, velX: 0, velY: 0 };
-    const PITCH = 32;
+    const cam = { velX: 0, velY: 0, velZ: 0 };
+    // Sphere orientation as a 3x3 rotation matrix (CSS axes: y down, z toward the viewer).
+    // Drags rotate it about the screen's axes, trackball-style, so it turns freely in every
+    // direction and always follows the pointer, even upside down.
+    let rot = mul(rotX(-4), [1, 0, 0, 0, 1, 0, 0, 0, 1]);
+    const turn = (dx, dy) => {
+      if (dx) rot = mul(rotY(dx), rot);
+      if (dy) rot = mul(rotX(dy), rot);
+    };
     const AUTO_SPIN = 0.06; // degrees per frame, about one turn every 100s at 60fps
     const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let dragging = false;
     let focused = -1;
     const written = cards.map(() => ({ o: -1, d: -1 }));
     let lastHeadOpacity = -1;
-    let deep = false;
-    // 0..1 zoom into the sphere, driven by the wheel (the page itself doesn't scroll).
-    let depth = 0;
-
+    const HEAD_LAYER = Math.round((HEAD_Z + 1) * 1000);
 
     function frame() {
       if (!dragging && focused < 0) {
         // Gentle idle spin; drag momentum adds on top of it and eases back into it.
-        if (!still && !body.classList.contains("gridview")) cam.spin += AUTO_SPIN;
-        cam.dragX += cam.velX;
-        cam.dragY += cam.velY;
+        if (!still) turn(AUTO_SPIN, 0);
+        turn(cam.velX, cam.velY);
+        if (cam.velZ) rot = mul(rotZ(cam.velZ), rot);
         cam.velX *= 0.94;
         cam.velY *= 0.94;
+        cam.velZ *= 0.94;
         if (Math.abs(cam.velX) < 0.002) cam.velX = 0;
         if (Math.abs(cam.velY) < 0.002) cam.velY = 0;
+        if (Math.abs(cam.velZ) < 0.002) cam.velZ = 0;
       }
-      cam.dragY = clamp(cam.dragY, -PITCH - cam.tilt, PITCH - cam.tilt);
+      rot = orthonormalize(rot);
 
-      const p = depth;
-      if (p > 0.35 !== deep) {
-        deep = p > 0.35;
-        body.classList.toggle("deep", deep);
-      }
-      const camZTarget = p * Math.min(64, R * 0.12);
-      cam.camZ += (camZTarget - cam.camZ) * 0.075;
-
-      const sx = cam.tilt + cam.dragY;
-      const sy = cam.spin + cam.dragX;
-      world.style.transform = `translateZ(${cam.camZ}px) rotateY(${sy}deg) rotateX(${sx}deg)`;
-      headline.style.transform = `rotateX(${-sx}deg) rotateY(${-sy}deg) translateZ(${R * HEAD_Z}px)`;
-      const headOpacity = focused >= 0 ? 0 : Math.max(0, 1 - p * 0.55);
+      // Cards and headline are drawn flat, each with its own 3D transform, and stacked back to
+      // front by depth here. Letting the browser depth-sort the whole 3D scene instead made far
+      // cards flash in front of the headline and edges flicker while the sphere turned.
+      const sphere = toCss(rot);
+      headline.style.transform = `translateZ(${R * HEAD_Z}px)`;
+      headline.style.zIndex = HEAD_LAYER;
+      const headOpacity = focused >= 0 ? 0 : 1;
       if (headOpacity !== lastHeadOpacity) {
         headline.style.opacity = headOpacity.toFixed(3);
         lastHeadOpacity = headOpacity;
       }
 
-      const rx = (sx * Math.PI) / 180;
-      const ry = (sy * Math.PI) / 180;
-      const cx = Math.cos(rx);
-      const snx = Math.sin(rx);
-      const cy = Math.cos(ry);
-      const sny = Math.sin(ry);
-      const shade = 1 - Math.min(1, p * 1.6);
       const near = persp * 0.66;
 
       for (let i = 0; i < cards.length; i++) {
         const pt = pts[i];
-        // Screen-space unit vector (y down), rotated like #world: rotateX first, then rotateY.
-        const py = -pt.y;
-        const z1 = py * snx + pt.z * cx;
-        const zf = -pt.x * sny + z1 * cy;
+        // Depth of the card after the sphere's rotation (screen space, y down).
+        const zf = rot[6] * pt.x - rot[7] * pt.y + rot[8] * pt.z;
+        cards[i].style.transform = `${sphere} ${placed[i]}`;
+        cards[i].style.zIndex = Math.round((zf + 1) * 1000);
         const base = 0.14 + 0.86 * Math.pow((zf + 1) / 2, 0.85);
-        let dim = shade * (1 - base);
+        let dim = 1 - base;
         let fade = 1;
-        const absZ = zf * R + cam.camZ;
+        const absZ = zf * R;
         if (absZ > near) fade = Math.max(0, 1 - (absZ - near) / 190);
         if (focused >= 0) {
           dim = Math.min(1, dim + 0.78);
@@ -206,44 +241,6 @@ export default function PersonalArchive() {
 
     /* ---------- image decode ---------- */
     const decoded = new Array(N).fill(null);
-
-    function downscale(src, cap) {
-      return new Promise((resolve) => {
-        const probe = new Image();
-        probe.crossOrigin = "anonymous";
-        probe.decoding = "async";
-        probe.onload = () => {
-          if (!alive) return resolve(src);
-          if (probe.naturalWidth <= cap) return resolve(src);
-          try {
-            const k = cap / probe.naturalWidth;
-            const canvas = document.createElement("canvas");
-            canvas.width = cap;
-            canvas.height = Math.round(probe.naturalHeight * k);
-            canvas.getContext("2d").drawImage(probe, 0, 0, canvas.width, canvas.height);
-            canvas.toBlob(
-              (blob) => {
-                // Safari silently falls back to PNG; the original is smaller then.
-                if (!blob || blob.type !== "image/webp") return resolve(src);
-                const url = URL.createObjectURL(blob);
-                if (!alive) {
-                  URL.revokeObjectURL(url);
-                  return resolve(src);
-                }
-                blobs.push(url);
-                resolve(url);
-              },
-              "image/webp",
-              0.88,
-            );
-          } catch {
-            resolve(src);
-          }
-        };
-        probe.onerror = () => resolve(src);
-        probe.src = src;
-      });
-    }
 
     /* ---------- loader ---------- */
     // Held for at least LOADER_MIN and until every photo is ready (or LOADER_MAX passes),
@@ -289,10 +286,6 @@ export default function PersonalArchive() {
       };
       img.onerror = report;
       img.src = shot.thumb;
-      gridImgs[i].src = shot.thumb;
-    });
-    downscale(archive.avatar, 160).then((url) => {
-      if (alive) $("#avatar").src = url;
     });
 
     /* ---------- drag ---------- */
@@ -333,10 +326,6 @@ export default function PersonalArchive() {
       ptr.moved = Math.max(ptr.moved, Math.hypot(dx, dy));
       if (!ptr.captured) {
         if (Math.hypot(dx, dy) < 10) return;
-        if (Math.abs(dy) > Math.abs(dx) * 1.15) {
-          ptr = null;
-          return;
-        }
         try {
           stage.setPointerCapture(e.pointerId);
         } catch {
@@ -345,14 +334,14 @@ export default function PersonalArchive() {
         ptr.captured = true;
         dragging = true;
       }
+      body.classList.add("spinning");
       const mx = e.clientX - ptr.lx;
       const my = e.clientY - ptr.ly;
       ptr.lx = e.clientX;
       ptr.ly = e.clientY;
       cam.velX = mx * 0.13;
       cam.velY = -my * 0.13;
-      cam.dragX += cam.velX;
-      cam.dragY += cam.velY;
+      turn(cam.velX, cam.velY);
     });
 
     const endDrag = (e, cancelled) => {
@@ -361,6 +350,7 @@ export default function PersonalArchive() {
       const { card, moved } = ptr;
       ptr = null;
       dragging = false;
+      body.classList.remove("spinning");
       if (!cancelled && moved < slop && card) openShot(Number(card.dataset.idx), card);
     };
     on(stage, "pointerup", (e) => endDrag(e, false));
@@ -419,7 +409,7 @@ export default function PersonalArchive() {
       const token = ++openToken;
       body.classList.remove("lit");
       html.style.overflow = "";
-      const target = body.classList.contains("gridview") ? gridFigs[i] : cards[i];
+      const target = cards[i];
       if (target) {
         plate.style.transform = flipTransform(target.getBoundingClientRect());
         plate.style.opacity = "0";
@@ -440,32 +430,72 @@ export default function PersonalArchive() {
       else if (e.target.classList.contains("scrim") && performance.now() - openedAt > 400) closeShot();
     });
 
-    /* ---------- grid ---------- */
-    const setGrid = (onOff) => body.classList.toggle("gridview", onOff);
-    on(gridBtn, "click", () => setGrid(!body.classList.contains("gridview")));
-    gridFigs.forEach((fig) => on(fig, "click", () => openShot(Number(fig.dataset.idx), fig)));
-
-    on($(".wordmark"), "click", (e) => {
-      e.preventDefault();
-      setGrid(false);
-      depth = 0;
-    });
+    on($(".wordmark"), "click", (e) => e.preventDefault());
 
     on(window, "keydown", (e) => {
-      if (e.key !== "Escape") return;
-      if (body.classList.contains("lit")) closeShot();
-      else if (body.classList.contains("gridview")) setGrid(false);
+      if (e.key === "Escape" && body.classList.contains("lit")) closeShot();
     });
 
-    /* ---------- wheel zoom + resize ---------- */
+    /* ---------- trackpad (two-finger swipe) rotates the sphere ---------- */
+    let wheelIdle = 0;
+    // The sphere follows the fingers in any direction; the trackpad's own momentum keeps it
+    // gliding. Pinch (ctrl + wheel) is left alone so browser zoom still works.
     on(
       window,
       "wheel",
       (e) => {
-        if (focused >= 0 || body.classList.contains("gridview")) return;
-        depth = clamp(depth + e.deltaY / (window.innerHeight * 0.16), 0, 1);
+        if (focused >= 0 || e.ctrlKey) return;
+        e.preventDefault(); // also stops the horizontal swipe from navigating back/forward
+        const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? window.innerHeight : 1;
+        cam.velX = 0;
+        cam.velY = 0;
+        turn(-e.deltaX * unit * 0.12, e.deltaY * unit * 0.12);
+        body.classList.add("spinning");
+        clearTimeout(wheelIdle);
+        wheelIdle = later(() => body.classList.remove("spinning"), 200);
       },
-      { passive: true },
+      { passive: false },
+    );
+
+    /* ---------- trackpad twist (two fingers turning) spins the sphere in place ---------- */
+    // Safari reports this gesture (macOS trackpads and iOS); Chrome and Firefox don't expose it.
+    // e.rotation is the total twist in degrees since the gesture began, clockwise positive.
+    let twistFrom = 0;
+    on(
+      window,
+      "gesturestart",
+      (e) => {
+        e.preventDefault();
+        if (focused >= 0) return;
+        twistFrom = e.rotation;
+        cam.velX = cam.velY = cam.velZ = 0;
+        dragging = true; // the gesture drives the sphere; momentum takes over when it ends
+        body.classList.add("spinning");
+      },
+      { passive: false },
+    );
+    on(
+      window,
+      "gesturechange",
+      (e) => {
+        e.preventDefault();
+        if (focused >= 0) return;
+        const delta = e.rotation - twistFrom;
+        twistFrom = e.rotation;
+        rot = mul(rotZ(delta), rot);
+        cam.velZ = delta;
+      },
+      { passive: false },
+    );
+    on(
+      window,
+      "gestureend",
+      (e) => {
+        e.preventDefault();
+        dragging = false;
+        body.classList.remove("spinning");
+      },
+      { passive: false },
     );
     on(window, "resize", () => layout(false));
     on(window, "orientationchange", () => later(() => layout(true), 220));
@@ -503,17 +533,17 @@ export default function PersonalArchive() {
                 </figure>
               </div>
             ))}
+            <h1 id="headline">
+              <span className="inner">
+                {archive.headline.map((word, i) => (
+                  <Fragment key={word + i}>
+                    {i > 0 && " "}
+                    <span style={{ "--i": i }}>{word}</span>
+                  </Fragment>
+                ))}
+              </span>
+            </h1>
           </div>
-          <h1 id="headline">
-            <span className="inner">
-              {archive.headline.map((word, i) => (
-                <Fragment key={word + i}>
-                  {i > 0 && " "}
-                  <span style={{ "--i": i }}>{word}</span>
-                </Fragment>
-              ))}
-            </span>
-          </h1>
         </div>
       </div>
 
@@ -529,43 +559,21 @@ export default function PersonalArchive() {
         <div className="tag">{archive.tag}</div>
       </div>
 
-      <div id="grid">
-        <div className="rows">
-          {SHOTS.map((shot, i) => (
-            <figure data-idx={i} key={shot.src} data-cursor="View photo">
-              <img alt={shot.title} loading="lazy" />
-              <figcaption>{shot.title}</figcaption>
-            </figure>
-          ))}
-        </div>
-      </div>
-
       <header className="chrome">
         <a className="wordmark" href="#" aria-label={archive.name.join(" ")}>
-          <Wordmark />
+          <img src="/signature-ink.png" alt="" />
         </a>
       </header>
 
       <div className="bio chrome">
-        <div className="who">
-          <img id="avatar" alt={archive.name.join(" ")} />
-          <b>{archive.name.join(" ")}</b>
-        </div>
         <p>{archive.bio}</p>
       </div>
 
       <div className="colophon chrome">{archive.tag}</div>
 
-      <button type="button" id="gridBtn" className="gridbtn" aria-label="Toggle grid view">
-        <b />
-        <b />
-        <b />
-        <b />
-      </button>
-
       <div className="cue chrome">
         <s />
-        Drag to rotate
+        Drag, swipe or twist to rotate
       </div>
 
       <div id="lit">

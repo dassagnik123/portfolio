@@ -24,7 +24,7 @@ export const ticketDashboardCaseStudy = {
     },
     {
       label: "Outcome",
-      text: "Shipped, but impact wasn't formally measured. Hypothesized: ~20% fewer SLA breaches, ~30% faster prioritization, ~40% less repetitive effort.",
+      text: "Shipped. We're a small team and didn't track numbers, but we saw tickets getting resolved better and less manual work for agents.",
     },
   ],
   sections: [
@@ -65,24 +65,24 @@ export const ticketDashboardCaseStudy = {
           type: "p",
           text: "I only had a week, so I kept it simple: short conversations with 2–3 of the agents who use the tool every day. They all described the same routine — read the whole table, work out in their head what to do first, do it again next shift, then apply the same update to one ticket after another.",
         },
-        {
-          type: "p",
-          text: "**What surprised me.** I thought they'd ask for better filters — more controls, more ways to slice the list. They didn't want to deal with filters at all. They wanted the tool to work out what was urgent so they could get straight to fixing things. That changed the brief from \"help them find the urgent tickets faster\" to \"put the urgent tickets in front of them\" — which is what the second round is built on.",
-        },
-        { type: "p", text: "Three habits, three fixes:" },
+        { type: "p", text: "Three habits:" },
         {
           type: "ul",
           items: [
-            "**Read and guess** — ranking the whole table in their head every shift → a dashboard that puts the riskiest tickets up front at login",
-            "**Double-checking** — opening tickets just to see how urgent they were → an SLA status column in the list",
-            "**One at a time** — the same update applied ticket by ticket → bulk actions",
+            "**Read and guess** — ranking the whole table in their head every shift",
+            "**Double-checking** — opening tickets just to see how urgent they were",
+            "**One at a time** — the same update applied ticket by ticket",
           ],
         },
       ],
     },
     {
-      heading: "Jobs to be done",
+      heading: "Key insights",
       blocks: [
+        {
+          type: "p",
+          text: "**What surprised me.** I thought they'd ask for better filters — more controls, more ways to slice the list. They didn't want to deal with filters at all. They wanted the tool to work out what was urgent so they could get straight to fixing things. That changed the brief from \"help them find the urgent tickets faster\" to \"put the urgent tickets in front of them\".",
+        },
         {
           type: "p",
           text: "**Main job:** When I start my shift and the queue is full, I want to know which tickets are closest to missing their deadline, so I can start with those instead of reading every row.",
@@ -98,12 +98,27 @@ export const ticketDashboardCaseStudy = {
       ],
     },
     {
-      heading: "The design",
+      heading: "Process",
       blocks: [
         {
           type: "p",
           text: "I did this in two rounds instead of trying to get it right first time.",
         },
+        {
+          type: "ul",
+          items: [
+            "**1. Talk to the agents.** Short conversations with the people who work the queue every day, to see their routine rather than guess it.",
+            "**2. Round 1: show urgency in the list.** An SLA status column and filters for at-risk and unclaimed tickets.",
+            "**3. See where it falls short.** The filters had to be set up again every day, and a filtered list still had no limit.",
+            "**4. Round 2: a dashboard that does the sorting.** The most urgent and unclaimed tickets, waiting for the agent at login.",
+            "**5. Build it.** I was also one of the developers, so I built it in the product's existing Next.js, React and TypeScript codebase.",
+          ],
+        },
+      ],
+    },
+    {
+      heading: "The design",
+      blocks: [
         {
           type: "p",
           text: "**Round 1 — show urgency in the list.** I added an SLA Status column with clear colour cues, plus filters for at-risk and unclaimed tickets, so agents could judge urgency without opening anything.",
@@ -117,20 +132,12 @@ export const ticketDashboardCaseStudy = {
         },
         {
           type: "p",
-          text: "**Where it fell short.** Getting to the urgent tickets took a few clicks, had to be redone every day, and only answered one question at a time. And even filtered, the list had no limit — on a busy day it was a wall of at-risk rows, which is the same reading problem in a different place.",
-        },
-        {
-          type: "p",
-          text: "Just saving the filters would have been the cheap fix, but they reset whenever the page reloaded, and making them stick meant backend work I didn't have time for in a week. That's what pushed me towards a dashboard — and it turned out to be the better answer anyway.",
-        },
-        {
-          type: "p",
           text: "**Round 2 — a dashboard that does the sorting.** Nothing to filter, nothing to set up; it's the first thing agents see when they log in:",
         },
         {
           type: "ul",
           items: [
-            "**The five most urgent tickets**, grouped by SLA status. Five is about as many as an agent can act on at once, so the list never becomes another wall of rows — and it refills itself: clear one and the next most urgent moves up.",
+            "**The five most urgent tickets**, grouped by SLA status. Clear one and the next most urgent moves up.",
             "**A second table for high-priority and unclaimed tickets**, so nothing important sits without an owner.",
             "**Small widgets showing who's carrying what**, so an agent can plan a shift in a few seconds.",
           ],
@@ -144,7 +151,7 @@ export const ticketDashboardCaseStudy = {
         },
         {
           type: "p",
-          text: "The SLA column from round 1 stayed — the dashboard added to it rather than replacing it. Bulk actions took care of the repetitive updates that used to eat into fixing time.",
+          text: "**Bulk actions** took care of the repetitive updates that used to eat into fixing time.",
         },
         {
           type: "image",
@@ -156,32 +163,14 @@ export const ticketDashboardCaseStudy = {
       ],
     },
     {
-      heading: "Constraints & trade-offs",
+      heading: "Key decisions",
       blocks: [
         {
           type: "ul",
           items: [
-            "One week, in-house, with no time set aside for proper research or testing",
-            "Built on the platform and data that already existed — the SLA information was there, so this was about showing and using it, not changing the backend",
-            "**Saved filters vs a dashboard** — saving filters was cheaper but wasn't possible in the time; the dashboard is one more screen to maintain, but it answers several questions at once",
-            "**Five tickets vs the full list** — capping it keeps things manageable, but an agent can't tell how big the at-risk pile is without opening the full list",
-          ],
-        },
-      ],
-    },
-    {
-      heading: "How I built it",
-      blocks: [
-        {
-          type: "p",
-          text: "I wasn't only the designer — I was also one of the developers who built it, in the product's existing Next.js, React and TypeScript codebase. Being on both sides changed the design itself:",
-        },
-        {
-          type: "ul",
-          items: [
-            "**Feasibility came early, not at handoff.** Because I was also helping build it, I knew on day one that saved filters needed backend work. That ruled them out inside the week and pointed me to the dashboard, instead of surfacing as a surprise halfway through.",
-            "**Frontend-only by design.** The SLA column and the dashboard both read SLA data the platform already had, so the whole change shipped without touching the backend.",
-            "**Decisions made in the browser.** Where there were no design files, I made layout calls directly in the live UI — with real tickets on screen instead of placeholder rows.",
+            "**A dashboard, not saved filters.** Getting to the urgent tickets took a few clicks, had to be redone every day, and only answered one question at a time. Saved filters were the obvious fix, but they would have meant backend work I didn't have time for in a week. They also had a speed problem: our data API is slow, and a saved filter has to be fetched first, then the tickets fetched with it, one after the other. That would have made the first screen slower every day. The dashboard avoids that. It loads its own short list of urgent tickets while the full ticket list loads in the background, so agents see something useful straight away.",
+            "**Five tickets, not the full list.** Even filtered, the list had no limit — on a busy day it was a wall of at-risk rows. Five is about as many as an agent can act on at once, so the list never becomes another wall.",
+            "**Keep the SLA column.** The dashboard added to round 1 rather than replacing it, so urgency still reads in the full list.",
           ],
         },
         {
@@ -191,7 +180,21 @@ export const ticketDashboardCaseStudy = {
       ],
     },
     {
-      heading: "Before -> After",
+      heading: "Constraints & trade-offs",
+      blocks: [
+        {
+          type: "ul",
+          items: [
+            "One week, in-house, with no time set aside for proper research or testing",
+            "Built on the platform and data that already existed — the SLA information was there, so this was about showing and using it, not changing the backend",
+            "**Saved filters vs a dashboard** — saving filters was cheaper to design, but it needed backend work and would have made a slow API slower, because the filter has to load before the tickets; the dashboard is one more screen to maintain, but it loads alongside the ticket list and answers several questions at once",
+            "**Five tickets vs the full list** — capping it keeps things manageable, but an agent can't tell how big the at-risk pile is without opening the full list",
+          ],
+        },
+      ],
+    },
+    {
+      heading: "Impact",
       blocks: [
         {
           type: "p",
@@ -215,23 +218,18 @@ export const ticketDashboardCaseStudy = {
           caption:
             "**After** — the dashboard opens straight into at-risk, breached and unclaimed tickets, with workload visible at a glance.",
         },
-      ],
-    },
-    {
-      heading: "Estimated impact",
-      blocks: [
         {
           type: "p",
-          text: "The change shipped, but impact wasn't formally measured — there was no dedicated validation phase in the timeframe. These are my estimates, based on the steps the design takes out of an agent's day:",
+          text: "The change shipped. We're a small company and didn't measure it formally, so I won't quote percentages. What we saw in day-to-day use:",
         },
         {
           type: "p",
-          text: "**~20% fewer missed SLAs** · **~30% faster to decide what to work on** · **~40% less repetitive manual work**",
+          text: "**Better ticket resolution**, because urgent tickets were in front of agents instead of buried in the list · **Less manual work**, because bulk actions replaced one-by-one updates",
         },
       ],
     },
     {
-      heading: "Reflection",
+      heading: "What I learned",
       blocks: [
         {
           type: "p",

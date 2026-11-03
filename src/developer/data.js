@@ -1,4 +1,5 @@
 import { ticketDashboardCaseStudy } from "./caseStudy";
+import { recruitmentCaseStudy } from "./caseStudyRecruitment";
 
 export const modes = {
   work: {
@@ -31,6 +32,7 @@ export const contact = {
 
 export const socials = {
   linkedin: "https://www.linkedin.com/in/sagnik-das-42b6261a3",
+  x: "https://x.com/dasSagnik1999",
   resume: "/resume.pdf",
 };
 
@@ -41,6 +43,7 @@ export const projects = [
     filled: true,
     tags: ["UI/UX", "DASHBOARD", "CUSTOMER SUPPORT"],
     cover: "/customer-support-cover.jpg",
+    cover2: "/cs-dashboard.png",
     title:
       "Agents couldn't see which tickets were about to breach — so I made urgency impossible to miss",
     description:
@@ -49,19 +52,15 @@ export const projects = [
   },
   {
     number: "02",
-    large: false,
-    filled: false,
-    slotLabel: "restaurant app",
-    tags: ["UI/UX", "RESEARCH"],
-    title: "Mukherjee Restaurant: table booking app",
-  },
-  {
-    number: "03",
-    large: false,
-    filled: false,
-    slotLabel: "dashboard redesign",
-    tags: ["SAAS", "DASHBOARD"],
-    title: "Google Analytics dashboard redesign",
+    large: true,
+    filled: true,
+    tags: ["HR TECH", "AI WORKFLOW", "UI/UX"],
+    cover: "/rec-dashboard.png",
+    cover2: "/rec-evidence.png",
+    title: "One place to run hiring, with AI that helps and people who decide",
+    description:
+      "A recruitment and onboarding product for HR teams, interviewers and candidates: from posting a job to a new hire's first day, with AI that helps and never decides.",
+    caseStudy: recruitmentCaseStudy,
   },
 ];
 
@@ -145,7 +144,6 @@ export const archive = {
   headline: ["What", "I", "Do", "After", "Five"],
   tag: "After Hours",
   bio: modes.personal.lead.trim(),
-  avatar: "/signature.png",
   shots: interleave(
     hobbies.map((hobby) =>
       hobby.images.map((src, i) => ({
@@ -161,6 +159,32 @@ export const archive = {
 };
 
 // From the CV: design first, with engineering as the way I prototype and ship.
+// Experience at Keross R&D, newest first (shortened from the résumé; same as the interactive version).
+export const experience = [
+  {
+    role: "Software Engineer, Level 2",
+    company: "Keross R&D",
+    dates: "Apr 2025 – Oct 2026",
+    points: [
+      "Redesigned and rebuilt the customer support dashboard and ticket list: clearer hierarchy, simpler filters, fewer steps to resolve a ticket.",
+      "Designed tender-management and digital-signature flows that turn multi-step work into clear journeys.",
+      "Built HRMS portals (exams, onboarding, training, appraisal, exit) in Next.js, React and TypeScript.",
+    ],
+  },
+  {
+    role: "Software Engineer, Level 1",
+    company: "Keross R&D",
+    dates: "Nov 2022 – Apr 2025",
+    points: ["Took on more frontend ownership across HRMS and dashboard products, building reusable UI components."],
+  },
+  {
+    role: "Software Engineer Intern",
+    company: "Keross R&D",
+    dates: "Mar 2022 – Nov 2022",
+    points: ["Built UI components in production React and Next.js codebases, guided by senior engineers."],
+  },
+];
+
 export const skills = [
   {
     label: "Design",
@@ -177,6 +201,6 @@ export const skills = [
   {
     label: "Build",
     note: "How I prototype and ship what I design",
-    items: ["React.js", "Next.js", "TypeScript", "JavaScript", "HTML & CSS", "Design-to-code handoff"],
+    items: ["React.js", "Next.js", "TypeScript", "JavaScript", "HTML & CSS"],
   },
 ];
