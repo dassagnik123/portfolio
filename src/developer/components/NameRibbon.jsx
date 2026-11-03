@@ -188,16 +188,26 @@ export default function NameRibbon({ children }) {
       c.mat.uniforms.photo.value = ph.tex;
       setCover(c);
     };
+    // How many photos have finished (loaded or failed); the one-time wave waits for all of them.
+    let photosSettled = 0;
     PHOTOS.forEach((url, idx) => {
-      new THREE.TextureLoader().load(url, (tex) => {
-        if (disposed) {
-          tex.dispose();
-          return;
-        }
-        tex.colorSpace = THREE.NoColorSpace;
-        photos[idx] = { tex, aspect: tex.image.width / tex.image.height };
-        cards.forEach((c) => c.photoIdx === idx && applyPhoto(c));
-      });
+      new THREE.TextureLoader().load(
+        url,
+        (tex) => {
+          photosSettled++;
+          if (disposed) {
+            tex.dispose();
+            return;
+          }
+          tex.colorSpace = THREE.NoColorSpace;
+          photos[idx] = { tex, aspect: tex.image.width / tex.image.height };
+          cards.forEach((c) => c.photoIdx === idx && applyPhoto(c));
+        },
+        undefined,
+        () => {
+          photosSettled++;
+        },
+      );
     });
 
     // The name uses a webfont: redraw the letters once it is ready.
@@ -375,7 +385,7 @@ export default function NameRibbon({ children }) {
         if (p >= 1) introSeen = true;
         dirty = true;
       }
-      if (!waveDone && p >= 1 && !userHover) {
+      if (!waveDone && p >= 1 && !userHover && photosSettled >= PHOTOS.length) {
         waveT += dt;
         for (const c of cards) {
           const t0 = c.i * WAVE_STEP;
@@ -544,9 +554,6 @@ export default function NameRibbon({ children }) {
         ref={aboutRef}
         className="relative z-10 flex flex-col items-center px-6 pb-[12vh] pt-[63svh] text-center opacity-0 sm:pt-[58svh]"
       >
-        <p className="mb-6 hidden text-xs uppercase tracking-[0.18em] text-muted-foreground pointer-coarse:block">
-          Touch the letters
-        </p>
         {children}
       </div>
     </section>
