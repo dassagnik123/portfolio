@@ -253,14 +253,13 @@ export default function WorkPage({ controls, onOpenProject }) {
             className="max-w-3xl text-pretty text-[17px] leading-relaxed text-muted-foreground sm:text-xl"
             style={{ fontFamily: "'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif" }}
           >
-            I'm Sagnik — a <b className="font-semibold text-foreground">Design Engineer</b> with{" "}
-            <b className="font-semibold text-foreground">4+ years</b> of experience bridging{" "}
+            I'm Sagnik — a <b className="font-semibold text-foreground">Design Engineer</b> with 4+ years of experience
+            bridging{" "}
             <b className="font-semibold text-foreground">frontend engineering</b> and{" "}
             <b className="font-semibold text-foreground">product design</b>. I've worked on{" "}
             <b className="font-semibold text-foreground">B2B SaaS dashboards</b>, customer support
             tools, procurement workflows, and HR portals, turning complex requirements into
-            intuitive, <b className="font-semibold text-foreground">scalable</b>, and visually
-            polished interfaces.
+            intuitive, scalable, and visually polished interfaces.
           </p>
           <div className="mt-8 flex items-center justify-center gap-3">
             <a
