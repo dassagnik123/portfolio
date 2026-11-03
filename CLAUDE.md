@@ -81,14 +81,15 @@ Both live in `data.js` → `projects`, and share one slide structure.
 
 **Slide order (both studies, fixed):** Overview, The problem, The goal, Research, Key insights, Process, The design, Key decisions, Constraints & trade-offs, Impact, What I learned.
 
-**Case study data shape:** `{ title, created?, duration, tags, overview: [{label,text}], sections: [{heading, blocks}] }`. Block types: `p`, `ul` (`items`), `quote`, `image` (`src`, `alt`, `caption`). `**bold**` is supported in text.
+**Case study data shape:** `{ title, created?, duration, tags, story, overview: [{label,text,href?}], sections: [{heading, blocks}] }` (`story` is the shared "The story behind the work" paragraph shown above the 1-minute overview). Block types: `p`, `ul` (`items`), `quote`, `image` (`src`, `alt`, `caption`). `**bold**` is supported in text.
 
 **Content rules decided so far**
 - No invented metrics. The ticket study (01) says it shipped, the team is small and didn't track numbers, but resolution improved and manual work dropped. Do not add percentages back.
 - Research slide of study 01 lists the three habits only (no "fixes").
 - The "frontend-only by design" point and the "decisions made in the browser" point were removed from study 01's Key decisions.
 - Study 01's dashboard-vs-saved-filters decision includes the slow-API reasoning.
-- Plain words on purpose in study 02.
+- Both studies' copy was replaced wholesale with the author's own written text (prose paragraphs, no bullet lists). Images stay attached to their sections; wording is the author's, so don't rewrite it.
+- Study 02 keeps its "Live demo" row in the overview.
 - Cover images: `cover` and optional `cover2` per project (`/customer-support-cover.jpg` + `/cs-dashboard.png`; `/rec-dashboard.png` + `/rec-evidence.png`).
 
 **Case study page behaviour**

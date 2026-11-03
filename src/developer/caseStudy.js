@@ -1,31 +1,30 @@
 export const ticketDashboardCaseStudy = {
-  title:
-    "Agents couldn't see which tickets were about to breach — so I made urgency impossible to miss",
-  created: "February 16, 2026 · 11:16 AM",
+  title: "Agents couldn't see which tickets were about to breach — so I made urgency impossible to miss",
+  created: "February 16, 2026",
   duration: "1 week",
-  tags: ["Customer Support", "Dashboard", "UI/UX"],
+  tags: [
+    "Customer Support",
+    "Dashboard",
+    "UI/UX"
+  ],
+  story: "This case study follows the problem as it appeared in day-to-day work, the conversations that changed my understanding, and the decisions that shaped the final product. It focuses on what was learned and why the design evolved—not just on the screens that were produced.",
   overview: [
     {
       label: "Role",
-      text: "Solo designer — I did the research, the interaction design and the UI. I was also one of the developers who built it, in the product's React, Next.js and TypeScript codebase",
+      text: "I worked as the solo designer and one of the developers on this internal support-tool improvement. I handled the research, interaction design and UI, then helped build it in the existing React, Next.js and TypeScript codebase."
     },
-    { label: "Timeline", text: "One week, internal sprint" },
     {
       label: "Product",
-      text: "An internal tool support agents use to work through customer tickets before the SLA clock runs out",
-    },
-    {
-      label: "Problem",
-      text: "The SLA data was there, but you couldn't see it. Agents read through the whole queue every shift to work out what to do first, and tickets still went past their deadline.",
+      text: "The work was completed in a one-week internal sprint. The product helps support agents work through customer tickets before their SLA deadlines pass."
     },
     {
       label: "What I did",
-      text: "Two rounds. First I added an SLA status column and filters to the ticket list. Then I built a dashboard that shows the five most urgent, breached and unclaimed tickets the moment an agent logs in, plus bulk actions. Now the system does the sorting, not the agent.",
+      text: "The SLA information already existed, but agents had to scan and sort the queue themselves to find the most urgent work. I first made SLA status visible in the ticket list, then evolved the solution into a dashboard that surfaces urgent, breached and unclaimed tickets as soon as agents log in."
     },
     {
       label: "Outcome",
-      text: "Shipped. We're a small team and didn't track numbers, but we saw tickets getting resolved better and less manual work for agents.",
-    },
+      text: "The changes shipped. The team did not track formal metrics, but day-to-day use suggested better ticket resolution and less manual work."
+    }
   ],
   sections: [
     {
@@ -33,217 +32,200 @@ export const ticketDashboardCaseStudy = {
       blocks: [
         {
           type: "p",
-          text: "This is an internal support tool at a B2B company. Every ticket already had an SLA countdown on it — it just wasn't easy to see. Agents couldn't tell which tickets were closest to missing their deadline, so they read through and re-sorted the queue by hand at the start of every shift. Tickets still slipped.",
+          text: "Support agents had SLA countdowns available, but identifying urgent tickets meant scanning and sorting a long list manually."
         },
         {
           type: "p",
-          text: "Three reasons: nothing on screen told you what was urgent, nothing pushed risky or unclaimed tickets in front of you, and there was no way to update more than one ticket at a time.",
-        },
-      ],
+          text: "As a result, at-risk tickets could go unnoticed, unclaimed work remained unattended, and agents spent time on repetitive updates."
+        }
+      ]
     },
     {
       heading: "The goal",
       blocks: [
         {
-          type: "ul",
-          items: [
-            "Make it obvious at a glance which tickets are about to miss their deadline",
-            "Sort the queue for the agent instead of handing them a flat list",
-            "Cut the repetitive clicking with bulk actions",
-          ],
+          type: "p",
+          text: "I wanted to help agents identify and act on urgent tickets without manually scanning the entire queue."
         },
         {
           type: "p",
-          text: "**How I'd check it worked:** how many tickets miss their SLA · how long from opening the tool to acting on the first ticket · how many one-by-one updates an agent makes per shift · how quickly high-priority and unclaimed tickets get picked up.",
-        },
-      ],
+          text: "The dashboard needed to highlight SLA risks, surface unclaimed work and simplify repetitive actions so agents could focus more on resolving customer issues."
+        }
+      ]
     },
     {
       heading: "Research",
       blocks: [
         {
           type: "p",
-          text: "I only had a week, so I kept it simple: short conversations with 2–3 of the agents who use the tool every day. They all described the same routine — read the whole table, work out in their head what to do first, do it again next shift, then apply the same update to one ticket after another.",
+          text: "The project was an internal sprint, so I had one week to understand the problem and deliver an improvement. I kept the research focused and spoke with two to three agents who used the tool every day."
         },
-        { type: "p", text: "Three habits:" },
         {
-          type: "ul",
-          items: [
-            "**Read and guess** — ranking the whole table in their head every shift",
-            "**Double-checking** — opening tickets just to see how urgent they were",
-            "**One at a time** — the same update applied ticket by ticket",
-          ],
-        },
-      ],
+          type: "p",
+          text: "Their routines were remarkably similar. They read the whole table and guessed which tickets needed attention first. They opened individual tickets just to double-check how urgent they were. And when several tickets needed the same update, they repeated the action row by row."
+        }
+      ]
     },
     {
       heading: "Key insights",
       blocks: [
         {
           type: "p",
-          text: "**What surprised me.** I thought they'd ask for better filters — more controls, more ways to slice the list. They didn't want to deal with filters at all. They wanted the tool to work out what was urgent so they could get straight to fixing things. That changed the brief from \"help them find the urgent tickets faster\" to \"put the urgent tickets in front of them\".",
+          text: "I initially thought the answer might be more filters. But the conversations changed my thinking. Agents did not want another set of controls to manage. They wanted the system to identify the important tickets and put them in front of them."
         },
         {
           type: "p",
-          text: "**Main job:** When I start my shift and the queue is full, I want to know which tickets are closest to missing their deadline, so I can start with those instead of reading every row.",
+          text: "That distinction changed the brief. Instead of helping agents find urgent tickets faster, the product needed to surface urgent tickets automatically."
         },
         {
           type: "p",
-          text: "**Second job:** When I'm handling a lot of tickets at once, I want to update them in one go, so the busywork doesn't eat the time I need for actual fixes.",
-        },
-        {
-          type: "quote",
-          text: "There's a catch hidden in the main job — and don't make me set it up every time. That's the line that turned the design from a saved filter into a dashboard.",
-        },
-      ],
+          text: "There was a second insight too: the solution should not ask agents to configure the same view every day. It needed to be ready when they arrived."
+        }
+      ]
     },
     {
       heading: "Process",
       blocks: [
         {
           type: "p",
-          text: "I did this in two rounds instead of trying to get it right first time.",
+          text: "I approached the work in two rounds. In the first round, I added an SLA Status column to the ticket list, using clear visual cues to show which tickets were at risk. I also added filters for at-risk and unclaimed tickets."
         },
         {
-          type: "ul",
-          items: [
-            "**1. Talk to the agents.** Short conversations with the people who work the queue every day, to see their routine rather than guess it.",
-            "**2. Round 1: show urgency in the list.** An SLA status column and filters for at-risk and unclaimed tickets.",
-            "**3. See where it falls short.** The filters had to be set up again every day, and a filtered list still had no limit.",
-            "**4. Round 2: a dashboard that does the sorting.** The most urgent and unclaimed tickets, waiting for the agent at login.",
-            "**5. Build it.** I was also one of the developers, so I built it in the product's existing Next.js, React and TypeScript codebase.",
-          ],
+          type: "p",
+          text: "Then I reviewed where that solution fell short. Agents had to set up the filters again every day, and even a filtered list could become too long to act on."
         },
-      ],
+        {
+          type: "p",
+          text: "That feedback led to the second round: a dashboard that prepared the most urgent and unclaimed work as soon as agents logged in. Because I was also one of the developers, I built the experience in the existing React, Next.js and TypeScript codebase."
+        }
+      ]
     },
     {
       heading: "The design",
       blocks: [
         {
           type: "p",
-          text: "**Round 1 — show urgency in the list.** I added an SLA Status column with clear colour cues, plus filters for at-risk and unclaimed tickets, so agents could judge urgency without opening anything.",
+          text: "The dashboard became the first screen agents saw. It brought the most urgent work forward without requiring them to apply filters or remember a particular setup."
+        },
+        {
+          type: "p",
+          text: "At the top, it showed the five most urgent tickets, grouped by SLA status. When an agent cleared one, the next most urgent ticket moved into the list. A second table highlighted high-priority and unclaimed tickets, helping ensure that important work did not sit without an owner."
+        },
+        {
+          type: "p",
+          text: "Small workload widgets helped agents see who was carrying what and plan their shift quickly. Bulk actions made it possible to update the status or assignment of multiple selected tickets in one go."
+        },
+        {
+          type: "p",
+          text: "The original SLA Status column stayed in the full ticket list. The dashboard did not replace that view; it gave agents a better starting point while preserving the detailed queue when they needed it."
         },
         {
           type: "image",
           src: "/cs-ticket-list.png",
           alt: "Redesigned ticket list with an SLA Status column as the leftmost field",
-          caption:
-            "Round 1 — an SLA Status column leads every row, so urgency reads without opening a ticket.",
-        },
-        {
-          type: "p",
-          text: "**Round 2 — a dashboard that does the sorting.** Nothing to filter, nothing to set up; it's the first thing agents see when they log in:",
-        },
-        {
-          type: "ul",
-          items: [
-            "**The five most urgent tickets**, grouped by SLA status. Clear one and the next most urgent moves up.",
-            "**A second table for high-priority and unclaimed tickets**, so nothing important sits without an owner.",
-            "**Small widgets showing who's carrying what**, so an agent can plan a shift in a few seconds.",
-          ],
+          caption: "Round 1 — an SLA Status column leads every row, so urgency reads without opening a ticket."
         },
         {
           type: "image",
           src: "/cs-dashboard.png",
           alt: "Dashboard showing SLA-at-risk and unassigned ticket tables, workload stat tiles, and a ticket status breakdown, all visible at login",
-          caption:
-            "Round 2 — the dashboard surfaces the most urgent and unclaimed tickets at login, capped so it stays actionable, alongside workload stats at a glance.",
-        },
-        {
-          type: "p",
-          text: "**Bulk actions** took care of the repetitive updates that used to eat into fixing time.",
+          caption: "Round 2 — the dashboard surfaces the most urgent and unclaimed tickets at login, capped so it stays actionable, alongside workload stats at a glance."
         },
         {
           type: "image",
           src: "/cs-bulk-actions.png",
           alt: "Ticket list with a Take Action menu open, showing Change Status and Assign as bulk actions applied to several selected rows",
-          caption:
-            "Selecting multiple tickets surfaces bulk actions — status changes and assignment no longer need to be done one row at a time.",
-        },
-      ],
+          caption: "Selecting multiple tickets surfaces bulk actions — status changes and assignment no longer need to be done one row at a time."
+        }
+      ]
     },
     {
       heading: "Key decisions",
       blocks: [
         {
-          type: "ul",
-          items: [
-            "**A dashboard, not saved filters.** Getting to the urgent tickets took a few clicks, had to be redone every day, and only answered one question at a time. Saved filters were the obvious fix, but they would have meant backend work I didn't have time for in a week. They also had a speed problem: our data API is slow, and a saved filter has to be fetched first, then the tickets fetched with it, one after the other. That would have made the first screen slower every day. The dashboard avoids that. It loads its own short list of urgent tickets while the full ticket list loads in the background, so agents see something useful straight away.",
-            "**Five tickets, not the full list.** Even filtered, the list had no limit — on a busy day it was a wall of at-risk rows. Five is about as many as an agent can act on at once, so the list never becomes another wall.",
-            "**Keep the SLA column.** The dashboard added to round 1 rather than replacing it, so urgency still reads in the full list.",
-          ],
+          type: "p",
+          text: "Saved filters seemed like the obvious next step after the first round. But they would still ask agents to choose and revisit a view, and they did not solve the problem of an unlimited list of results."
         },
         {
-          type: "quote",
-          text: "Knowing how it would be built shaped what I designed — the dashboard exists partly because I knew what the week could and couldn't hold.",
+          type: "p",
+          text: "There was also a technical constraint. The existing data API was slow. A saved-filter approach would require the application to fetch the filter first and then fetch the tickets using that filter, one after the other. That could make the first screen slower."
         },
-      ],
+        {
+          type: "p",
+          text: "The dashboard took a different approach. It loaded its own short list of urgent tickets while the full ticket list loaded in the background. That meant agents could see something useful quickly, without waiting for the entire queue."
+        },
+        {
+          type: "p",
+          text: "I capped the urgent list at five tickets because a long list would recreate the same problem in a new place. Five gives an agent a manageable set to act on at once. The trade-off is that the dashboard does not show the full size of the at-risk queue; agents can still open the full list for that context."
+        },
+        {
+          type: "p",
+          text: "The goal was not to show every ticket on the first screen. It was to show the next useful action."
+        }
+      ]
     },
     {
       heading: "Constraints & trade-offs",
       blocks: [
         {
-          type: "ul",
-          items: [
-            "One week, in-house, with no time set aside for proper research or testing",
-            "Built on the platform and data that already existed — the SLA information was there, so this was about showing and using it, not changing the backend",
-            "**Saved filters vs a dashboard** — saving filters was cheaper to design, but it needed backend work and would have made a slow API slower, because the filter has to load before the tickets; the dashboard is one more screen to maintain, but it loads alongside the ticket list and answers several questions at once",
-            "**Five tickets vs the full list** — capping it keeps things manageable, but an agent can't tell how big the at-risk pile is without opening the full list",
-          ],
+          type: "p",
+          text: "The work had to fit into a one-week internal sprint, with no time set aside for extensive research or formal testing. I built on the platform and data that already existed; the SLA information was available, so the work focused on showing and using it rather than changing the backend."
         },
-      ],
+        {
+          type: "p",
+          text: "A dashboard is another screen to maintain, but it avoids the sequential filter-then-ticket loading that could make the first screen slower. Capping the list at five keeps it actionable, but agents need the full list to understand the size of the at-risk queue."
+        }
+      ]
     },
     {
       heading: "Impact",
       blocks: [
         {
           type: "p",
-          text: "**Before** — no single place to start, agents landed straight in the ticket list, and urgent tickets never came to them.",
+          text: "The changes shipped. We were a small team and did not formally track metrics, so I cannot claim a measured percentage improvement. But the day-to-day experience changed in a few important ways."
         },
         {
           type: "p",
-          text: "**After** — the dashboard is the first thing they see, at-risk, breached and unclaimed tickets are grouped for them, and workload is visible at a glance.",
+          text: "Agents now start with at-risk, breached and unclaimed tickets already grouped for them. They do not have to scan the entire queue to work out where to begin. Workload is visible at a glance, and bulk actions replace repeated one-by-one updates for common tasks."
+        },
+        {
+          type: "p",
+          text: "The improvement was not simply a new dashboard. The system now handles the initial sorting, so agents can spend more of their attention resolving customer issues."
+        },
+        {
+          type: "p",
+          text: "I would validate the impact further by measuring SLA breach rate, time from opening the tool to acting on the first ticket, the number of one-by-one updates per shift, and how quickly high-priority and unclaimed tickets are picked up."
         },
         {
           type: "image",
           src: "/cs-before-ticket-list.png",
           alt: "Original ticket list packed with creation and issue date/time columns and no SLA urgency indicator",
-          caption:
-            "**Before** — the old list led with timestamps; nothing flagged which tickets were close to breaching.",
+          caption: "**Before** — the old list led with timestamps; nothing flagged which tickets were close to breaching."
         },
         {
           type: "image",
           src: "/cs-dashboard.png",
           alt: "Redesigned dashboard showing SLA-at-risk and unassigned ticket tables plus workload stat tiles at login",
-          caption:
-            "**After** — the dashboard opens straight into at-risk, breached and unclaimed tickets, with workload visible at a glance.",
-        },
-        {
-          type: "p",
-          text: "The change shipped. We're a small company and didn't measure it formally, so I won't quote percentages. What we saw in day-to-day use:",
-        },
-        {
-          type: "p",
-          text: "**Better ticket resolution**, because urgent tickets were in front of agents instead of buried in the list · **Less manual work**, because bulk actions replaced one-by-one updates",
-        },
-      ],
+          caption: "**After** — the dashboard opens straight into at-risk, breached and unclaimed tickets, with workload visible at a glance."
+        }
+      ]
     },
     {
       heading: "What I learned",
       blocks: [
         {
           type: "p",
-          text: "The real lesson wasn't the dashboard, it was the second round. My first fix was sensible and solved the obvious problem, but the feedback showed it had quietly created a new one: setup work every day, and a filtered list too long to act on. The dashboard came out of taking that seriously instead of defending what I'd already made.",
+          text: "The biggest lesson came from the second round. My first solution was reasonable: show SLA status and provide filters. But feedback revealed that it still left agents with setup work every day and a list that could be too long to act on."
         },
         {
           type: "p",
-          text: "With more time I'd test it properly — the simplest check being whether an agent can spot their most urgent ticket within ten seconds of opening the dashboard.",
+          text: "Instead of defending the first design, I treated that friction as evidence that the problem had not been fully solved. The dashboard came from changing the approach, not simply adding more features."
         },
         {
           type: "p",
-          text: "The bigger takeaway: the information was already in the product. The design's job was to do something with it, so the agent didn't have to ask twice.",
-        },
-      ],
-    },
-  ],
+          text: "I also learned how closely design and implementation constraints can work together. Understanding the API behaviour and existing codebase helped me choose a solution that was useful for agents and achievable within the sprint."
+        }
+      ]
+    }
+  ]
 };

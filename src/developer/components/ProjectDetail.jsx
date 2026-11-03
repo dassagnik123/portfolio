@@ -185,9 +185,20 @@ function SectionSlide({ section }) {
   );
 }
 
-function CaseStudyOverview({ rows }) {
+function CaseStudyOverview({ rows, story }) {
   return (
     <section className="rounded-2xl border border-neutral-800 bg-neutral-900/50 p-5 sm:p-6">
+      {story && (
+        <div className="mb-5 border-b border-neutral-800/70 pb-5">
+          <div className="mb-3 flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-accent-work" />
+            <h3 className="font-display text-xs font-bold uppercase tracking-[0.18em] text-neutral-300">
+              The story behind the work
+            </h3>
+          </div>
+          <p className="text-sm leading-relaxed text-neutral-300 sm:text-base">{story}</p>
+        </div>
+      )}
       <div className="mb-4 flex items-center gap-2">
         <span className="h-1.5 w-1.5 rounded-full bg-accent-work" />
         <h3 className="font-display text-xs font-bold uppercase tracking-[0.18em] text-neutral-300">
@@ -305,7 +316,7 @@ function CoverSlide({ project, coverFailed, onCoverError }) {
 
           {caseStudy.overview && (
             <div className="flex flex-col lg:order-5 [&>section]:flex-1">
-              <CaseStudyOverview rows={caseStudy.overview} />
+              <CaseStudyOverview rows={caseStudy.overview} story={caseStudy.story} />
             </div>
           )}
         </>

@@ -3,34 +3,34 @@
 export const recruitmentCaseStudy = {
   title: "One place to run hiring, with AI that helps and people who decide",
   duration: "2 months",
-  tags: ["HR tech", "AI workflow", "UI/UX"],
+  tags: [
+    "HR tech",
+    "AI workflow",
+    "UI/UX"
+  ],
+  story: "This case study follows the problem as it appeared in day-to-day work, the conversations that changed my understanding, and the decisions that shaped the final product. It focuses on what was learned and why the design evolved—not just on the screens that were produced.",
   overview: [
     {
       label: "Role",
-      text: "Designer and front-end developer. I wrote the plan, mapped the screens, designed the screens in Figma, with AI to move faster, and built the working product.",
+      text: "I worked as both the designer and front-end developer on Northwind Talent. I wrote the plan, mapped the screens, designed the experience in Figma with AI to move faster, and built the working product. The project took about two months, with around five days spent designing and testing with AI."
     },
-    { label: "Timeline", text: "About 2 months in total. Designing and testing with AI took about 5 days of that." },
     {
       label: "Product",
-      text: "Northwind Talent: a website where HR teams post jobs, review candidates, run interviews and welcome new hires. It has three parts: one for HR, one for interviewers and one for candidates.",
+      text: "Northwind Talent brings the hiring journey together: HR teams can post jobs, review candidates, run interviews and welcome new hires. It has three connected portals for HR, interviewers and candidates."
     },
     {
       label: "Problem",
-      text: "Hiring work is scattered across documents, spreadsheets and email, so nobody can see where a candidate is or why a decision was made. AI tools can make it worse by choosing without showing why.",
-    },
-    {
-      label: "What I did",
-      text: "Built one place for the whole journey, from posting a job to a new hire's first day. AI helps with reading and writing. People make every decision.",
+      text: "The starting problem was that hiring information lived across documents, spreadsheets and email. I wanted to create one place for the process, using AI to help with reading and writing while keeping every hiring decision with people."
     },
     {
       label: "Outcome",
-      text: "The product is in production. It helps HR create jobs faster, review candidates faster and answer one question quickly: is this person right for my organization? I haven't measured the time saved yet.",
+      text: "The product is in production. We have not formally measured time saved, so the impact is described without invented percentages."
     },
     {
       label: "Live demo",
       text: "Try the working product ↗",
-      href: "https://recruitment-onboarding-geew75kta-dassagnik123s-projects.vercel.app/hr",
-    },
+      href: "https://recruitment-onboarding-geew75kta-dassagnik123s-projects.vercel.app/hr"
+    }
   ],
   sections: [
     {
@@ -38,260 +38,218 @@ export const recruitmentCaseStudy = {
       blocks: [
         {
           type: "p",
-          text: "Hiring has many steps: write the job, post it, read resumes, interview, make an offer and help the new person get started. In many teams every step lives somewhere different. A document here, a spreadsheet there, a long email thread.",
-        },
-        {
-          type: "quote",
-          text: "Hiring work is scattered, so nobody can see where a candidate is, or why a decision was made.",
-        },
-        { type: "p", text: "It hurts each person in a different way:" },
-        {
-          type: "ul",
-          items: [
-            "**HR** can't tell where each candidate is or what needs them next, so things get stuck or forgotten.",
-            "**Interviewers** don't know what to score, and other people's opinions shape their own.",
-            "**Candidates** apply and then wait, with no idea where they stand.",
-          ],
+          text: "Hiring information was scattered across documents, spreadsheets and emails. HR struggled to track candidate progress, interviewers lacked a consistent evaluation process, and candidates had limited visibility into their application status."
         },
         {
           type: "p",
-          text: "AI tools make it worse when they score or reject people without saying why.",
-        },
-      ],
+          text: "As AI entered hiring, another challenge emerged: decisions needed to remain transparent and under human control."
+        }
+      ]
     },
     {
       heading: "The goal",
       blocks: [
         {
-          type: "ul",
-          items: [
-            "Put the whole journey in one place, from posting a job to a new hire's first day",
-            "Let HR see where every candidate is and what needs them next",
-            "Give interviewers clear points to score, without other people's opinions shaping theirs",
-            "Keep candidates informed at every step",
-            "Let AI help with reading and writing, but leave every decision to people",
-          ],
+          type: "p",
+          text: "I wanted to bring the entire hiring journey—from job creation to onboarding—into one platform. HR needed better visibility, interviewers needed structured evaluations, and candidates needed clear progress updates."
         },
         {
           type: "p",
-          text: "**How I'd check it worked:** time from \"new job\" to published · time spent on each resume with the evidence view compared with reading by hand · time from the interview to a decision · time from offer accepted to the first day.",
-        },
-      ],
+          text: "AI would assist with repetitive tasks and evidence gathering, while all hiring decisions remained human-led."
+        }
+      ]
     },
     {
       heading: "Research",
       blocks: [
         {
           type: "p",
-          text: "Before I designed anything, I wanted to see how hiring really happens, not how a tool says it should.",
-        },
-        {
-          type: "ul",
-          items: [
-            "**Talked to HR and a recruiter** in our own organization. How did they interview people before? Where did it get stuck? What would the ideal way of hiring look like to them?",
-            "**Looked at interviewers' side** of the same story: what they are asked to do, what they see, and how they give their opinion.",
-            "**Studied other hiring products.** I compared how they handle jobs, candidates, interviews and onboarding, and where they let AI make the call.",
-          ],
+          text: "Before thinking about screens, I wanted to understand how hiring actually happened in our organization. I spoke with HR and a recruiter about the way they worked before, where the process slowed down, and what a better experience would look like."
         },
         {
           type: "p",
-          text: "I turned this into a short list of what HR wants from the portal, how it should fit with the tools they already use, and how they work today. That list became the starting point for the flow and for the PRD.",
+          text: "I also looked at the interviewers' side: what information they received, what they were expected to assess, and how they shared feedback. Alongside those conversations, I reviewed other hiring products to understand how they handled jobs, candidates, interviews and onboarding—and where AI was allowed to influence decisions."
         },
-      ],
+        {
+          type: "p",
+          text: "I brought the findings together into a short set of product requirements. They became the foundation for the user flows and the PRD."
+        }
+      ]
     },
     {
       heading: "Key insights",
       blocks: [
         {
           type: "p",
-          text: "From the research I wrote a few ground rules before drawing any screen. Every later decision had to fit them:",
-        },
-        {
-          type: "ul",
-          items: [
-            "**AI assists, people decide.** It drafts criteria and finds evidence. It never shortlists, rejects or hires.",
-            "**Scores are only a guide.** They use the job's points only, never personal traits, and what's missing is left out, not counted as zero.",
-            "**Every screen has all its states:** loading, empty, error and success.",
-            "**Candidates see feedback only after HR releases it.**",
-            "**Three portals, one set of records:** HR, Interviewer and Candidate each see only their slice.",
-          ],
+          text: "The research made one principle especially important: AI should assist, but people should decide. It could help draft criteria and find evidence, but it could not shortlist, reject or hire."
         },
         {
           type: "p",
-          text: "The first change came early. I had planned a separate recruiter role, but in a team this size HR already does that work. I merged them, which removed a whole portal and a set of hand-offs.",
+          text: "A missing skill or qualification could not automatically count as a failure. It had to appear as “Unknown” so a human could ask about it. A match score needed to be presented as indicative and explain what it was based on."
         },
-      ],
+        {
+          type: "p",
+          text: "Interviewers needed to submit their own scorecards before seeing other people's feedback. Candidates should only see feedback after HR chose to release it. Each person also needed to see only the information relevant to their role across the three connected portals."
+        },
+        {
+          type: "p",
+          text: "An early assumption changed here too. I had planned a separate recruiter role, but in a team this size HR already did that work. Merging the responsibilities removed an unnecessary portal and extra hand-offs."
+        }
+      ]
     },
     {
       heading: "Process",
       blocks: [
         {
           type: "p",
-          text: "I worked in eight steps, and went back a step whenever something didn't work.",
+          text: "I started by mapping the hiring journey with HR and interviewers, from creating a job through to a new hire's first day. We walked through the steps together, discussed what information was needed at each point, and adjusted the flow based on their feedback."
         },
         {
-          type: "ul",
-          items: [
-            "**1. Start from HR's request.** HR asked for a better hiring portal.",
-            "**2. Ask three questions first.** Who are the users? What is the main goal of this portal? And what is your ideal way of hiring, and what would you suggest? Everything else depends on these answers.",
-            "**3. Take short notes.** What HR wants from the portal, how it should fit with their other tools, and how they work today.",
-            "**4. Decide the flow with HR and the interviewers.** I drew the hiring flow on paper, from posting a job to the first day, and walked through it step by step with them. I changed the flow after their feedback.",
-            "**5. Write a PRD.** I reviewed it many times, improving it each round, until it fit HR best.",
-            "**6. Design in Figma, with AI.** I designed the screens in Figma and used AI to draft them quickly. Designing and testing this way took about 5 days.",
-            "**7. Test the design with HR and the other stakeholders.** I walked them through the Figma screens. Is this working for you?",
-            "**8. Iterate until the flow is right, then build.** I fixed the design and tested again until the flow felt right. Only then did I move it into code, and kept testing there too.",
-          ],
+          type: "p",
+          text: "I translated the agreed flow into a PRD and refined it over several rounds until it reflected how HR needed to work. I then designed the screens in Figma, using AI to speed up early drafts without treating generated output as final."
         },
         {
-          type: "quote",
-          text: "Test, fix, test again. That's the whole workflow.",
-        },
-      ],
+          type: "p",
+          text: "I walked HR and other stakeholders through the Figma screens, gathered feedback, and iterated until the flow felt right. Only then did I move into development, continuing to test the experience in the running product."
+        }
+      ]
     },
     {
       heading: "The design",
       blocks: [
         {
           type: "p",
-          text: "I designed in Figma first and wrote code later. I used AI to draft screens fast, then tested them with HR and the other stakeholders and kept improving them until the flow was almost right.",
+          text: "The product brought together job creation, candidate review, interview evaluation and onboarding. HR could see the candidate pipeline and what needed attention next. Interviewers could complete independent scorecards. Candidates could follow their application progress and see what had been communicated to them."
         },
         {
-          type: "ul",
-          items: [
-            "**One flow, three portals.** One flow for the whole journey, from posting a job to a new hire's first day, split into three parts: HR, interviewers and candidates.",
-            "**One look on every screen.** I used shadcn/ui components so every screen looked like part of one product, and designed each form before building it.",
-            "**The design file matches the product.** After building it, I put 42 screens from the live app back into Figma.",
-          ],
+          type: "p",
+          text: "I used shadcn/ui components to keep the interface consistent and designed each form before building it. After implementation, I brought 42 screens from the live application back into Figma so the design file reflected what had actually been built."
+        },
+        {
+          type: "p",
+          text: "The design and AI-assisted testing phase took about five days within the overall two-month project."
         },
         {
           type: "image",
           src: "/rec-dashboard.png",
           alt: "The HR dashboard showing open jobs, applications, decisions pending and what needs action",
-          caption: "HR's dashboard: where every candidate is, and what needs action next.",
-        },
-        {
-          type: "p",
-          text: "Four ideas run through almost every decision from here: people decide and AI assists, remove what doesn't earn its place, keep one source of truth, and let the process move itself.",
-        },
-      ],
+          caption: "HR's dashboard: where every candidate is, and what needs action next."
+        }
+      ]
     },
     {
       heading: "Key decisions",
       blocks: [
         {
           type: "p",
-          text: "**Decide once, use everywhere.** HR sets up the list of points **once for each role and level**, for example Senior Product Designer. Each point is marked as needed or nice to have, and whether it's checked on the resume or in the interview. Every job starts from that setup, and the job description, resume checks and scorecards all use the same points.",
+          text: "I wanted HR to define evaluation criteria once and reuse them throughout the journey. The system lets HR configure points for each role and level, marking each as required or nice to have and assigning it to resume review or interview assessment. Job descriptions, resume checks and scorecards then use the same criteria."
+        },
+        {
+          type: "p",
+          text: "For each criterion, resume review shows a supporting quote and page reference, with a status of Found, Partial or Unknown. This gives HR and interviewers evidence they can verify. If the resume does not contain the information, it appears as Unknown rather than as a failed requirement."
+        },
+        {
+          type: "p",
+          text: "Interviewers score only their own round, and other feedback remains hidden until they submit. HR records a reason for shortlist, hold or rejection decisions. If an AI score is unavailable, the product asks for manual review rather than silently hiding the candidate."
+        },
+        {
+          type: "p",
+          text: "Where the system already knows an action has happened, it can complete the related step. Sending and accepting an appointment letter complete their respective steps, jobs close when all openings are filled, and candidates can reuse their profile information for later applications."
+        },
+        {
+          type: "p",
+          text: "Each application has its own page showing completed steps, what comes next and a copy of what was sent. Internal notes remain private. After an offer is accepted, onboarding continues in the same place, with a status and due date for each step."
         },
         {
           type: "image",
           src: "/rec-criteria.png",
           alt: "The job setup screen for Senior Product Designer, listing eight points to look for and the interview rounds",
-          caption: "One setup per role and level. Each point says where it's checked.",
-        },
-        {
-          type: "p",
-          text: "**Show the evidence.** When the AI reads a resume, it shows its working: a short quote and the page for each point, marked **Found**, **Partial** or **Unknown**. If the resume says nothing, it's Unknown, not failed, so the interviewer knows to ask.",
+          caption: "One setup per role and level. Each point says where it's checked."
         },
         {
           type: "image",
           src: "/rec-evidence.png",
           alt: "A candidate's resume check showing each point as Found, Partial or Unknown with quotes, and a match score of 92 out of 100",
-          caption: "Every point shows a quote from the resume. Missing information is \"Unknown\", never a fail.",
-        },
-        {
-          type: "ul",
-          items: [
-            "**Every shortlist, hold or reject needs a written reason,** saved with the person's name and the time.",
-            "**Interviewers only score their own round,** and other people's feedback stays hidden until they submit theirs.",
-            "**If the AI score is missing, the app asks for a manual review** instead of quietly hiding the candidate.",
-            "**Steps complete themselves when the system already knows.** Sending and accepting the appointment letter finish their own steps, and jobs close when every opening is filled.",
-            "**A candidate fills in their profile once.** The next application pre-fills it.",
-          ],
+          caption: "Every point shows a quote from the resume. Missing information is \"Unknown\", never a fail."
         },
         {
           type: "image",
           src: "/rec-decision.png",
           alt: "A candidate record showing three interviewers' scores side by side, their written feedback and a final decision panel",
-          caption: "Independent scorecards, then one decision with a reason.",
-        },
-        {
-          type: "p",
-          text: "**Candidates are never left guessing.** Every application has its own page with the steps so far, what comes next and a copy of what was sent.",
+          caption: "Independent scorecards, then one decision with a reason."
         },
         {
           type: "image",
           src: "/rec-application.png",
           alt: "A candidate's application page with the interview details, what they submitted and a progress timeline",
-          caption: "A clear timeline and what was sent. Internal notes stay private.",
+          caption: "A clear timeline and what was sent. Internal notes stay private."
         },
         {
           type: "image",
           src: "/rec-onboarding.png",
           alt: "An onboarding page with a six-step progress bar, a task list with due dates and statuses, and the joining documents",
-          caption: "From offer to first day, in the same place. Every step has a due date and a status.",
-        },
-      ],
+          caption: "From offer to first day, in the same place. Every step has a due date and a status."
+        }
+      ]
     },
     {
       heading: "Constraints & trade-offs",
       blocks: [
         {
-          type: "ul",
-          items: [
-            "About two months in total, with roughly five days for designing and testing with AI",
-            "**AI never decides** — letting it shortlist would be faster, but people need to be able to explain every decision, so it only reads and drafts",
-            "**A score vs a verdict** — a match score helps HR sort, but a bare number looks like a verdict, so it's labelled \"Indicative\" and says what it's based on (\"based on N of M points\")",
-            "**Bulk actions vs care** — bulk shortlist, hold or reject saves time, but still needs one shared reason and only covers screening. Interviews and offers stay one by one",
-            "**One-click verify vs checking each document** — most checks pass, so verifying all documents is one click, with undo for the rare mistake",
-            "**Locked jobs vs flexibility** — published jobs can't be edited, so no one applies to one thing and gets judged on another. A job that is paused shows On hold to candidates instead",
-          ],
+          type: "p",
+          text: "The project took about two months, with roughly five days for designing and testing with AI. That meant choosing what would create the most value without expanding the scope unnecessarily."
         },
-      ],
+        {
+          type: "p",
+          text: "Allowing AI to shortlist candidates might have made the process faster, but it would have weakened human accountability. I chose explainable evidence and recorded reasons instead."
+        },
+        {
+          type: "p",
+          text: "Bulk actions reduce repetitive work, so HR can shortlist, hold or reject a group of candidates with one shared reason during screening. Interviews and offers remain individual decisions because they need more care."
+        },
+        {
+          type: "p",
+          text: "Published jobs are locked so candidates are not assessed against a different version of the role from the one they applied to. If a job is paused, candidates see that it is on hold."
+        }
+      ]
     },
     {
       heading: "Impact",
       blocks: [
         {
           type: "p",
-          text: "The product is in production. There was no time to measure it formally, so instead of guessing percentages, here's what the design takes out of an HR person's day:",
-        },
-        {
-          type: "ul",
-          items: [
-            "**No more starting a job from a blank page.** A saved setup per role and level, plus an AI first draft, fills in the points, documents and rounds.",
-            "**No more reading every resume end to end.** Each point shows a quote from the resume, marked Found, Partial or Unknown, so HR sees the evidence at a glance.",
-            "**No more chasing to find where a candidate is.** Every candidate's stage and next step is in one place, from the first look to the first day.",
-            "**Handling many applicants takes one action, not many.** Bulk shortlist, hold or reject covers a whole group with one shared reason.",
-            "**Onboarding steps don't need ticking by hand.** Sending and accepting the appointment letter complete their own steps.",
-          ],
+          text: "The product is in production. We did not have time to formally measure time saved or conversion improvements, so I am not attaching percentages to the outcome."
         },
         {
           type: "p",
-          text: "The biggest change is the question HR can now answer quickly. Before, they had to read a lot to get a rough idea. With AI that shows its evidence and a clearer design, it's one question:",
-        },
-        {
-          type: "quote",
-          text: "Is this person right for my organization?",
+          text: "HR no longer has to start every job from a blank page. Saved role-and-level configurations and AI-assisted drafts provide a starting point. Resume evidence is brought together against agreed criteria, candidate stages and next steps are visible in one place, and bulk screening actions reduce repeated updates."
         },
         {
           type: "p",
-          text: "The AI never answers it for them. It brings the evidence together, and a person makes the call and writes down why. Shipping it was the first step. Measuring it is the next.",
+          text: "The next step is to measure the experience against the goals defined at the start: time from creating a job to publishing it, time spent reviewing each resume, time from interview to decision, and time from offer acceptance to the first day."
         },
-      ],
+        {
+          type: "p",
+          text: "The most important change is not that AI answers whether someone is right for the organization. It does not. It brings the evidence together so the people responsible can make—and explain—the decision."
+        }
+      ]
     },
     {
       heading: "What I learned",
       blocks: [
         {
-          type: "ul",
-          items: [
-            "**Decide once, use everywhere.** Setting up the job's points once made every other screen simpler.",
-            "**Saying no to AI deciding shaped the design.** It's why there are reason boxes, hidden feedback until you've scored, and \"Unknown\" instead of \"fail\".",
-            "**Taking things out helped most.** Fewer roles, fewer steps and fewer pages made the product clearer.",
-            "**Using it beats looking at it.** Spacing and navigation problems only showed up when I clicked through the running product.",
-          ],
+          type: "p",
+          text: "The strongest product decisions came from understanding the work before designing the interface. Merging the recruiter responsibility into HR removed unnecessary hand-offs. Reusing role criteria made several parts of the product more consistent. Showing evidence made AI outputs easier to question and verify."
         },
-      ],
-    },
-  ],
+        {
+          type: "p",
+          text: "I also learned that a working product reveals issues that static screens cannot. Testing the built experience helped me notice navigation and spacing problems that were not obvious in Figma."
+        },
+        {
+          type: "p",
+          text: "If I were to continue the work, I would focus on collecting baseline and post-launch metrics, then use those findings to decide which parts of the hiring journey need further improvement."
+        }
+      ]
+    }
+  ]
 };
