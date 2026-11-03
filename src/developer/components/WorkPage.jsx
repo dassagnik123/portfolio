@@ -258,12 +258,21 @@ export default function WorkPage({ controls, onOpenProject }) {
             care about most is turning complex, multi-role workflows into interfaces teams can move
             through without thinking.
           </p>
-          <a
-            href="#projects"
-            className="mt-8 cursor-pointer rounded-full bg-white px-12 py-4 text-base font-medium text-black transition-transform hover:scale-[1.03] sm:px-14 sm:py-5"
-          >
-            View my work
-          </a>
+          <div className="mt-8 flex items-center justify-center gap-3">
+            <a
+              href="#projects"
+              className="cursor-pointer rounded-full bg-white px-7 py-4 text-base font-medium text-black transition-transform hover:scale-[1.03] sm:px-14 sm:py-5"
+            >
+              View my work
+            </a>
+            {/* Phones only: a quick way down to the contact section. */}
+            <a
+              href="#contact"
+              className="liquid-glass cursor-pointer rounded-full px-7 py-4 text-base font-medium text-foreground transition-transform hover:scale-[1.03] sm:hidden"
+            >
+              Contact
+            </a>
+          </div>
         </NameRibbon>
 
         {/* Projects */}

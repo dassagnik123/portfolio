@@ -1,9 +1,9 @@
-@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=DynaPuff:wght@400;500;600;700&family=Oswald:wght@500;600&family=Instrument+Serif:ital@0;1&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans:wght@400;500;600&family=DynaPuff:wght@400;500;600;700&family=Oswald:wght@500;600&family=Instrument+Serif:ital@0;1&display=swap");
 @import "tailwindcss" source(".");
 
 @theme {
   --font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Noto Sans", ui-sans-serif, system-ui, sans-serif;
   --font-heading: "DynaPuff", cursive;
   --font-condensed: "Oswald", "Arial Narrow", sans-serif;
   --color-accent-work: #ffffff;
@@ -45,7 +45,7 @@
 /* Scoped to the 9-5 page so the case-study overlay keeps its own fonts. */
 .work-theme {
   --font-display: "Instrument Serif", serif;
-  --font-body: "Inter", sans-serif;
+  --font-body: "Noto Sans", sans-serif;
   font-family: var(--font-body);
 }
 
@@ -139,7 +139,7 @@
   border-radius: 999px;
   background: #f4f2ef;
   color: #0a0a0a;
-  font-family: "Inter", sans-serif;
+  font-family: "Noto Sans", sans-serif;
   font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.01em;
