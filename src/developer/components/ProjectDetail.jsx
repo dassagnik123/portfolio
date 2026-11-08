@@ -627,10 +627,11 @@ export default function ProjectDetail({ project, origin, onBack }) {
                     aria-hidden={!near}
                     aria-current={offset === 0}
                     onClick={() => (isPage ? scrollToSection(i) : goTo(i))}
-                    className={`absolute left-1/2 top-0 flex h-full items-center whitespace-nowrap font-display text-xs font-semibold transition-[transform,opacity,color] duration-500 ease-out motion-reduce:transition-none ${
+                    className={`absolute left-1/2 top-0 flex h-full items-center justify-center text-balance text-center font-display text-xs font-semibold leading-tight transition-[transform,opacity,color] duration-500 ease-out motion-reduce:transition-none ${
                       offset === 0 ? "text-accent-work" : "text-neutral-300"
                     }`}
                     style={{
+                      width: offset === 0 ? "34cqw" : "30cqw",
                       transform: `translateX(calc(-50% + ${offset} * 36cqw)) scale(${offset === 0 ? 1.2 : 0.9})`,
                       opacity: offset === 0 ? 1 : near ? 0.4 : 0,
                       pointerEvents: near ? "auto" : "none",

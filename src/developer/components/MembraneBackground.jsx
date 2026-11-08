@@ -27,9 +27,11 @@ export default function MembraneBackground() {
     const grid = phone ? PHONE_GRID : DESKTOP_GRID;
     const COLS = grid.cols;
     const ROWS = grid.rows;
-    const sizeScale = phone ? 0.55 : 1;
+    const sizeScale = phone ? 0.85 : 1;
     const alphaScale = phone ? 0.5 : 1;
     const pushScale = phone ? 0.35 : 1;
+    // Phones (and reduced motion) get a still, plain-white dot grid: no physics, no colour.
+    const still = phone || reduceMotion;
     let width = 0;
     let height = 0;
     let verts = [];
@@ -148,7 +150,7 @@ export default function MembraneBackground() {
         const size = (0.6 + centerFactor * 0.6 + (disp > 0.5 ? disp * 0.03 : 0)) * sizeScale;
         const baseAlpha = 0.06 + centerFactor * 0.18;
         const activeAlpha = disp > 0.5 ? Math.min(0.9, disp * 0.05) : 0;
-        let alpha = Math.max(baseAlpha, activeAlpha) * alphaScale;
+        let alpha = phone ? 0.05 + centerFactor * 0.09 : Math.max(baseAlpha, activeAlpha) * alphaScale;
 
         // Keep the area behind the content readable while the cursor is on the page.
         if (mouse.inside) {
@@ -156,7 +158,7 @@ export default function MembraneBackground() {
           if (e < 1) alpha *= 1 - (1 - e) * 0.7;
         }
 
-        const color = `${Math.round(r)},${Math.round(g)},${Math.round(b)}`;
+        const color = phone ? "255,255,255" : `${Math.round(r)},${Math.round(g)},${Math.round(b)}`;
         if (!phone && (disp > 1.5 || centerFactor > 0.4)) {
           ctx.fillStyle = `rgba(${color},${alpha * 0.25})`;
           ctx.beginPath();
@@ -195,10 +197,13 @@ export default function MembraneBackground() {
     const onUp = () => {
       mouse.pressing = false;
     };
-    const onResize = () => build();
+    const onResize = () => {
+      build();
+      if (still) draw();
+    };
 
     build();
-    if (reduceMotion) {
+    if (still) {
       draw();
     } else {
       raf = requestAnimationFrame(frame);
