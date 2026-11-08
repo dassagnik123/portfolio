@@ -106,7 +106,7 @@ export default function App() {
       >
         <div
           className="text-[clamp(32px,4.4vw,56px)] tracking-[-0.01em] text-[#f4f2ef]"
-          style={{ fontFamily: "'Instrument Serif', serif" }}
+          style={{ fontFamily: "'Olivera', serif" }}
         >
           {archive.name[0]} <em>{archive.name[1]}</em>
         </div>

@@ -64,7 +64,7 @@ function drawLetter(canvas, letter) {
   ctx.fillStyle = CARD_INK;
   ctx.textAlign = "center";
   ctx.textBaseline = "alphabetic";
-  ctx.font = `400 ${Math.round(h * 0.78)}px "Instrument Serif", serif`;
+  ctx.font = `400 ${Math.round(h * 0.78)}px "Olivera", serif`;
   ctx.fillText(letter, w / 2, h * 0.76);
 }
 
@@ -211,7 +211,7 @@ export default function NameRibbon({ children }) {
     });
 
     // The name uses a webfont: redraw the letters once it is ready.
-    document.fonts?.load('400 100px "Instrument Serif"').then(() => {
+    document.fonts?.load('400 100px "Olivera"').then(() => {
       if (disposed) return;
       cards.forEach((c) => {
         drawLetter(c.letterCanvas, c.letter);
@@ -493,7 +493,7 @@ export default function NameRibbon({ children }) {
   }, []);
 
   const headline = {
-    fontFamily: "'Instrument Serif', serif",
+    fontFamily: "'Olivera', serif",
     fontSize: "clamp(40px, 6.7vw, 130px)",
     lineHeight: 1,
     letterSpacing: "-0.055em",

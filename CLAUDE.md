@@ -17,7 +17,7 @@ There is only one version of the site now. The earlier version switcher and the 
 - Tailwind CSS v4 via `@tailwindcss/vite` (`source(".")` import in `src/developer/index.css`; uses the `pointer-coarse:` variant)
 - three.js 0.185 (hand-written `ShaderMaterial` in the hero; `@react-three/fiber`, `@shadergradient/react`, `camera-controls`, `three-stdlib` are also installed)
 - oxlint for linting
-- Fonts (Google Fonts, imported in the CSS files): **Instrument Serif** (display serif, hero letters, headings), **Plus Jakarta Sans** (intro paragraph, case study titles), **Noto Sans** (body text, replaced Inter), plus DynaPuff and Oswald in a few places
+- Fonts (Google Fonts, imported in the CSS files): **Olivera** (display serif, hero letters, headings; demo font in `public/fonts/Olivera.ttf`), **Plus Jakarta Sans** (intro paragraph, case study titles), **Noto Sans** (body text, replaced Inter), plus Oswald (the 9-5 / 5-9 toggle only)
 
 ## Commands
 
@@ -54,7 +54,7 @@ src/developer/
     NameRibbon.jsx              the hero: three.js ribbon of letter cards spelling SAGNIK DAS
     ProjectDetail.jsx           the case study overlay (slides)
     PersonalArchive.jsx         the 5-9 photo sphere
-    TopControls.jsx             mode toggle, LinkedIn, X, Resume
+    TopControls.jsx             mode toggle, LinkedIn, Resume (the X link is hidden for now; `socials.x` and `TwitterIcon` are kept)
     ModeToggle.jsx, CustomCursor.jsx, Gallery.jsx, Polaroid.jsx, ProjectCard.jsx,
     ImageSlot.jsx, RotatingText.jsx, ShaderBackground.jsx, TicketDashboardMockup.jsx, icons.jsx
 public/                         images served as-is (see Assets)
@@ -76,12 +76,12 @@ Both live in `data.js` → `projects`, and share one slide structure.
 
 | # | Title | Duration | Tags | File |
 |---|-------|----------|------|------|
-| 01 | Agents couldn't see which tickets were about to breach — so I made urgency impossible to miss | 1 week | Customer Support, Dashboard, UI/UX | `caseStudy.js` |
+| 01 | Agents couldn't see which tickets were about to breach — so I made urgency impossible to miss | 2 weeks (1 design, 1 development) | Customer Support, Dashboard, UI/UX | `caseStudy.js` |
 | 02 | One place to run hiring, with AI that helps and people who decide | ~2 months | HR tech, AI workflow, UI/UX | `caseStudyRecruitment.js` |
 
 **Slide order (both studies, fixed):** Overview, The problem, The goal, Research, Key insights, Process, The design, Key decisions, Constraints & trade-offs, Impact, What I learned.
 
-**Case study data shape:** `{ title, created?, duration, tags, story, overview: [{label,text,href?}], sections: [{heading, blocks}] }` (`story` is the shared "The story behind the work" paragraph shown above the 1-minute overview). Block types: `p`, `ul` (`items`), `quote`, `image` (`src`, `alt`, `caption`). `**bold**` is supported in text.
+**Case study data shape:** `{ title, created?, duration, tags, story, overview: [{label,text,href?}], sections: [{heading, blocks}] }` (`story` is the shared "The story behind the work" paragraph shown above the 1-minute overview). Block types: `p`, `ul` (`items`), `quote`, `image`, and the chat pair `q` (question, left grey bubble) / `a` (answer, right white bubble) (`src`, `alt`, `caption`). `**bold**` is supported in text.
 
 **Content rules decided so far**
 - No invented metrics. The ticket study (01) says it shipped, the team is small and didn't track numbers, but resolution improved and manual work dropped. Do not add percentages back.
@@ -90,6 +90,7 @@ Both live in `data.js` → `projects`, and share one slide structure.
 - Study 01's dashboard-vs-saved-filters decision includes the slow-API reasoning.
 - Both studies' copy was replaced wholesale with the author's own written text (prose paragraphs, no bullet lists). Images stay attached to their sections; wording is the author's, so don't rewrite it.
 - Study 02 keeps its "Live demo" row in the overview.
+- Both studies have a `video` (study 01 `/customer-support-walkthrough.mp4`, 30 s, 1440x1024, with `videoRatio`; study 02 `/keross-walkthrough.mp4`): it replaces the cover images on the home card and at the top of the case study (muted, looping, no player controls; `cover` is the poster).
 - Cover images: `cover` and optional `cover2` per project (`/customer-support-cover.jpg` + `/cs-dashboard.png`; `/rec-dashboard.png` + `/rec-evidence.png`).
 
 **Case study page behaviour**
@@ -97,6 +98,8 @@ Both live in `data.js` → `projects`, and share one slide structure.
 - Cover title uses the same size as slide titles (`text-3xl` up to `lg:text-5xl`, extrabold).
 - Previous/Next buttons are solid white. The arrows hint is `text-neutral-300`.
 - Opens by growing out of the clicked card (clip-path animation) and shrinks back on Back; project cards rise in on scroll. Reduced motion is respected.
+
+**Branch `test-version-6-conversational-case-studies`:** both case studies have `format: "page"` and render as one full-page, scrolling conversation (no slides, no Previous/Next). The Overview cover stays on top; below it each section is a heading followed by chat bubbles — question left, the author's answer right. Every question follows from the answer before it (across sections too) and must not name anything the conversation hasn't introduced yet (e.g. the dashboard first appears in the Process answer). Images sit right after the answer they illustrate. The top bar keeps the section names as jump links with the current one highlighted; bubbles and images ease in as they scroll into view. Slide rendering is still in `ProjectDetail.jsx` for any study without `format: "page"`.
 
 ## 9-5 page
 
@@ -109,13 +112,13 @@ Both live in `data.js` → `projects`, and share one slide structure.
   - No WebGL → the hero section is left empty rather than crashing.
 - **Intro paragraph:** Plus Jakarta Sans, larger size.
 - **Secondary button style:** the `liquid-glass` pill (used for email, phone and case-study buttons).
-- Skills groups: Design (Figma, Wireframing, Rapid prototyping, User research, Interaction design, User-centred design) and Build (React.js, Next.js, TypeScript, JavaScript, HTML & CSS).
+- Skills groups: Design (Wireframing, Rapid prototyping, Interaction design, User-centred design) and Build (React.js, Next.js, TypeScript, JavaScript, jQuery, HTML & CSS, Claude, Cursor).
 - Experience (Keross R&D): Software Engineer Level 2 (Apr 2025 – Oct 2026), Level 1 (Nov 2022 – Apr 2025), Intern (Mar 2022 – Nov 2022).
 
 ## 5-9 page ("After Hours")
 
 - Photo sphere built from hobby photos in `public/personal/<hobby>/N.jpg`; the sphere loads small `thumbs/N.jpg` copies (made by `scripts/make-thumbs.sh`) and opens the full photo when one is picked. The sphere is 15% smaller than the original (`SPHERE_SIZE = 0.85`). The wheel zooms the sphere; the page does not scroll.
-- Top-left: the signature image (same as 9-5). Bottom-left: only the bio paragraph (no avatar or name). Bottom-right: "After Hours" tag.
+- Top-left: the signature image (same as 9-5). Bottom-left: only the bio paragraph (no avatar or name). No bottom-right tag.
 - Loader on entry: "Sagnik Das / AFTER HOURS".
 
 ## Mode switching
@@ -126,7 +129,7 @@ Both live in `data.js` → `projects`, and share one slide structure.
 
 ## Assets (`public/`)
 
-- Case study 01: `cs-before-analytics.png`, `cs-before-ticket-list.png`, `cs-bulk-actions.png`, `cs-dashboard.png`, `cs-ticket-list.png`, `customer-support-cover.jpg`
+- Case study 01: `cs-before-analytics.png`, `cs-before-ticket-list.png`, `cs-bulk-actions.png`, `cs-dashboard.png`, `cs-sla-at-risk.png`, `cs-ticket-list.png`, `cs-unassigned.png`, `customer-support-cover.jpg`
 - Case study 02: `rec-application.png`, `rec-criteria.png`, `rec-dashboard.png`, `rec-decision.png`, `rec-evidence.png`, `rec-onboarding.png`
 - `signature-ink.png` (white ink, transparent; nav on both pages), `signature.png` (older, now unused in src), `favicon.svg`, `icons.svg`
 - `personal/Sagnik/1..9.jpg` (hero card photos, resized to 1200 px max edge, quality 80); `personal/{anime,cooking,painting,sports-gaming,travel}/` (5-9 sphere)
@@ -138,7 +141,7 @@ Both live in `data.js` → `projects`, and share one slide structure.
 - All copy lives in `data.js` or the case study files, not in components (the hero intro paragraph and button are in `WorkPage.jsx`).
 - Don't add emojis to code or UI; no custom cursors for new work.
 - Reveal-on-scroll uses `IntersectionObserver` + `.reveal` / `.reveal-in`; always respect `prefers-reduced-motion`.
-- `src/developer/index.css` overrides `--font-display` to Instrument Serif inside `.work-theme`; to use Plus Jakarta Sans there, set the font family explicitly.
+- `src/developer/index.css` overrides `--font-display` to Olivera inside `.work-theme`; to use Plus Jakarta Sans there, set the font family explicitly.
 
 ## Open items / not verified
 

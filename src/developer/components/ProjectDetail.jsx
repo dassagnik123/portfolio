@@ -81,8 +81,31 @@ function CaseStudyImage({ src, alt }) {
   );
 }
 
-function Block({ block }) {
+function Block({ block, index = 0, animate = true }) {
   switch (block.type) {
+    // The conversation: questions come in on the left, the answers on the right.
+    case "q":
+      return (
+        <div
+          className={animate ? "chat-in mt-4 flex first:mt-0" : "flex"}
+          style={animate ? { "--d": `${index * 110}ms` } : undefined}
+        >
+          <p className="max-w-[88%] rounded-3xl rounded-bl-md bg-neutral-800 px-5 py-3 text-base leading-relaxed text-neutral-100 sm:max-w-[80%] sm:text-lg">
+            <Rich text={block.text} />
+          </p>
+        </div>
+      );
+    case "a":
+      return (
+        <div
+          className={animate ? "chat-in flex justify-end" : "flex justify-end"}
+          style={animate ? { "--d": `${index * 110}ms` } : undefined}
+        >
+          <p className="max-w-[92%] whitespace-pre-line rounded-3xl rounded-br-md bg-white px-5 py-3 text-base leading-relaxed text-black sm:max-w-[85%] sm:text-lg">
+            <Rich text={block.text} />
+          </p>
+        </div>
+      );
     case "h3":
       return (
         <h4 className="font-display text-xl font-bold text-white">
@@ -148,6 +171,7 @@ function Block({ block }) {
 function SectionSlide({ section }) {
   const images = section.blocks.filter((b) => b.type === "image");
   const content = section.blocks.filter((b) => b.type !== "image");
+  const chat = content.some((b) => b.type === "q" || b.type === "a");
 
   if (images.length === 0) {
     return (
@@ -155,9 +179,9 @@ function SectionSlide({ section }) {
         <h3 className="font-display text-3xl font-extrabold text-white sm:text-4xl lg:text-5xl">
           {section.heading}
         </h3>
-        <div className="flex flex-col gap-6">
+        <div className={`flex flex-col ${chat ? "gap-3" : "gap-6"}`}>
           {content.map((block, i) => (
-            <Block key={i} block={block} />
+            <Block key={i} block={block} index={i} />
           ))}
         </div>
       </div>
@@ -175,13 +199,31 @@ function SectionSlide({ section }) {
         <h3 className="font-display text-3xl font-extrabold text-white sm:text-4xl lg:text-5xl">
           {section.heading}
         </h3>
-        <div className="flex flex-col gap-6">
+        <div className={`flex flex-col ${chat ? "gap-3" : "gap-6"}`}>
           {content.map((block, i) => (
-            <Block key={i} block={block} />
+            <Block key={i} block={block} index={i} />
           ))}
         </div>
       </div>
     </div>
+  );
+}
+
+// Full-page format: one long conversation. Each bubble (and image) eases in as it scrolls into view.
+function PageSection({ section, index }) {
+  return (
+    <section data-section={index} className="pt-20 first:pt-0">
+      <h3 className="mb-6 font-display text-2xl font-bold text-white sm:text-3xl">
+        {section.heading}
+      </h3>
+      <div className="flex flex-col gap-3">
+        {section.blocks.map((block, i) => (
+          <div key={i} data-appear className={block.type === "q" ? "mt-4 first:mt-0" : block.type === "image" ? "my-3" : ""}>
+            <Block block={block} animate={false} />
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -236,14 +278,38 @@ function CaseStudyOverview({ rows, story }) {
 }
 
 function CoverSlide({ project, coverFailed, onCoverError }) {
-  const { number, filled, cover, cover2, tags, title, slotLabel, caseStudy } =
+  const { number, filled, cover, cover2, video, videoRatio, tags, title, slotLabel, caseStudy } =
     project;
 
   // Phones stack everything. From lg up: title and tags on top, then the cover and the
   // overview side by side as two equal boxes.
   return (
-    <div className="flex flex-col gap-6 lg:grid lg:grid-cols-2 lg:gap-x-10 lg:gap-y-6">
-      {cover ? (
+    <div
+      className={`flex flex-col gap-6 ${video ? "" : "lg:grid lg:grid-cols-2 lg:gap-x-10 lg:gap-y-6"}`}
+    >
+      {video ? (
+        <div
+          className="relative overflow-hidden rounded-3xl border border-neutral-800 bg-neutral-900 lg:order-4"
+          style={{ aspectRatio: videoRatio ?? "16 / 9" }}
+        >
+          <video
+            src={video}
+            poster={cover}
+            autoPlay={!window.matchMedia("(prefers-reduced-motion: reduce)").matches}
+            muted
+            loop
+            playsInline
+            disablePictureInPicture
+            controlsList="nodownload noplaybackrate noremoteplayback"
+            preload="metadata"
+            aria-label={title}
+            className="pointer-events-none h-full w-full object-cover"
+          />
+          <span className="pointer-events-none absolute left-5 top-5 rounded-full bg-black/70 px-2.5 py-1 font-display text-xs font-bold text-white backdrop-blur-sm">
+            {number}
+          </span>
+        </div>
+      ) : cover ? (
         <div className="flex flex-col gap-4 lg:order-4">
           <div className="relative overflow-hidden rounded-3xl border border-neutral-800 lg:min-h-[240px] lg:flex-1 lg:bg-neutral-900">
             {coverFailed ? (
@@ -372,6 +438,51 @@ export default function ProjectDetail({ project, origin, onBack }) {
   const [direction, setDirection] = useState(1);
   const [coverFailed, setCoverFailed] = useState(false);
   const slideNavRef = useRef(null);
+  const isPage = caseStudy?.format === "page";
+  const scrollRef = useRef(null);
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [progress, setProgress] = useState(0);
+
+  // Page format: track which section is in view and how far down the page is, and ease the
+  // bubbles in as they arrive.
+  useEffect(() => {
+    const box = scrollRef.current;
+    if (!isPage || !box) return undefined;
+    const sections = [...box.querySelectorAll("[data-section]")];
+    const onScroll = () => {
+      const max = box.scrollHeight - box.clientHeight;
+      setProgress(max > 0 ? box.scrollTop / max : 0);
+      let at = 0;
+      sections.forEach((el, i) => {
+        if (el.offsetTop <= box.scrollTop + 160) at = i + 1;
+      });
+      setActiveIdx(at);
+    };
+    onScroll();
+    box.addEventListener("scroll", onScroll, { passive: true });
+    const io = new IntersectionObserver(
+      (entries) =>
+        entries.forEach((e) => {
+          if (!e.isIntersecting) return;
+          e.target.classList.add("appear-in");
+          io.unobserve(e.target);
+        }),
+      { root: box, rootMargin: "0px 0px -8% 0px", threshold: 0.12 },
+    );
+    box.querySelectorAll("[data-appear]").forEach((el) => io.observe(el));
+    return () => {
+      box.removeEventListener("scroll", onScroll);
+      io.disconnect();
+    };
+  }, [isPage]);
+
+  function scrollToSection(i) {
+    const box = scrollRef.current;
+    if (!box) return;
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const el = i === 0 ? null : box.querySelector(`[data-section="${i - 1}"]`);
+    box.scrollTo({ top: el ? el.offsetTop - 24 : 0, behavior: still ? "auto" : "smooth" });
+  }
 
   // Keep the current slide's title in view when the labels overflow the top bar.
   useEffect(() => {
@@ -439,7 +550,7 @@ export default function ProjectDetail({ project, origin, onBack }) {
   }
 
   useEffect(() => {
-    if (!caseStudy) return undefined;
+    if (!caseStudy || isPage) return undefined;
 
     function handleKeyDown(e) {
       if (e.key === "ArrowRight") {
@@ -461,7 +572,7 @@ export default function ProjectDetail({ project, origin, onBack }) {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [caseStudy, total]);
+  }, [caseStudy, isPage, total]);
 
   return (
     <div
@@ -472,38 +583,47 @@ export default function ProjectDetail({ project, origin, onBack }) {
         <div className="absolute inset-x-0 top-0 z-20 h-1 bg-neutral-900 xl:hidden">
           <div
             className="h-full bg-accent-work transition-all duration-500 ease-out"
-            style={{ width: `${((slide + 1) / total) * 100}%` }}
+            style={{ width: `${(isPage ? progress : (slide + 1) / total) * 100}%` }}
           />
         </div>
       )}
 
       <div className="case-in relative z-30 grid shrink-0 grid-cols-[auto_1fr] items-center gap-x-4 px-6 py-4 sm:px-10 xl:grid-cols-[auto_1fr_auto]">
-        <button
-          type="button"
-          onClick={handleBack}
-          className="liquid-glass flex items-center gap-2 rounded-full text-sm text-white transition-transform hover:scale-[1.03] w-fit cursor-pointer px-6 py-3"
-        >
-          <BackIcon />
-          Back
-        </button>
+        {/* The tooltip sits outside the button: the glass style clips anything that overflows it. */}
+        <div className="group relative w-fit">
+          <button
+            type="button"
+            onClick={handleBack}
+            aria-label="Back"
+            className="liquid-glass flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-white transition-transform hover:scale-[1.06] focus-visible:scale-[1.06]"
+          >
+            <BackIcon />
+          </button>
+          <span
+            role="tooltip"
+            className="pointer-events-none absolute left-1/2 top-full z-10 mt-2 -translate-x-1/2 translate-y-1 whitespace-nowrap rounded-md bg-neutral-800 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-lg ring-1 ring-white/10 transition duration-200 group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100"
+          >
+            Back
+          </span>
+        </div>
 
         {caseStudy && (
           <>
             <nav
               ref={slideNavRef}
-              aria-label="Slides"
+              aria-label={isPage ? "Sections" : "Slides"}
               className="hidden items-center gap-x-1.5 overflow-x-auto whitespace-nowrap px-2 [scrollbar-width:none] xl:flex xl:[justify-content:safe_center] [&::-webkit-scrollbar]:hidden"
             >
               {slideLabels.map((label, i) => (
                 <button
                   key={label}
                   type="button"
-                  onClick={() => goTo(i)}
-                  aria-current={i === slide}
+                  onClick={() => (isPage ? scrollToSection(i) : goTo(i))}
+                  aria-current={i === (isPage ? activeIdx : slide)}
                   className={`shrink-0 whitespace-nowrap rounded-full px-3 py-1 font-display transition-colors duration-300 ${
-                    i === slide
+                    i === (isPage ? activeIdx : slide)
                       ? "text-sm font-bold text-accent-work lg:text-base"
-                      : "text-[11px] font-medium text-neutral-600 hover:text-neutral-400 lg:text-xs"
+                      : "text-[11px] font-medium text-neutral-400 hover:text-white lg:text-xs"
                   }`}
                 >
                   {label}
@@ -512,19 +632,34 @@ export default function ProjectDetail({ project, origin, onBack }) {
             </nav>
 
             <span className="hidden text-right font-display text-xs font-semibold tracking-widest text-neutral-500 xl:block">
-              {String(slide + 1).padStart(2, "0")} /{" "}
+              {String((isPage ? activeIdx : slide) + 1).padStart(2, "0")} /{" "}
               {String(total).padStart(2, "0")}
             </span>
 
             <span className="text-right font-display text-xs font-semibold tracking-widest text-neutral-500 xl:hidden">
-              {String(slide + 1).padStart(2, "0")} /{" "}
+              {String((isPage ? activeIdx : slide) + 1).padStart(2, "0")} /{" "}
               {String(total).padStart(2, "0")}
             </span>
           </>
         )}
       </div>
 
-      {caseStudy ? (
+      {isPage ? (
+        <div ref={scrollRef} className="relative z-10 flex-1 overflow-y-auto scroll-smooth">
+          <div className="mx-auto w-full max-w-3xl px-6 pb-4 pt-4 sm:px-10 lg:max-w-6xl">
+            <CoverSlide
+              project={project}
+              coverFailed={coverFailed}
+              onCoverError={() => setCoverFailed(true)}
+            />
+          </div>
+          <div className="mx-auto w-full max-w-3xl px-6 pb-32 pt-20 sm:px-10">
+            {caseStudy.sections.map((section, i) => (
+              <PageSection key={section.heading} section={section} index={i} />
+            ))}
+          </div>
+        </div>
+      ) : caseStudy ? (
         <>
           <div
             key={slide}

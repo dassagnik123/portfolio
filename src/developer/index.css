@@ -1,10 +1,16 @@
-@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans:wght@400;500;600&family=DynaPuff:wght@400;500;600;700&family=Oswald:wght@500;600&family=Instrument+Serif:ital@0;1&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans:wght@400;500;600&family=Oswald:wght@500;600&display=swap");
+@font-face {
+  font-family: "Olivera";
+  src: url("/fonts/Olivera.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
 @import "tailwindcss" source(".");
 
 @theme {
   --font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Noto Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-heading: "DynaPuff", cursive;
   --font-condensed: "Oswald", "Arial Narrow", sans-serif;
   --color-accent-work: #ffffff;
   --color-accent-personal: #e2583f;
@@ -44,7 +50,7 @@
 
 /* Scoped to the 9-5 page so the case-study overlay keeps its own fonts. */
 .work-theme {
-  --font-display: "Instrument Serif", serif;
+  --font-display: "Olivera", serif;
   --font-body: "Noto Sans", sans-serif;
   font-family: var(--font-body);
 }
@@ -329,7 +335,37 @@ body {
   animation: case-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.28s both;
 }
 
+/* Chat bubbles settle in one after another when a slide opens. */
+@keyframes chat-in {
+  from { opacity: 0; transform: translate3d(0, 14px, 0) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+.chat-in {
+  animation: chat-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) calc(0.25s + var(--d, 0ms)) both;
+}
+
+/* Full-page case study: each bubble or image eases in once as it scrolls into view. */
+[data-appear] {
+  opacity: 0;
+  transform: translate3d(0, 16px, 0) scale(0.98);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+[data-appear].appear-in { opacity: 1; transform: none; }
+
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
-  .case-in { animation: none; }
+  .case-in, .chat-in { animation: none; }
+  [data-appear] { opacity: 1; transform: none; transition: none; }
+}
+
+/* The page-wide mesh fades in once on load. */
+.membrane-bg {
+  animation: membrane-in 2s ease-in-out both;
+}
+@keyframes membrane-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .membrane-bg { animation: none; }
 }

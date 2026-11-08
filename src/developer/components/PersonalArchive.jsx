@@ -569,8 +569,6 @@ export default function PersonalArchive() {
         <p>{archive.bio}</p>
       </div>
 
-      <div className="colophon chrome">{archive.tag}</div>
-
       <div className="cue chrome">
         <s />
         Drag, swipe or twist to rotate

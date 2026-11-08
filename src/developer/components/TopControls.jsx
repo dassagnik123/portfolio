@@ -1,4 +1,4 @@
-import { LinkedInIcon, ResumeIcon, TwitterIcon } from "./icons";
+import { LinkedInIcon, ResumeIcon } from "./icons";
 import ModeToggle from "./ModeToggle";
 import { socials } from "../data";
 
@@ -16,15 +16,6 @@ export default function TopControls({ mode, onToggle, className = "" }) {
           className="opacity-70 transition hover:opacity-100"
         >
           <LinkedInIcon />
-        </a>
-        <a
-          href={socials.x}
-          target="_blank"
-          rel="noreferrer"
-          aria-label="X"
-          className="opacity-70 transition hover:opacity-100"
-        >
-          <TwitterIcon />
         </a>
         <a
           href={socials.resume}

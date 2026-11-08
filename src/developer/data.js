@@ -42,8 +42,10 @@ export const projects = [
     large: true,
     filled: true,
     tags: ["UI/UX", "DASHBOARD", "CUSTOMER SUPPORT"],
-    cover: "/customer-support-cover.jpg",
+    cover: "/cs-ticket-list-all.png",
     cover2: "/cs-dashboard.png",
+    video: "/customer-support-walkthrough.mp4",
+    videoRatio: "1440 / 1024",
     title:
       "Agents couldn't see which tickets were about to breach — so I made urgency impossible to miss",
     description:
@@ -57,6 +59,7 @@ export const projects = [
     tags: ["HR TECH", "AI WORKFLOW", "UI/UX"],
     cover: "/rec-dashboard.png",
     cover2: "/rec-evidence.png",
+    video: "/keross-walkthrough.mp4",
     title: "One place to run hiring, with AI that helps and people who decide",
     description:
       "A recruitment and onboarding product for HR teams, interviewers and candidates: from posting a job to a new hire's first day, with AI that helps and never decides.",
@@ -190,10 +193,8 @@ export const skills = [
     label: "Design",
     note: "How I find and shape the problem",
     items: [
-      "Figma",
       "Wireframing",
       "Rapid prototyping",
-      "User research",
       "Interaction design",
       "User-centred design",
     ],
@@ -201,6 +202,6 @@ export const skills = [
   {
     label: "Build",
     note: "How I prototype and ship what I design",
-    items: ["React.js", "Next.js", "TypeScript", "JavaScript", "HTML & CSS"],
+    items: ["React.js", "Next.js", "TypeScript", "JavaScript", "jQuery", "HTML & CSS", "Claude", "Cursor"],
   },
 ];

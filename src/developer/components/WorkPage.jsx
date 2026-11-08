@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
+import MembraneBackground from "./MembraneBackground";
 import NameRibbon from "./NameRibbon";
 import { EmailIcon, PhoneIcon } from "./icons";
 import { contact, experience, projects, skills } from "../data";
 
-const serif = { fontFamily: "'Instrument Serif', serif" };
+const serif = { fontFamily: "'Olivera', serif" };
 
 const NAV_LINKS = [
   { label: "Home", href: "#top" },
@@ -11,12 +12,6 @@ const NAV_LINKS = [
   { label: "Experience", href: "#experience" },
   { label: "Contact", href: "#contact" },
 ];
-
-const ArrowIcon = ({ className = "h-4 w-4" }) => (
-  <svg viewBox="0 0 24 24" fill="none" className={className} stroke="currentColor" strokeWidth="1.8">
-    <path d="M7 17L17 7M17 7H9M17 7V15" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
 
 function Tag({ children }) {
   return (
@@ -62,10 +57,25 @@ function ProjectTile({ project, onOpen }) {
       type="button"
       onClick={(e) => onOpen(e.currentTarget.getBoundingClientRect())}
       data-cursor="View case study"
-      className="liquid-glass group flex h-full w-full cursor-pointer flex-col rounded-[2rem] p-4 text-left transition-transform duration-300 ease-out hover:scale-[1.03] sm:p-5"
+      className="liquid-glass group flex h-full w-full cursor-pointer flex-col rounded-2xl p-2.5 text-left transition-transform duration-300 ease-out hover:scale-[1.03] sm:p-3"
     >
-      <div className="relative aspect-[16/10] overflow-hidden rounded-[1.5rem] bg-white/5">
-        {project.cover && !coverFailed && (
+      <div
+        className={`relative overflow-hidden rounded-xl ${project.video ? "bg-white" : "bg-white/5"}`}
+        style={{ aspectRatio: project.video ? "1440 / 1024" : "16 / 10" }}
+      >
+        {project.video ? (
+          <video
+            src={project.video}
+            poster={project.cover}
+            autoPlay={!window.matchMedia("(prefers-reduced-motion: reduce)").matches}
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            aria-label={project.title}
+            className="absolute inset-0 h-full w-full object-contain"
+          />
+        ) : project.cover && !coverFailed && (
           <img
             src={project.cover}
             alt={project.title}
@@ -75,24 +85,13 @@ function ProjectTile({ project, onOpen }) {
         )}
       </div>
 
-      <div className="flex flex-1 flex-col justify-between gap-6 px-2 pb-2 pt-6">
-        <div>
-          <div className="flex items-center justify-between text-sm text-muted-foreground">
-            <span>{project.number} — Case study</span>
-            <span className="liquid-glass flex h-10 w-10 items-center justify-center rounded-full text-foreground transition group-hover:scale-[1.06]">
-              <ArrowIcon />
-            </span>
-          </div>
-          <h3
-            className="mt-5 text-2xl leading-[1.08] tracking-[-0.5px] text-foreground sm:text-3xl"
-            style={serif}
-          >
-            {project.title}
-          </h3>
-          <p className="mt-4 text-sm leading-relaxed text-muted-foreground sm:text-base">
-            {project.description}
-          </p>
-        </div>
+      <div className="flex flex-1 flex-col justify-between gap-4 px-2 pb-1 pt-4">
+        <h3
+          className="text-lg font-extrabold leading-snug text-foreground sm:text-xl"
+          style={{ fontFamily: "'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif" }}
+        >
+          {project.title}
+        </h3>
         <div className="flex flex-wrap gap-2">
           {project.tags.map((tag) => (
             <Tag key={tag}>{tag}</Tag>
@@ -215,6 +214,8 @@ export default function WorkPage({ controls, onOpenProject }) {
         onClick={handleAnchorClick}
         className="work-theme relative isolate min-h-dvh bg-background text-foreground"
       >
+        <MembraneBackground />
+
         {/* Stays pinned while scrolling; gains a soft dark backdrop once the page moves. */}
         <nav
           ref={navRef}
@@ -264,14 +265,14 @@ export default function WorkPage({ controls, onOpenProject }) {
           <div className="mt-8 flex items-center justify-center gap-3">
             <a
               href="#projects"
-              className="cursor-pointer rounded-full bg-white px-7 py-4 text-base font-medium text-black transition-transform hover:scale-[1.03] sm:px-14 sm:py-5"
+              className="cursor-pointer rounded-full bg-white px-6 py-3 text-sm font-medium text-black transition-transform hover:scale-[1.03] sm:px-9 sm:py-3.5 sm:text-base"
             >
               View my work
             </a>
             {/* Phones only: a quick way down to the contact section. */}
             <a
               href="#contact"
-              className="liquid-glass cursor-pointer rounded-full px-7 py-4 text-base font-medium text-foreground transition-transform hover:scale-[1.03] sm:hidden"
+              className="liquid-glass cursor-pointer rounded-full px-6 py-3 text-sm font-medium text-foreground transition-transform hover:scale-[1.03] sm:hidden"
             >
               Contact
             </a>
@@ -293,7 +294,7 @@ export default function WorkPage({ controls, onOpenProject }) {
               </p>
             </div>
 
-            <div data-scroll-fit-target className="mt-14 grid gap-6 sm:mt-20 md:grid-cols-2 lg:gap-8">
+            <div data-scroll-fit-target className="mt-12 grid gap-5 sm:mt-16 md:grid-cols-2 lg:gap-6">
               {projects.map((project, i) => (
                 <Reveal key={project.number} index={i}>
                   <ProjectTile project={project} onOpen={(rect) => onOpenProject(project, rect)} />
@@ -323,7 +324,10 @@ export default function WorkPage({ controls, onOpenProject }) {
                     <p className="mt-1">{job.company}</p>
                   </div>
                   <div>
-                    <h3 className="text-2xl leading-tight text-foreground sm:text-3xl" style={serif}>
+                    <h3
+                      className="text-xl font-extrabold leading-tight text-foreground sm:text-2xl"
+                      style={{ fontFamily: "'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif" }}
+                    >
                       {job.role}
                     </h3>
                     <ul className="mt-4 flex flex-col gap-2.5">
@@ -389,6 +393,7 @@ export default function WorkPage({ controls, onOpenProject }) {
             </h2>
             <p className="mt-6 max-w-3xl text-base leading-relaxed text-muted-foreground sm:text-lg">
               Thanks for stopping by. I'm looking for full-time{" "}
+              <span className="whitespace-nowrap">Design Engineer</span> or{" "}
               <span className="whitespace-nowrap">UX / Product Design</span> roles, so if you'd like to
               chat, say hi — I'd love to hear from you.
             </p>
