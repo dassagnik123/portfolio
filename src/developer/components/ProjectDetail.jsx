@@ -588,7 +588,7 @@ export default function ProjectDetail({ project, origin, onBack }) {
         </div>
       )}
 
-      <div className="case-in relative z-30 grid shrink-0 grid-cols-[auto_1fr] items-center gap-x-4 px-6 py-4 sm:px-10 xl:grid-cols-[auto_1fr_auto]">
+      <div className="case-in relative z-30 grid shrink-0 grid-cols-[auto_1fr_auto] items-center gap-x-3 px-6 py-4 sm:grid-cols-[auto_1fr] sm:gap-x-4 sm:px-10 xl:grid-cols-[auto_1fr_auto]">
         {/* The tooltip sits outside the button: the glass style clips anything that overflows it. */}
         <div className="group relative w-fit">
           <button
@@ -609,6 +609,39 @@ export default function ProjectDetail({ project, origin, onBack }) {
 
         {caseStudy && (
           <>
+            {/* Phones: the current section sits in the middle with its neighbours either side,
+                fading out the further they are from the centre. */}
+            <nav
+              aria-label={isPage ? "Sections" : "Slides"}
+              className="relative h-10 min-w-0 overflow-hidden [container-type:inline-size] [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] sm:hidden"
+            >
+              {slideLabels.map((label, i) => {
+                const current = isPage ? activeIdx : slide;
+                const offset = i - current;
+                const near = Math.abs(offset) <= 1;
+                return (
+                  <button
+                    key={label}
+                    type="button"
+                    tabIndex={near ? 0 : -1}
+                    aria-hidden={!near}
+                    aria-current={offset === 0}
+                    onClick={() => (isPage ? scrollToSection(i) : goTo(i))}
+                    className={`absolute left-1/2 top-0 flex h-full items-center whitespace-nowrap font-display text-xs font-semibold transition-[transform,opacity,color] duration-500 ease-out motion-reduce:transition-none ${
+                      offset === 0 ? "text-accent-work" : "text-neutral-300"
+                    }`}
+                    style={{
+                      transform: `translateX(calc(-50% + ${offset} * 36cqw)) scale(${offset === 0 ? 1.2 : 0.9})`,
+                      opacity: offset === 0 ? 1 : near ? 0.4 : 0,
+                      pointerEvents: near ? "auto" : "none",
+                    }}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </nav>
+
             <nav
               ref={slideNavRef}
               aria-label={isPage ? "Sections" : "Slides"}

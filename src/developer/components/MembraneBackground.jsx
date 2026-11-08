@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
 
-const COLS = 50;
-const ROWS = 30;
+const DESKTOP_GRID = { cols: 50, rows: 30 };
+// Phones get a sparser, quieter mesh: fewer, smaller and dimmer dots, gentler pushes.
+const PHONE_GRID = { cols: 22, rows: 40 };
 const SPRING = 0.025;
 const DAMPING = 0.93;
 const SPREAD = 0.18;
@@ -22,6 +23,13 @@ export default function MembraneBackground() {
     const ctx = canvas.getContext("2d");
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    const phone = window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 640;
+    const grid = phone ? PHONE_GRID : DESKTOP_GRID;
+    const COLS = grid.cols;
+    const ROWS = grid.rows;
+    const sizeScale = phone ? 0.55 : 1;
+    const alphaScale = phone ? 0.5 : 1;
+    const pushScale = phone ? 0.35 : 1;
     let width = 0;
     let height = 0;
     let verts = [];
@@ -47,14 +55,14 @@ export default function MembraneBackground() {
 
     const step = (time) => {
       const t = time * 0.001;
-      const radius = mouse.pressing ? PRESS_RADIUS : HOVER_RADIUS;
-      const strength = mouse.pressing ? PRESS_FORCE : HOVER_FORCE;
+      const radius = (mouse.pressing ? PRESS_RADIUS : HOVER_RADIUS) * (phone ? 0.6 : 1);
+      const strength = (mouse.pressing ? PRESS_FORCE : HOVER_FORCE) * pushScale;
 
       for (let r = 0; r < ROWS; r++) {
         for (let c = 0; c < COLS; c++) {
           const v = verts[r * COLS + c];
 
-          const breathe = Math.sin(t * 0.6 + c * 0.15 + r * 0.12) * 2;
+          const breathe = Math.sin(t * 0.6 + c * 0.15 + r * 0.12) * (phone ? 1 : 2);
           v.velZ += (breathe - v.offsetZ) * 0.002;
 
           const dx = v.x - mouse.x;
@@ -101,7 +109,7 @@ export default function MembraneBackground() {
       const zoneW = width * 0.35;
       const zoneH = height * 0.35;
 
-      ctx.strokeStyle = "rgba(255,255,255,0.018)";
+      ctx.strokeStyle = phone ? "rgba(255,255,255,0.01)" : "rgba(255,255,255,0.018)";
       ctx.lineWidth = 0.5;
       ctx.beginPath();
       for (let r = 0; r < ROWS; r++) {
@@ -137,10 +145,10 @@ export default function MembraneBackground() {
           b += (245 - b) * k;
         }
 
-        const size = 0.6 + centerFactor * 0.6 + (disp > 0.5 ? disp * 0.03 : 0);
+        const size = (0.6 + centerFactor * 0.6 + (disp > 0.5 ? disp * 0.03 : 0)) * sizeScale;
         const baseAlpha = 0.06 + centerFactor * 0.18;
         const activeAlpha = disp > 0.5 ? Math.min(0.9, disp * 0.05) : 0;
-        let alpha = Math.max(baseAlpha, activeAlpha);
+        let alpha = Math.max(baseAlpha, activeAlpha) * alphaScale;
 
         // Keep the area behind the content readable while the cursor is on the page.
         if (mouse.inside) {
@@ -149,7 +157,7 @@ export default function MembraneBackground() {
         }
 
         const color = `${Math.round(r)},${Math.round(g)},${Math.round(b)}`;
-        if (disp > 1.5 || centerFactor > 0.4) {
+        if (!phone && (disp > 1.5 || centerFactor > 0.4)) {
           ctx.fillStyle = `rgba(${color},${alpha * 0.25})`;
           ctx.beginPath();
           ctx.arc(v.x, sy, size + 4, 0, Math.PI * 2);
@@ -169,6 +177,7 @@ export default function MembraneBackground() {
     };
 
     const onMove = (e) => {
+      if (e.pointerType === "touch") return;
       mouse.x = e.clientX;
       mouse.y = e.clientY;
       mouse.inside = true;
@@ -179,7 +188,8 @@ export default function MembraneBackground() {
       mouse.inside = false;
       mouse.pressing = false;
     };
-    const onDown = () => {
+    const onDown = (e) => {
+      if (e.pointerType === "touch") return;
       mouse.pressing = true;
     };
     const onUp = () => {
