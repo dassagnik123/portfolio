@@ -11,20 +11,32 @@ export const recruitmentCaseStudy = {
   story: "This case study follows the problem as it appeared in day-to-day work, the conversations that changed my understanding, and the decisions that shaped the final product. It focuses on what was learned and why the design evolved—not just on the screens that were produced.",
   overview: [
     {
+      label: "Summary",
+      text: "One place to run hiring, with AI that helps and people who decide."
+    },
+    {
+      label: "Company",
+      text: "Keross R&D"
+    },
+    {
+      label: "Project type",
+      text: "HR Tech – Recruitment & Onboarding"
+    },
+    {
       label: "Role",
-      text: "I worked as both the designer and front-end developer on Keross. I wrote the plan, mapped the screens, designed the experience in Figma with AI to move faster, and built the working product. The project took about two months, with around five days spent designing and testing with AI."
+      text: "UI/UX Designer & Front-end Developer"
     },
     {
-      label: "Product",
-      text: "Keross brings the hiring journey together: HR teams can post jobs, review candidates, run interviews and welcome new hires. It has three connected portals for HR, interviewers and candidates."
+      label: "Timeline",
+      text: "About 2 Months — around 5 days designing and testing with AI"
     },
     {
-      label: "Problem",
-      text: "The starting problem was that hiring information lived across documents, spreadsheets and email. I wanted to create one place for the process, using AI to help with reading and writing while keeping every hiring decision with people."
+      label: "Platform",
+      text: "Web Application — portals for HR, interviewers and candidates"
     },
     {
-      label: "Outcome",
-      text: "The product is currently in the development phase. I have tested the prototype with others, but it has not launched yet, so there are no measured results and no invented percentages."
+      label: "Status",
+      text: "Prototype, currently in development"
     },
     {
       label: "Live demo",

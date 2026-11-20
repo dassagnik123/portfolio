@@ -57,7 +57,7 @@ function ProjectTile({ project, onOpen }) {
       type="button"
       onClick={(e) => onOpen(e.currentTarget.getBoundingClientRect())}
       data-cursor="View case study"
-      className="liquid-glass group flex h-full w-full cursor-pointer flex-col rounded-2xl p-2.5 text-left transition-transform duration-300 ease-out hover:scale-[1.03] sm:p-3"
+      className="liquid-glass group relative flex h-full w-full cursor-pointer flex-col rounded-2xl p-2.5 text-left transition-transform duration-300 ease-out hover:scale-[1.03] sm:p-3"
     >
       <div
         className={`relative overflow-hidden rounded-xl ${project.video ? "bg-white" : "bg-white/5"}`}
@@ -97,6 +97,41 @@ function ProjectTile({ project, onOpen }) {
             <Tag key={tag}>{tag}</Tag>
           ))}
         </div>
+      </div>
+
+      {/* On hover (devices that can hover): title, badges and the 1-minute overview cover the card. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 flex flex-col gap-4 overflow-hidden rounded-2xl bg-black/90 p-5 opacity-0 backdrop-blur-md transition-opacity duration-300 group-hover:opacity-100 motion-reduce:transition-none sm:p-6"
+      >
+        <h3
+          className="text-lg font-extrabold leading-snug text-foreground sm:text-xl"
+          style={{ fontFamily: "'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif" }}
+        >
+          {project.title}
+        </h3>
+        <div className="flex flex-wrap gap-2">
+          {project.tags.map((tag) => (
+            <Tag key={tag}>{tag}</Tag>
+          ))}
+        </div>
+        {project.caseStudy?.overview && (
+          <div className="min-h-0 flex-1 overflow-hidden [mask-image:linear-gradient(to_bottom,black_80%,transparent)]">
+            <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+              1-minute overview
+            </p>
+            <dl className="flex flex-col gap-2.5">
+              {project.caseStudy.overview.filter((row) => !row.href).map((row) => (
+                <div key={row.label} className="grid grid-cols-[5.5rem_1fr] gap-x-3">
+                  <dt className="pt-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                    {row.label}
+                  </dt>
+                  <dd className="line-clamp-2 text-xs leading-relaxed text-foreground/85">{row.text}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        )}
       </div>
     </button>
   );

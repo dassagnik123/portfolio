@@ -15,7 +15,7 @@ export const ticketDashboardCaseStudy = {
     },
     {
       label: "Company",
-      text: "Keross"
+      text: "Keross R&D"
     },
     {
       label: "Project type",
@@ -32,6 +32,10 @@ export const ticketDashboardCaseStudy = {
     {
       label: "Platform",
       text: "Web Application"
+    },
+    {
+      label: "Status",
+      text: "In use by the development team"
     },
     {
       label: "Team",
