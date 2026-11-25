@@ -1,0 +1,64 @@
+/* Design tokens from colors.md and design.md. Components use these variables only. */
+:root {
+  /* Lotus pink */
+  --color-lotus-50: #fff4f8;
+  --color-lotus-100: #ffe3ee;
+  --color-lotus-200: #ffc4d9;
+  --color-lotus-300: #ff9fbe;
+  --color-lotus-400: #f86f9d;
+  --color-lotus-500: #e94f86;
+  --color-lotus-600: #d93670;
+  --color-lotus-700: #b8295d;
+
+  /* Cream / warm white */
+  --color-cream-50: #fffdfc;
+  --color-cream-100: #fff8f5;
+  --color-cream-200: #ffede9;
+  --color-cream-300: #ffe0dc;
+  --color-cream-400: #ffd1cf;
+
+  /* Deep magenta / plum */
+  --color-plum-950: #210a18;
+  --color-plum-900: #300d21;
+  --color-plum-800: #48122f;
+  --color-plum-700: #68183f;
+  --color-plum-600: #861e50;
+  --color-plum-500: #a52662;
+  --color-plum-400: #be3b72;
+
+  /* Dusty lotus rose: the shade the portrait's pinks are remapped to */
+  --color-rose-300: #dc9a9d;
+  --color-rose-400: #c4747a;
+  --color-rose-600: #932639;
+
+  /* Olive green */
+  --color-olive-800: #394324;
+  --color-olive-600: #65723e;
+  --color-olive-300: #b0b98a;
+
+  /* Surfaces and text */
+  --background: #f1e6c4; /* vanilla cream */
+  --background-soft: #f8f0d8;
+  --text-primary: var(--color-plum-900);
+  --text-secondary: var(--color-plum-700);
+  --text-muted: var(--color-plum-600);
+  --text-on-dark: var(--color-cream-100);
+  --border-light: #e8c8d2;
+  --border-medium: #c98a9f;
+  --border-dark: var(--color-plum-700);
+
+  /* Link hover colours: bright, so a hovered link is unmistakable */
+  --link-blue: #1565ff;
+  --link-red: #ee1c3f;
+  --link-hover: #7d0b1e; /* dark blood red: the hover colour of every text link */
+
+  /* Type */
+  --font-display: "Olivera", Georgia, serif;
+  --font-body: "Manrope", ui-sans-serif, system-ui, sans-serif;
+
+  /* Motion (design.md §18) */
+  --ease-paint: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-micro: 200ms;
+  --duration-standard: 400ms;
+  --duration-hero: 800ms;
+}

@@ -1,0 +1,2776 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap");
+
+/* The heading font: Olivera (the demo files). The oblique cut is used for italic text. */
+@font-face {
+  font-family: "Olivera";
+  src: url("/fonts/Olivera.ttf") format("truetype");
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Olivera";
+  src: url("/fonts/OliveraObl.ttf") format("truetype");
+  font-style: italic;
+  font-display: swap;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  overflow-x: clip;
+  background: var(--background);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+.paper {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero {
+  position: relative;
+  z-index: 1;
+  min-height: 100dvh;
+  padding: 4rem 1.5rem 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.hero-text {
+  max-width: 36rem;
+}
+
+.eyebrow {
+  margin: 0 0 1.25rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-rose-600);
+}
+
+.name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(3.5rem, 9vw, 7.5rem);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+/* A short dusty-rose brush mark under the name: uneven ends, slightly lifted at the right. */
+.brush-rule {
+  display: block;
+  width: 9rem;
+  height: 0.6rem;
+  margin: 1.5rem 0 2rem;
+  background: linear-gradient(90deg, var(--color-rose-600), var(--color-rose-400) 55%, var(--color-rose-300));
+  border-radius: 60% 40% 70% 30% / 70% 40% 60% 30%;
+  transform: rotate(-2deg);
+  opacity: 0.9;
+}
+
+.lead {
+  margin: 0;
+  font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+  line-height: 1.7;
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+.lead b {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.note {
+  margin: 1.25rem 0 0;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2.25rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.8rem 1.6rem;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    transform var(--duration-micro) var(--ease-paint),
+    background-color var(--duration-micro) ease,
+    color var(--duration-micro) ease;
+}
+
+/* Hover effects only where there is a mouse (not on touch screens). */
+@media (hover: hover) {
+  .btn:hover {
+    transform: translateY(-1px);
+  }
+}
+
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--color-rose-600);
+  outline-offset: 3px;
+}
+
+.btn-solid {
+  background: var(--color-plum-900);
+  color: var(--text-on-dark);
+}
+
+/* Mouse only. */
+@media (hover: hover) {
+  .btn-solid:hover {
+    background: var(--color-plum-800);
+  }
+}
+
+
+.btn-line {
+  border: 1px solid var(--border-dark);
+  color: var(--text-primary);
+}
+
+/* Mouse only. */
+@media (hover: hover) {
+  .btn-line:hover {
+    background: var(--background-soft);
+  }
+}
+
+
+.portrait-wrap {
+  position: relative;
+  justify-self: center;
+  width: min(100%, 28rem);
+  /* Room under the portrait for the lowest flowers, which hang below it. */
+  margin: 0 0 4rem;
+  order: -1;
+}
+
+/* The cutout rises in once loaded; no hover movement. */
+.portrait {
+  display: block;
+  width: 100%;
+  height: auto;
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity var(--duration-hero) ease,
+    transform var(--duration-hero) var(--ease-paint);
+}
+
+.portrait.is-loaded {
+  opacity: 1;
+  transform: none;
+}
+
+/* The bouquet: watercolour roses and lilies on the portrait's bottom-right corner. */
+.flowers {
+  position: absolute;
+  right: -6%;
+  bottom: 0;
+  width: 112%;
+  aspect-ratio: 2.75;
+  pointer-events: none;
+  animation: flowers-in var(--duration-hero) var(--ease-paint) 350ms both;
+}
+
+.flowers img {
+  position: absolute;
+  height: auto;
+  user-select: none;
+}
+
+@keyframes flowers-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flowers {
+    animation: none;
+  }
+
+  .portrait {
+    transition: none;
+    transform: none;
+  }
+}
+
+@media (min-width: 900px) {
+  /* Text centred on the left; the portrait stands in the bottom-right corner, flush with the
+     right and bottom edges of the screen. */
+  .hero {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: 100dvh;
+    gap: 3rem;
+    padding: 0 0 0 clamp(2rem, 7vw, 7rem);
+  }
+
+  .hero-text {
+    align-self: center;
+    padding: 3rem 0;
+  }
+
+  .portrait-wrap {
+    order: 0;
+    margin: 0;
+    align-self: end;
+    justify-self: end;
+    width: auto;
+  }
+
+  .flowers {
+    right: 0;
+    width: 112%;
+    /* Not clipped: every flower is shown whole. */
+  }
+
+
+  .portrait {
+    width: auto;
+    height: 90dvh;
+    max-width: 50vw;
+    object-fit: contain;
+    object-position: right bottom;
+    transform-origin: bottom right;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   Selected work: project art boards (design.md §35) */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity var(--duration-hero) ease,
+    transform var(--duration-hero) var(--ease-paint);
+}
+
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+.projects {
+  position: relative;
+  z-index: 1;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 6rem 1.5rem 14rem;
+}
+
+.section-head {
+  margin-bottom: 4rem;
+}
+
+.section-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.75rem, 6vw, 5rem);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.boards {
+  display: grid;
+  gap: 9rem;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2rem;
+  align-items: center;
+}
+
+.board-image {
+  margin: 0;
+  padding: 0.75rem;
+  border: 1px solid var(--border-light);
+  border-radius: 0.75rem;
+  background: var(--color-cream-50);
+  overflow: hidden;
+}
+
+.board-image video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: var(--cover-ratio, 16 / 9);
+  object-fit: contain; /* the whole video stays visible, never cropped */
+  border-radius: 0.4rem;
+  background: #fff;
+  pointer-events: none; /* a cover, not a player */
+}
+
+.board-number {
+  margin: 0 0 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--color-rose-600);
+}
+
+.board-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.9rem, 3.2vw, 2.75rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  text-wrap: balance;
+}
+
+.board-description {
+  margin: 1rem 0 0;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+.board-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1.25rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.board-tags li {
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-olive-800);
+  background: color-mix(in srgb, var(--color-olive-300) 45%, transparent);
+}
+
+.board-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem 1.5rem;
+  margin: 1.75rem 0 0;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.board-meta dt {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.board-meta dd {
+  margin: 0.25rem 0 0;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.board-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.25rem 1.75rem;
+  margin-top: 1.75rem;
+}
+
+.board-link {
+  display: inline-block;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) left bottom / 0% 2px no-repeat;
+  transition:
+    background-size var(--duration-standard) var(--ease-paint),
+    color var(--duration-micro) ease;
+}
+
+.board-link:hover,
+.board-link:focus-visible {
+  background-size: 100% 2px;
+}
+
+.board-link:focus-visible {
+  outline: 2px solid var(--color-rose-600);
+  outline-offset: 3px;
+}
+
+@media (min-width: 900px) {
+  .projects {
+    padding: 8rem 3rem 14rem;
+  }
+
+  .boards {
+    gap: 8rem;
+  }
+
+  
+  /* Text and the case study button on the left, the video on the right, on every card. */
+  .board {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.45fr);
+    gap: 4rem;
+  }
+
+  .board-text {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .board-image {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   Big flowers on the bottom corners of each case study */
+
+.board {
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.corner {
+  --big: clamp(140px, 36vw, 190px);
+  position: absolute;
+  z-index: 2;
+  width: var(--big);
+  height: calc(var(--big) * 0.9);
+  pointer-events: none;
+}
+
+.corner img {
+  position: absolute;
+  height: auto;
+  user-select: none;
+}
+
+.corner-big {
+  width: 100%;
+}
+
+.corner-small {
+  width: 68%;
+}
+
+/* Which flowers: the big one sits right on the corner, a smaller one tucked in beside it. Roses
+   build up from the bottom-left of their box, lilies from the top-right (mirrored). */
+.kind-roses .corner-big {
+  left: 0;
+  bottom: 0;
+}
+
+.kind-roses .corner-small {
+  left: 64%;
+  bottom: 0;
+}
+
+.kind-lilies .corner-big {
+  right: 0;
+  top: 0;
+}
+
+.kind-lilies .corner-small {
+  right: 64%;
+  top: 0;
+}
+
+/* Where: each one hangs partly off the corner of its section. */
+.at-bl {
+  left: 0;
+  bottom: 0;
+  transform: translate(-10%, 60%);
+}
+
+.at-br {
+  right: 0;
+  bottom: 0;
+  transform: translate(10%, 60%);
+}
+
+.at-tl {
+  left: 0;
+  top: 0;
+  transform: translate(-10%, -58%);
+}
+
+.at-tr {
+  right: 0;
+  top: 0;
+  transform: translate(10%, -58%);
+}
+
+.at-mr {
+  right: 0;
+  top: 62%;
+  transform: translate(10%, -50%);
+}
+
+/* On the same line as a section's title: its centre level with the heading, at the right end. */
+.at-hr {
+  right: 0;
+  top: var(--hr-top, 8.5rem);
+  transform: translate(10%, -50%);
+}
+
+@media (min-width: 900px) {
+  .corner {
+    --big: clamp(190px, 18vw, 280px);
+  }
+
+  .board {
+    padding-bottom: 2rem;
+  }
+
+  /* On wide screens they hang further off their corners. */
+  .at-bl {
+    transform: translate(-34%, 60%);
+  }
+
+  .at-br {
+    transform: translate(22%, 60%);
+  }
+
+  .at-tl {
+    transform: translate(-22%, -58%);
+  }
+
+  .at-tr {
+    transform: translate(34%, -60%);
+  }
+
+  .at-mr {
+    transform: translate(34%, -50%);
+  }
+
+  .at-hr {
+    top: var(--hr-top-wide, 10.6rem);
+    transform: translate(34%, -50%);
+  }
+
+  .boards {
+    gap: 7rem;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   Rose cursor (mouse only) and the roses that come off it */
+
+@media (pointer: fine) {
+  html,
+  body,
+  .hero,
+  .projects {
+    cursor: url("/cursors/rose-40.png") 20 20, auto;
+    cursor: image-set(url("/cursors/rose-40.png") 1x, url("/cursors/rose-80.png") 2x) 20 20, auto;
+  }
+
+  /* A slightly bigger rose over anything you can click. */
+  a,
+  button,
+  summary,
+  [role="button"] {
+    cursor: url("/cursors/rose-52.png") 26 26, pointer;
+    cursor: image-set(url("/cursors/rose-52.png") 1x, url("/cursors/rose-104.png") 2x) 26 26, pointer;
+  }
+}
+
+@media (pointer: fine) {
+  html[data-cursor="lily"],
+  html[data-cursor="lily"] body,
+  html[data-cursor="lily"] .hero,
+  html[data-cursor="lily"] .projects {
+    cursor: url("/cursors/lily-40.png") 20 20, auto;
+    cursor: image-set(url("/cursors/lily-40.png") 1x, url("/cursors/lily-80.png") 2x) 20 20, auto;
+  }
+
+  html[data-cursor="lily"] a,
+  html[data-cursor="lily"] button,
+  html[data-cursor="lily"] summary,
+  html[data-cursor="lily"] [role="button"],
+  html[data-cursor="lily"] [role="radio"] {
+    cursor: url("/cursors/lily-52.png") 26 26, pointer;
+    cursor: image-set(url("/cursors/lily-52.png") 1x, url("/cursors/lily-104.png") 2x) 26 26, pointer;
+  }
+}
+
+/* Floating switch, bottom-left: choose the rose or the lily as the cursor. Mouse devices only. */
+.cursor-switch {
+  display: none;
+}
+
+@media (pointer: fine) {
+  .cursor-switch {
+    position: fixed;
+    left: 1.25rem;
+    bottom: 1.25rem;
+    z-index: 70;
+    display: flex;
+    gap: 0.25rem;
+    padding: 0.3rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--background) 90%, transparent);
+    border: 1px solid var(--border-light);
+    box-shadow: 0 6px 18px -8px rgba(60, 10, 30, 0.35);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .cursor-choice {
+    display: grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    transition: background-color var(--duration-micro) ease, transform var(--duration-micro) var(--ease-paint);
+  }
+
+  .cursor-choice img {
+    width: 1.7rem;
+    height: 1.7rem;
+    object-fit: contain;
+  }
+
+  .cursor-choice.is-on {
+    background: var(--background-soft);
+    box-shadow: inset 0 0 0 1.5px var(--text-primary);
+  }
+
+  .cursor-choice:focus-visible {
+    outline: 2px solid var(--text-primary);
+    outline-offset: 2px;
+  }
+}
+
+.trail-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.trail-rose {
+  position: absolute;
+  translate: -50% -50%; /* centred on the pointer */
+  opacity: 0;
+  will-change: transform, opacity;
+  user-select: none;
+}
+
+/* Floats up, drifting sideways a little, and fades. */
+.trail-rise {
+  animation: rose-rise var(--dur, 1.4s) cubic-bezier(0.22, 0.8, 0.3, 1) forwards;
+}
+
+/* Left behind where the pointer was: settles slightly and fades. */
+.trail-stay {
+  animation: rose-stay var(--dur, 1.4s) ease-out forwards;
+}
+
+@keyframes rose-rise {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) rotate(0deg) scale(0.5);
+  }
+  15% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx, 0), -110px) rotate(var(--rot, 20deg)) scale(0.85);
+  }
+}
+
+@keyframes rose-stay {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) rotate(0deg) scale(0.6);
+  }
+  18% {
+    opacity: 0.95;
+    transform: translate(0, 0) rotate(calc(var(--rot, 20deg) * 0.4)) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(var(--dx, 0) * 0.3), 22px) rotate(var(--rot, 20deg)) scale(0.9);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trail-layer {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   Case study page */
+
+.cs {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 7rem;
+}
+
+.cs-nav {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  /* A soft cream band across the page, so the text never reads through the bar. */
+  margin: -2rem -1.5rem 3rem;
+  padding: 0.8rem 1.5rem;
+  background: color-mix(in srgb, var(--background) 90%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 1px 0 var(--border-light);
+}
+
+/* "Back to work": just an arrow fixed in the top-left corner of the page, named by its tooltip. */
+.cs-back-icon {
+  position: fixed;
+  top: 0.8rem;
+  left: 1.25rem;
+  z-index: 31; /* above the section bar */
+  display: grid;
+  place-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  color: var(--text-primary);
+  transition:
+    background-color var(--duration-micro) ease,
+    color var(--duration-micro) ease;
+}
+
+.cs-back-icon:hover,
+.cs-back-icon:focus-visible {
+  background: var(--background-soft);
+}
+
+.cs-back-icon:focus-visible {
+  outline: 2px solid var(--color-rose-600);
+  outline-offset: 2px;
+}
+
+html[data-cursor="rose"] .cs-back-icon {
+  color: #7d0b1e;
+}
+
+html[data-cursor="lily"] .cs-back-icon {
+  color: #08267a;
+}
+
+/* The section names: one row that scrolls sideways when there are more than fit. */
+.cs-sections {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.cs-sections::-webkit-scrollbar {
+  display: none;
+}
+
+.cs-tab {
+  display: block;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: none;
+  color: var(--text-secondary);
+  background: linear-gradient(currentColor, currentColor) center bottom 2px / 0% 2px no-repeat;
+  transition:
+    background-size var(--duration-standard) var(--ease-paint),
+    color var(--duration-micro) ease;
+}
+
+.cs-tab:hover,
+.cs-tab:focus-visible,
+.cs-tab.is-active {
+  color: var(--text-primary);
+}
+
+.cs-tab.is-active {
+  background-size: calc(100% - 1.5rem) 2px;
+}
+
+.cs-tab:focus-visible {
+  outline: 2px solid var(--color-rose-600);
+  outline-offset: 2px;
+}
+
+/* Colour follows the cursor switch, like the other links. */
+html[data-cursor="rose"] .cs-tab:is(:hover, :focus-visible, .is-active) {
+  color: #7d0b1e;
+}
+
+html[data-cursor="lily"] .cs-tab:is(:hover, :focus-visible, .is-active) {
+  color: #08267a;
+}
+
+.cs-sections + .cs-count {
+  flex: none;
+}
+
+@media (max-width: 899px) {
+  /* Phones: the number and the back arrow on the first row, the section names scrolling on the second. */
+  .cs-nav {
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    justify-content: space-between;
+    padding-left: 3.6rem; /* room for the back arrow in the corner */
+    margin-bottom: 2rem;
+  }
+
+  .cs-sections {
+    order: 3;
+    flex: 1 1 100%;
+  }
+
+  .cs-count {
+    margin-right: auto;
+  }
+}
+
+html {
+  scroll-padding-top: 4.5rem;
+}
+
+.cs-back {
+  font-weight: 600;
+  color: var(--text-primary);
+  text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) left bottom / 0% 2px no-repeat;
+  transition:
+    background-size var(--duration-standard) var(--ease-paint),
+    color var(--duration-micro) ease;
+}
+
+.cs-back:hover,
+.cs-back:focus-visible {
+  background-size: 100% 2px;
+}
+
+.cs-back:focus-visible {
+  outline: 2px solid var(--color-rose-600);
+  outline-offset: 3px;
+}
+
+.cs-count {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--color-rose-600);
+}
+
+.cs-head .board-tags {
+  margin: 0 0 1.25rem;
+}
+
+.cs-title {
+  margin: 0;
+  max-width: 20ch;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.4rem, 5.5vw, 4.5rem);
+  line-height: 1;
+  letter-spacing: -0.015em;
+  color: var(--text-primary);
+  text-wrap: balance;
+}
+
+.cs-sub {
+  margin: 1.25rem 0 0;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.cs-cover {
+  margin: 3rem 0 0;
+  padding: 0.75rem;
+  border: 1px solid var(--border-light);
+  border-radius: 0.75rem;
+  background: var(--color-cream-50);
+}
+
+.cs-cover video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: var(--cover-ratio, 16 / 9);
+  object-fit: contain;
+  border-radius: 0.4rem;
+  background: #fff;
+  pointer-events: none;
+}
+
+.cs-intro {
+  display: grid;
+  gap: 2.5rem;
+  margin-top: 4rem;
+}
+
+.cs-story {
+  margin: 0.75rem 0 0;
+  font-size: 1.15rem;
+  line-height: 1.75;
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+.cs-overview {
+  padding: 1.5rem;
+  border: 1px solid var(--border-light);
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--color-cream-50) 70%, transparent);
+}
+
+.cs-overview dl {
+  display: grid;
+  gap: 0.9rem;
+  margin: 1rem 0 0;
+}
+
+.cs-overview dt {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.cs-overview dd {
+  margin: 0.2rem 0 0;
+  color: var(--text-primary);
+}
+
+.cs-overview dd a {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.cs-section {
+  margin-top: 6rem;
+}
+
+.cs-heading {
+  margin: 0 0 2rem;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.05;
+  color: var(--text-primary);
+}
+
+.cs-thread {
+  display: grid;
+  gap: 1rem;
+}
+
+.cs-bubble {
+  margin: 0;
+  max-width: min(46rem, 92%);
+  padding: 1rem 1.35rem;
+  border-radius: 1.4rem;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  white-space: pre-line;
+  text-wrap: pretty;
+}
+
+/* The question, on the left. */
+.cs-q {
+  justify-self: start;
+  border-bottom-left-radius: 0.4rem;
+  background: color-mix(in srgb, var(--color-plum-900) 8%, transparent);
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* The author's answer, on the right. */
+.cs-a {
+  justify-self: end;
+  border: 1px solid var(--border-light);
+  border-bottom-right-radius: 0.4rem;
+  background: var(--color-cream-50);
+  color: var(--text-primary);
+}
+
+.cs-figure {
+  margin: 0.5rem 0;
+  padding: 0.75rem;
+  justify-self: end;
+  max-width: min(60rem, 100%);
+  border: 1px solid var(--border-light);
+  border-radius: 0.75rem;
+  background: var(--color-cream-50);
+}
+
+.cs-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0.4rem;
+}
+
+.cs-figure figcaption {
+  padding: 0.75rem 0.25rem 0.1rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.cs-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 7rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-light);
+}
+
+@media (min-width: 900px) {
+  .cs {
+    padding: 3rem 3rem 9rem;
+  }
+
+  .cs-intro {
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    gap: 4rem;
+    align-items: start;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   Top navigation, Experience and Contact */
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+#home,
+#work,
+#experience,
+#about,
+#contact {
+  scroll-margin-top: 4rem;
+}
+
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* the tabs sit in the middle of the screen */
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  transition:
+    background-color var(--duration-standard) ease,
+    box-shadow var(--duration-standard) ease,
+    padding var(--duration-standard) var(--ease-paint);
+}
+
+/* Once you scroll, the bar becomes a soft cream band so the page never reads through the tabs. */
+.nav.is-scrolled {
+  padding-top: 0.7rem;
+  padding-bottom: 0.7rem;
+  background: color-mix(in srgb, var(--background) 88%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 1px 0 var(--border-light);
+}
+
+.nav-mark {
+  display: none;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.nav-tabs {
+  display: flex;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav-tab {
+  position: relative;
+  display: block;
+  padding: 0.5rem 0.8rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color var(--duration-micro) ease;
+}
+
+/* The current section: a short rose brush mark under its tab. */
+.nav-tab::after {
+  content: "";
+  position: absolute;
+  left: 0.8rem;
+  right: 0.8rem;
+  bottom: 0.15rem;
+  height: 3px;
+  border-radius: 60% 40% 70% 30% / 70% 40% 60% 30%;
+  background: linear-gradient(90deg, var(--color-rose-600), var(--color-rose-300));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--duration-standard) var(--ease-paint);
+}
+
+.nav-tab.is-active {
+  color: var(--text-primary);
+}
+
+.nav-tab.is-active::after {
+  transform: scaleX(1);
+}
+
+.nav-tab:hover,
+.nav-tab:focus-visible {
+  color: var(--link-hover);
+}
+
+.nav-tab:focus-visible {
+  outline: 2px solid var(--color-rose-600);
+  outline-offset: 2px;
+}
+
+@media (min-width: 900px) {
+  .nav {
+    padding: 1.25rem 3rem;
+  }
+
+  /* The name stays on the left; the tabs are centred on the screen. */
+  .nav-mark {
+    display: block;
+    position: absolute;
+    left: 3rem;
+    top: 50%;
+    translate: 0 -50%;
+  }
+
+  .nav-tab {
+    font-size: 0.95rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .nav-tab::after {
+    left: 1rem;
+    right: 1rem;
+  }
+}
+
+/* Experience */
+
+.experience {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 11rem 1.5rem 6rem; /* room for the roses that end the Case studies section */
+}
+
+.jobs {
+  display: grid;
+}
+
+.job {
+  display: grid;
+  gap: 0.5rem;
+  padding: 2.25rem 0;
+  border-top: 1px solid var(--border-light);
+}
+
+.job:last-child {
+  border-bottom: 1px solid var(--border-light);
+}
+
+.job-dates {
+  margin: 0.4rem 0 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-rose-600);
+}
+
+.job-role {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  line-height: 1.1;
+  color: var(--text-primary);
+}
+
+.job-company {
+  margin: 0.35rem 0 0;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.job-points {
+  display: grid;
+  gap: 0.6rem;
+  margin: 1.25rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.job-points li {
+  position: relative;
+  padding-left: 1.4rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+/* A small rose-coloured dot for each point. */
+.job-points li::before {
+  content: "";
+  position: absolute;
+  left: 0.15rem;
+  top: 0.7em;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 55% 45% 60% 40%;
+  background: var(--color-rose-400);
+}
+
+@media (min-width: 900px) {
+  .experience {
+    padding: 13rem 3rem 8rem;
+  }
+
+  .job {
+    grid-template-columns: 14rem minmax(0, 1fr);
+    gap: 3rem;
+  }
+}
+
+/* Contact */
+
+.contact {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 6rem 1.5rem 0; /* room for the Experience roses that hang into this section */
+}
+
+.contact-title {
+  margin: 0;
+  max-width: 16ch;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.6rem, 6vw, 5rem);
+  line-height: 1;
+  letter-spacing: -0.015em;
+  color: var(--text-primary);
+  text-wrap: balance;
+}
+
+.contact-title em {
+  font-style: italic;
+  color: var(--color-rose-600);
+}
+
+.contact-text {
+  margin: 1.75rem 0 0;
+  max-width: 38rem;
+  font-size: 1.1rem;
+  line-height: 1.75;
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+.contact-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2.25rem;
+}
+
+.contact-detail {
+  margin: 1.75rem 0 0;
+  color: var(--text-muted);
+}
+
+.contact-detail a {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.contact-detail a:hover,
+.contact-detail a:focus-visible {
+  color: var(--link-hover);
+}
+
+.footer-note {
+  margin: 2.5rem 0 0;
+  padding: 0 0 1rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+@media (min-width: 900px) {
+  .contact {
+    padding: 5rem 3rem 0;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   Footer: a full-width band of flowers along the bottom of the page */
+
+.footer-flowers {
+  position: relative;
+  z-index: 1;
+  /* The box has empty room above the flowers, so the tallest blooms are never sliced by a straight
+     edge: the top of the footer is only ever the flowers' own uneven outline. */
+  --ff-band: clamp(240px, 21vw, 380px); /* the band itself: short, so Contact stays the main thing */
+  --ff-head: max(9vw, 90px); /* room above the band for blooms that reach higher */
+  height: calc(var(--ff-band) + var(--ff-head));
+  margin-top: calc(var(--ff-head) * -0.75);
+  /* Nothing may stick out of this box: overflow would add empty, scrollable space under the page. */
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* The flowers are laid out against the band; the room above it is just spare space. */
+.footer-flowers .ff-field {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--ff-band);
+}
+
+.footer-flowers img {
+  position: absolute;
+  width: calc(var(--w) * 1vw);
+  min-width: 90px;
+  height: auto;
+  user-select: none;
+}
+
+.footer-flowers .ff-leaf {
+  min-width: 90px;
+}
+
+/* ---------------------------------------------------------------------------------------------
+   Buttons: on hover the pill disappears and whole flowers bloom in its place, with the label on
+   top. Roses behind the primary (solid) buttons with dark red text, lilies behind the secondary
+   (outline) buttons with dark blue text. The cursor is hidden over them. (See Btn.jsx.) */
+
+.btn {
+  position: relative;
+  isolation: isolate;
+}
+
+.btn-bloom {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.btn-bloom img {
+  position: absolute;
+  height: calc(var(--size) * 58%); /* small flowers, so the label stays the star */
+  width: auto;
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(var(--rot)) scaleX(var(--flip)) scale(0.2);
+  transition:
+    opacity var(--duration-micro) ease,
+    transform var(--duration-standard) var(--ease-paint);
+  user-select: none;
+}
+
+/* The flower bloom on buttons: mouse only. Phones have no hover animation. */
+@media (hover: hover) {
+  .btn:hover,
+  .btn:focus-visible {
+    z-index: 5;
+    background: transparent;
+    border-color: transparent;
+  }
+
+  .btn:hover .btn-bloom img,
+  .btn:focus-visible .btn-bloom img {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(var(--rot)) scaleX(var(--flip)) scale(1);
+  }
+}
+
+/* The label. A soft cream glow (feathered, no hard edge) sits right behind the text so it always
+   reads, whatever flower is behind it: very dark red on the roses, very dark blue on the lilies,
+   both well over 7:1 against the glow. */
+.btn-label {
+  position: relative;
+  isolation: isolate;
+}
+
+.btn-label::before {
+  content: "";
+  position: absolute;
+  inset: -0.3em -0.7em;
+  z-index: -1;
+  border-radius: 999px;
+  background: rgba(255, 248, 245, 0.62);
+  filter: blur(6px);
+  opacity: 0;
+  transition: opacity var(--duration-micro) ease;
+}
+
+/* Mouse only. */
+@media (hover: hover) {
+  .btn:hover .btn-label::before,
+  .btn:focus-visible .btn-label::before {
+    opacity: 1;
+  }
+
+  .btn-solid:hover,
+  .btn-solid:focus-visible {
+    color: #8a0f3c; /* dark pink on the roses */
+  }
+
+  .btn-line:hover,
+  .btn-line:focus-visible {
+    color: #08267a; /* dark blue on the lilies */
+  }
+}
+
+/* Keyboard focus stays clearly visible even though the pill itself disappears. */
+.btn:focus-visible {
+  outline: 2px solid var(--color-rose-600);
+  outline-offset: 4px;
+  border-radius: 999px;
+}
+
+@media (pointer: fine) {
+  .btn,
+  .btn * {
+    cursor: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-bloom img,
+  .btn-label::before {
+    transition: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   Case study corner flowers: they float, and swell a little when you hover one. The motion uses the
+   separate translate / rotate / scale properties, so it adds to each flower's own angle. */
+
+.corner img {
+  pointer-events: auto; /* so a flower can be hovered */
+  --float: 9px;
+  --sway: 2.5deg;
+  animation: flower-float var(--dur, 6s) ease-in-out var(--delay, 0s) infinite;
+  transition: scale 0.5s var(--ease-paint);
+}
+
+/* Each flower floats at its own pace, so they never move in step. */
+.kind-roses img:nth-child(1) {
+  --dur: 6.2s;
+  --delay: -1.2s;
+  --float: 11px;
+}
+
+.kind-roses img:nth-child(2) {
+  --dur: 7.4s;
+  --delay: -3.5s;
+  --float: 8px;
+  --sway: -3deg;
+}
+
+.kind-lilies img:nth-child(1) {
+  --dur: 6.8s;
+  --delay: -2.4s;
+  --float: 12px;
+  --sway: -2deg;
+}
+
+.kind-lilies img:nth-child(2) {
+  --dur: 5.6s;
+  --delay: -4.6s;
+  --float: 9px;
+  --sway: 3.2deg;
+}
+
+.corner img:hover {
+  scale: 1.1;
+}
+
+@keyframes flower-float {
+  0%,
+  100% {
+    translate: 0 0;
+    rotate: 0deg;
+  }
+  50% {
+    translate: 0 calc(var(--float) * -1);
+    rotate: var(--sway);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .corner img {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* Sections and pages that carry corner flowers. */
+.experience,
+.contact,
+.cs,
+.cs-head {
+  position: relative;
+}
+
+.experience {
+  padding-bottom: 14rem;
+}
+
+.cs {
+  padding-bottom: 10rem;
+}
+
+/* The rose that stands in for the cursor as it dissolves over a link. */
+.trail-dissolve {
+  animation: rose-dissolve 0.55s ease-out forwards;
+}
+
+@keyframes rose-dissolve {
+  0% {
+    opacity: 0.95;
+    transform: scale(1) rotate(0deg);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.35) rotate(25deg);
+    filter: blur(3px);
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   Text links on hover: they grow a little and turn bold in a dark blood red. The bold is drawn with
+   a thin outline and shadow, so the text gets heavier without its width changing and nothing
+   around it shifts. */
+
+.nav-tab,
+.nav-mark,
+.board-link,
+.cs-back,
+.cs-overview dd a,
+.contact-detail a {
+  transition:
+    transform var(--duration-standard) var(--ease-paint),
+    color var(--duration-micro) ease,
+    text-shadow var(--duration-micro) ease,
+    -webkit-text-stroke-width var(--duration-micro) ease;
+  -webkit-text-stroke: 0 currentColor;
+}
+
+.board-link,
+.cs-back,
+.cs-overview dd a,
+.contact-detail a,
+.nav-mark {
+  display: inline-block;
+  transform-origin: left center;
+}
+
+.nav-tab {
+  transform-origin: center;
+}
+
+.nav-tab:hover,
+.nav-tab:focus-visible,
+.nav-mark:hover,
+.nav-mark:focus-visible,
+.board-link:hover,
+.board-link:focus-visible,
+.cs-back:hover,
+.cs-back:focus-visible,
+.cs-overview dd a:hover,
+.cs-overview dd a:focus-visible,
+.contact-detail a:hover,
+.contact-detail a:focus-visible {
+  color: var(--link-hover);
+  transform: scale(1.09);
+  -webkit-text-stroke: 0.5px currentColor;
+  text-shadow: 0.35px 0 0 currentColor, -0.35px 0 0 currentColor;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-tab,
+  .nav-mark,
+  .board-link,
+  .cs-back,
+  .cs-overview dd a,
+  .contact-detail a {
+    transition: none;
+  }
+
+  .trail-dissolve {
+    animation-duration: 0.01s;
+  }
+}
+
+/* No cursor over any link: it dissolves (see RoseTrail.jsx) and the link itself reacts. */
+@media (pointer: fine) {
+  a,
+  a * {
+    cursor: none;
+  }
+}
+
+/* Room for a link to grow without touching its neighbour. */
+.contact-detail a {
+  margin: 0 0.45em;
+  transform-origin: center;
+}
+
+.contact-detail a:first-child {
+  margin-left: 0;
+}
+
+.contact-detail a:hover,
+.contact-detail a:focus-visible {
+  transform: scale(1.06);
+}
+
+/* Button labels: a little heavier, in every state, so the weight never changes on hover. */
+.btn {
+  font-weight: 700;
+}
+
+/* ---------------------------------------------------------------------------------------------
+   About me: the personal photos */
+
+.about {
+  position: relative;
+  z-index: 1;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 9rem 1.5rem 9rem; /* room for the Experience roses above and the Contact lilies below */
+}
+
+.about-lead {
+  margin: 1.75rem 0 0;
+  max-width: 36rem;
+  font-size: 1.2rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+.about-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 2.5rem;
+}
+
+.chip {
+  padding: 0.5rem 1.1rem;
+  border: 1px solid var(--border-medium);
+  border-radius: 999px;
+  background: transparent;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition:
+    background-color var(--duration-micro) ease,
+    color var(--duration-micro) ease,
+    border-color var(--duration-micro) ease;
+}
+
+@media (hover: hover) {
+  .chip:hover {
+    border-color: var(--link-hover);
+    color: var(--link-hover);
+  }
+}
+
+.chip.is-on {
+  background: var(--color-plum-900);
+  border-color: var(--color-plum-900);
+  color: var(--text-on-dark);
+}
+
+.chip:focus-visible,
+.viewer-btn:focus-visible {
+  outline: 2px solid var(--color-rose-600);
+  outline-offset: 3px;
+}
+
+.about-note {
+  margin: 0.75rem 0 0;
+  max-width: 36rem;
+  line-height: 1.65;
+  color: var(--text-muted);
+}
+
+/* Category cards: floating polaroids */
+
+.cat-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4.5rem 4rem;
+  margin: 3.5rem 0 0;
+  padding: 0 0 1rem;
+  list-style: none;
+}
+
+.cat-card {
+  --w: clamp(150px, 40vw, 190px);
+  position: relative;
+  display: block;
+  width: var(--w);
+  aspect-ratio: 3 / 4.15;
+  color: var(--text-primary);
+  text-decoration: none;
+  rotate: var(--rotate, 0deg);
+  translate: 0 var(--drop, 0px);
+  animation: cat-float 4.5s ease-in-out var(--float-delay, 0s) infinite;
+  transition:
+    rotate 0.3s ease,
+    scale 0.3s ease;
+}
+
+.cat-front,
+.cat-back {
+  position: absolute;
+  inset: 0;
+  display: block;
+  background: #fffdfc;
+  border-radius: 3px;
+  box-shadow: 0 16px 30px -12px rgba(48, 13, 33, 0.35);
+}
+
+.cat-front {
+  z-index: 2;
+  padding: 0.55rem 0.55rem 0;
+  transition: box-shadow 0.3s ease;
+}
+
+.cat-front > img {
+  display: block;
+  width: 100%;
+  height: calc(100% - 3.1rem);
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.cat-label {
+  display: grid;
+  gap: 0.1rem;
+  padding: 0.55rem 0.1rem 0;
+}
+
+.cat-label strong {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.cat-label small {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* Two more photos of the category wait behind the card and fan out on hover. */
+.cat-back {
+  z-index: 1;
+  padding: 0.5rem;
+  opacity: 0;
+  transform: scale(0.9) rotate(-14deg);
+  transition:
+    transform 0.35s var(--ease-paint),
+    opacity 0.3s ease;
+}
+
+.cat-back-right {
+  transform: scale(0.9) rotate(14deg);
+}
+
+.cat-back img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+@media (hover: hover) {
+  .cat-card:hover,
+  .cat-card:focus-visible {
+    animation-play-state: paused;
+    rotate: 0deg;
+    scale: 1.06;
+  }
+
+  .cat-card:hover .cat-front,
+  .cat-card:focus-visible .cat-front {
+    box-shadow: 0 24px 38px -10px rgba(48, 13, 33, 0.45);
+  }
+
+  .cat-card:hover .cat-back-left,
+  .cat-card:focus-visible .cat-back-left {
+    opacity: 1;
+    transform: translate(-34px, 16px) rotate(-22deg);
+  }
+
+  .cat-card:hover .cat-back-right,
+  .cat-card:focus-visible .cat-back-right {
+    opacity: 1;
+    transform: translate(34px, 16px) rotate(20deg);
+  }
+
+  .cat-card:focus-visible {
+    outline: 2px solid var(--color-rose-600);
+    outline-offset: 6px;
+  }
+}
+
+@keyframes cat-float {
+  0%,
+  100% {
+    translate: 0 var(--drop, 0px);
+  }
+  50% {
+    translate: 0 calc(var(--drop, 0px) - 12px);
+  }
+}
+
+.cat-hint {
+  margin: 2.5rem 0 0;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* The gallery page for one category */
+
+.catpage .cs-sub {
+  max-width: 36rem;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.chip {
+  display: inline-block;
+  text-decoration: none;
+}
+
+.catpage .about-filters {
+  margin-top: 2rem;
+}
+
+.polaroids {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2.25rem 1.25rem;
+  margin: 3.5rem 0 0;
+  padding: 0 0.5rem;
+  list-style: none;
+}
+
+.polaroid {
+  display: block;
+  width: 100%;
+  padding: 0.6rem 0.6rem 2.6rem;
+  border: 0;
+  border-radius: 3px;
+  background: #fffdfc;
+  box-shadow: 0 16px 30px -12px rgba(48, 13, 33, 0.35);
+  rotate: var(--rotate, 0deg);
+  translate: var(--shift, 0px) var(--drop, 0px);
+  animation: polaroid-float 4.5s ease-in-out var(--float-delay, 0s) infinite;
+  transition:
+    rotate 0.3s ease,
+    scale 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.polaroid img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+@media (hover: hover) {
+  .polaroid:hover,
+  .polaroid:focus-visible {
+    animation-play-state: paused;
+    rotate: 0deg;
+    scale: 1.06;
+    box-shadow: 0 24px 38px -10px rgba(48, 13, 33, 0.45);
+    z-index: 2;
+  }
+
+  .polaroid:focus-visible {
+    outline: 2px solid var(--color-rose-600);
+    outline-offset: 4px;
+  }
+}
+
+@keyframes polaroid-float {
+  0%,
+  100% {
+    translate: var(--shift, 0px) var(--drop, 0px);
+  }
+  50% {
+    translate: var(--shift, 0px) calc(var(--drop, 0px) - 10px);
+  }
+}
+
+@media (min-width: 640px) {
+  .polaroids {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2.75rem 1.75rem;
+  }
+}
+
+@media (min-width: 1000px) {
+  /* Five cards in one row on a laptop screen. */
+  .cat-row {
+    gap: 4.5rem 4.5rem;
+    flex-wrap: nowrap;
+  }
+
+  .cat-card {
+    --w: clamp(112px, 11.5vw, 168px);
+  }
+
+  .polaroids {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 3.25rem 2.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cat-card,
+  .polaroid {
+    animation: none;
+  }
+
+  .cat-back {
+    transition: none;
+  }
+}
+
+/* The enlarged photo */
+.viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  padding: 3.5rem 1rem 4rem;
+  background: rgba(33, 10, 24, 0.9);
+  animation: viewer-in var(--duration-standard) ease both;
+}
+
+@keyframes viewer-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.viewer-img {
+  max-width: min(100%, 1100px);
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 0.5rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.viewer-btn {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid rgba(255, 248, 245, 0.35);
+  border-radius: 50%;
+  background: rgba(255, 248, 245, 0.12);
+  color: var(--color-cream-50);
+  font: inherit;
+  font-size: 1.6rem;
+  line-height: 1;
+  transition: background-color var(--duration-micro) ease;
+}
+
+.viewer-btn:hover {
+  background: rgba(255, 248, 245, 0.28);
+}
+
+.viewer-close {
+  top: 1rem;
+  right: 1rem;
+}
+
+.viewer-prev,
+.viewer-next {
+  top: 50%;
+  translate: 0 -50%;
+}
+
+.viewer-prev {
+  left: 1rem;
+}
+
+.viewer-next {
+  right: 1rem;
+}
+
+.viewer-count {
+  position: absolute;
+  bottom: 1.25rem;
+  left: 0;
+  right: 0;
+  margin: 0;
+  text-align: center;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  color: var(--color-cream-300);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .viewer {
+    animation: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   Badges (the tag pills and the category chips): the same flower hover as the buttons, smaller.
+   Roses behind the tags and every other chip, lilies behind the rest. */
+
+.bloomy {
+  position: relative;
+  isolation: isolate;
+}
+
+/* The flower bloom on the category chips: mouse only. */
+@media (hover: hover) {
+  .bloomy:hover,
+  .bloomy:focus-visible {
+    z-index: 5;
+    background: transparent;
+    border-color: transparent;
+  }
+
+  .bloomy:hover .btn-bloom img,
+  .bloomy:focus-visible .btn-bloom img {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(var(--rot)) scaleX(var(--flip)) scale(1);
+  }
+
+  .bloomy:hover .btn-label::before,
+  .bloomy:focus-visible .btn-label::before {
+    opacity: 1;
+  }
+
+  .chip-rose:hover,
+  .chip-rose:focus-visible {
+    color: #8a0f3c;
+  }
+
+  .chip-lily:hover,
+  .chip-lily:focus-visible {
+    color: #08267a;
+  }
+}
+
+.bloomy .btn-label {
+  font-weight: 700;
+}
+
+.chip.bloomy:focus-visible {
+  outline: 2px solid var(--color-rose-600);
+  outline-offset: 4px;
+  border-radius: 999px;
+}
+
+/* A little smaller than on buttons, so the flowers stay in scale with the badge. */
+.bloomy .btn-bloom img {
+  height: calc(var(--size) * 52%);
+}
+
+.bloomy .btn-label::before {
+  inset: -0.25em -0.55em;
+}
+
+/* The selected category chip keeps its dark fill until you hover it. */
+@media (hover: hover) {
+  .chip.is-on:hover .btn-label,
+  .chip.is-on:focus-visible .btn-label {
+    color: inherit;
+  }
+}
+
+/* Category cards: on hover a rose blooms at the bottom-left corner and a lily at the bottom-right. */
+.cat-flower {
+  position: absolute;
+  bottom: -30%;
+  z-index: 3;
+  width: 74%;
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    opacity 0.25s ease,
+    transform 0.45s var(--ease-paint);
+}
+
+.cat-flower img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.cat-flower-bl {
+  left: -54%;
+  transform: translate(30%, 20%) rotate(-30deg) scale(0.3);
+  transform-origin: 70% 70%;
+}
+
+.cat-flower-br {
+  right: -54%;
+  transform: translate(-30%, 20%) rotate(30deg) scale(0.3);
+  transform-origin: 30% 70%;
+}
+
+@media (hover: hover) {
+  .cat-card:hover .cat-flower,
+  .cat-card:focus-visible .cat-flower {
+    opacity: 1;
+  }
+
+  .cat-card:hover .cat-flower-bl,
+  .cat-card:focus-visible .cat-flower-bl {
+    transform: rotate(-12deg) scale(1);
+  }
+
+  .cat-card:hover .cat-flower-br,
+  .cat-card:focus-visible .cat-flower-br {
+    transform: rotate(14deg) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cat-flower {
+    transition: none;
+  }
+}
+
+/* Where the heading-line lilies sit: level with each section's title (see .at-hr). */
+.experience {
+  --hr-top: 15.5rem;
+  --hr-top-wide: 17.6rem;
+}
+
+.projects {
+  --hr-top: 10.5rem;
+  --hr-top-wide: 12.6rem;
+}
+
+/* Contact and the footer are one section: the flowers are its bottom edge. */
+.contact-section {
+  position: relative;
+}
+
+/* ---------------------------------------------------------------------------------------------
+   Scrollbar: plain, no flowers. */
+
+/* Pink with the rose cursor, light blue with the lily cursor (see cursorChoice.js). */
+:root {
+  --scroll-track: #fbe6e4; /* very light pink */
+  --scroll-thumb: #e98a8e; /* pink */
+  --scroll-thumb-hover: #e3787f; /* a deeper pink */
+}
+
+html[data-cursor="lily"] {
+  --scroll-track: #e4ecfa; /* very light blue */
+  --scroll-thumb: #8fa9e4; /* blue */
+  --scroll-thumb-hover: #6f8fd8; /* a deeper blue */
+}
+
+::-webkit-scrollbar {
+  width: 14px;
+  height: 14px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scroll-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scroll-thumb);
+  border: 3px solid var(--scroll-track); /* a gap around the thumb, so it reads as a rounded pill */
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scroll-thumb-hover);
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  html {
+    scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+    scrollbar-width: auto;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   Loading screen (see Loader.jsx) */
+
+/* While the name flies to the hero, the real hero name stays hidden; it appears where it lands. */
+html.name-flying .name {
+  visibility: hidden;
+}
+
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 120; /* above the top bar and the rose trail */
+  overflow: hidden;
+}
+
+.loader.is-leaving {
+  pointer-events: none;
+}
+
+/* Only the cream and the flowers fade out; the name stays solid until it has landed in the hero. */
+.loader-bg {
+  position: absolute;
+  inset: 0;
+  background: var(--background);
+  transition: opacity 0.7s ease 0.2s;
+}
+
+.loader.is-leaving .loader-bg {
+  opacity: 0;
+}
+
+.loader-field {
+  position: absolute;
+  inset: 0;
+}
+
+/* One flower or leaf: it sits at its spot, its picture blooms open on arrival, and on leaving it
+   flies outward and away. */
+.loader-item {
+  position: absolute;
+  width: var(--w);
+  translate: -50% -50%;
+}
+
+.loader-item img {
+  display: block;
+  width: 100%;
+  height: auto;
+  rotate: var(--r);
+  opacity: 0;
+  scale: 0;
+}
+
+/* The bloom starts once the loading screen's small flowers have arrived (.is-ready). */
+.loader.is-ready .loader-item img {
+  animation: loader-bloom 0.9s var(--ease-paint) var(--arrive) forwards;
+}
+
+@keyframes loader-bloom {
+  0% {
+    opacity: 0;
+    scale: 0;
+    rotate: calc(var(--r) - 70deg);
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    scale: 1;
+    rotate: var(--r);
+  }
+}
+
+.loader.is-leaving .loader-item {
+  transition:
+    transform 0.95s cubic-bezier(0.5, 0, 0.9, 0.4) var(--exit),
+    opacity 0.7s ease calc(var(--exit) + 0.2s);
+  transform: translate(calc(var(--ax) * 75vmax), calc(var(--ay) * 75vmax)) scale(1.3);
+  opacity: 0;
+}
+
+/* The name, on a soft cream clearing in the middle of the flowers. */
+.loader-center {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 1.1rem;
+}
+
+.loader-glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(92vw, 62rem);
+  height: min(46vh, 22rem);
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(248, 240, 216, 0.96) 0%, rgba(248, 240, 216, 0.9) 45%, rgba(248, 240, 216, 0) 72%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.loader.is-ready .loader-glow {
+  animation: loader-fade 0.9s ease 0.5s forwards;
+}
+
+.loader.is-leaving .loader-glow {
+  opacity: 0 !important;
+  animation: none;
+}
+
+.loader-name {
+  position: relative;
+  margin: 0;
+  font-family: var(--font-display);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  color: var(--text-primary);
+  transform-origin: top left;
+  opacity: 0;
+}
+
+.loader.is-ready .loader-name {
+  animation: loader-fade 0.9s ease 0.5s forwards;
+}
+
+@keyframes loader-fade {
+  to {
+    opacity: 1;
+  }
+}
+
+.loader-meter {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 0.5rem;
+  transition: opacity 0.3s ease;
+}
+
+.loader.is-leaving .loader-meter {
+  opacity: 0;
+}
+
+.loader-bar {
+  width: clamp(160px, 26vmin, 260px);
+  height: 5px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-plum-900) 16%, transparent);
+  overflow: hidden;
+}
+
+.loader-bar span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--color-rose-600), var(--color-rose-300));
+  transform-origin: left;
+}
+
+.loader-count {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loader-bg {
+    transition-duration: 0.2s;
+    transition-delay: 0s;
+  }
+
+  .loader.is-ready .loader-item img,
+  .loader-item img {
+    animation: none;
+    opacity: 1;
+    scale: 1;
+  }
+
+  .loader.is-ready .loader-name,
+  .loader.is-ready .loader-glow,
+  .loader-name,
+  .loader-glow {
+    animation: none;
+    opacity: 1;
+  }
+
+  .loader.is-leaving .loader-item {
+    transition: none;
+    transform: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   Phones and small tablets */
+
+@media (max-width: 899px) {
+  /* No top bar (tabs and name) on phones. */
+  .nav {
+    display: none;
+  }
+
+  #home,
+  #work,
+  #experience,
+  #about,
+  #contact {
+    scroll-margin-top: 1rem;
+  }
+
+  /* The first screen holds the portrait and the text together: a smaller portrait, close to the
+     text, starting near the top of the screen. */
+  .hero {
+    min-height: 100dvh;
+    align-content: start;
+    gap: 0.9rem;
+    padding: 1.25rem 1.5rem 0;
+  }
+
+  .portrait-wrap {
+    width: min(58vw, 14.5rem);
+    margin: 0 0 2.4rem; /* room under it for the flowers that hang below the portrait */
+  }
+
+  .eyebrow {
+    margin-bottom: 0.75rem;
+  }
+
+  .brush-rule {
+    margin: 1rem 0 1.25rem;
+  }
+
+  .actions {
+    margin-top: 1.5rem;
+  }
+
+  /* About me: the category cards in a two-column grid, two on each row and the last one centred. */
+  .cat-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2.75rem 1rem;
+    padding: 0 0.25rem 1rem;
+  }
+
+  .cat-row li {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .cat-row li:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+
+  .cat-card {
+    --w: min(100%, 10.5rem);
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   Space between sections. Each section only keeps as much room above and below as its corner
+   flowers need to clear the neighbouring text: the flowers hang about 75px (phone) or 140px
+   (desktop) over the edge of their section. This block comes last so it sets the final values. */
+
+@media (min-width: 900px) {
+  .section-head {
+    margin-bottom: 3rem;
+  }
+
+  .boards {
+    gap: 6rem;
+  }
+
+  .projects {
+    padding-top: 7rem;
+    padding-bottom: 8rem;
+    --hr-top-wide: 11.6rem;
+  }
+
+  .experience {
+    padding-top: 10rem;
+    padding-bottom: 4rem;
+    --hr-top-wide: 14.6rem;
+  }
+
+  .about {
+    padding-top: 9rem;
+    padding-bottom: 5rem;
+    --hr-top-wide: 13.6rem;
+  }
+
+  /* The About roses hang about 140px below their section, into this one. The lilies sit beside the
+     heading, inside this section. */
+  .contact {
+    padding-top: 10rem;
+    --hr-top-wide: 12.5rem;
+  }
+}
+
+@media (max-width: 899px) {
+  .section-head {
+    margin-bottom: 2.5rem;
+  }
+
+  .boards {
+    gap: 4rem;
+  }
+
+  .board {
+    padding-bottom: 1rem;
+  }
+
+  .projects {
+    padding-top: 4rem;
+    padding-bottom: 5rem;
+    --hr-top: 8.5rem;
+  }
+
+  .experience {
+    padding-top: 5.5rem;
+    padding-bottom: 3rem;
+    --hr-top: 9.5rem;
+  }
+
+  .about {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+    --hr-top: 9rem;
+  }
+
+  .contact {
+    padding-top: 5.5rem;
+  }
+
+  /* On a phone the heading takes the full width, so the lilies sit above it, at the top-right corner. */
+  .contact .at-hr {
+    top: 0;
+    transform: translate(10%, -45%);
+  }
+}
+
+/* Phones: three hero buttons (View My Work, LinkedIn, Resume) share one row, so the first screen
+   still holds the portrait and all of the text. */
+@media (max-width: 899px) {
+  .actions {
+    gap: 0.5rem;
+    flex-wrap: nowrap;
+  }
+
+  .actions .btn {
+    padding: 0.7rem 1rem;
+    font-size: 0.86rem;
+    white-space: nowrap;
+  }
+}
+
+/* The text under each case study heading on the cards: heavier. */
+.board-description {
+  font-weight: 600;
+}
+
+/* LinkedIn and Resume: in the top-right corner of the bar on desktop; in the hero on phones. */
+.nav-links {
+  display: none;
+}
+
+.actions-extra {
+  display: contents;
+}
+
+@media (min-width: 900px) {
+  .nav-links {
+    display: flex;
+    gap: 0.6rem;
+    position: absolute;
+    right: 3rem;
+    top: 50%;
+    translate: 0 -50%;
+  }
+
+  .nav-links .btn {
+    padding: 0.5rem 1.1rem;
+    font-size: 0.88rem;
+  }
+
+  .actions-extra {
+    display: none;
+  }
+}
+
+/* Over the cursor switch the normal hand pointer shows, not the flower, so it reads as a control. */
+@media (pointer: fine) {
+  .cursor-switch,
+  .cursor-switch .cursor-choice,
+  html[data-cursor] .cursor-switch,
+  html[data-cursor] .cursor-switch .cursor-choice {
+    cursor: pointer;
+  }
+}
+
+/* Text colour follows the cursor switch: dark red with the rose, dark blue with the lily, on the
+   button and chip labels while their flowers show, and on the hover colour of text links. */
+html[data-cursor="lily"] {
+  --link-hover: #08267a;
+}
+
+@media (hover: hover) {
+  html[data-cursor="rose"] .btn:hover,
+  html[data-cursor="rose"] .btn:focus-visible,
+  html[data-cursor="rose"] .chip-rose:hover,
+  html[data-cursor="rose"] .chip-rose:focus-visible,
+  html[data-cursor="rose"] .chip-lily:hover,
+  html[data-cursor="rose"] .chip-lily:focus-visible {
+    color: #7d0b1e;
+  }
+
+  html[data-cursor="lily"] .btn:hover,
+  html[data-cursor="lily"] .btn:focus-visible,
+  html[data-cursor="lily"] .chip-rose:hover,
+  html[data-cursor="lily"] .chip-rose:focus-visible,
+  html[data-cursor="lily"] .chip-lily:hover,
+  html[data-cursor="lily"] .chip-lily:focus-visible {
+    color: #08267a;
+  }
+}
+
+/* Text links are coloured by the cursor switch all the time, not only on hover: dark red with the
+   rose, dark blue with the lily. (On hover they still grow and turn bold.) */
+html[data-cursor="rose"] :is(.nav-tab, .nav-mark, .board-link, .cs-back, .cs-overview dd a, .contact-detail a) {
+  color: #7d0b1e;
+}
+
+html[data-cursor="lily"] :is(.nav-tab, .nav-mark, .board-link, .cs-back, .cs-overview dd a, .contact-detail a) {
+  color: #08267a;
+}
+
+/* Large screens: a wider text block in the hero (the portrait sits to its right). */
+@media (min-width: 1280px) {
+  .hero-text {
+    max-width: 43rem;
+  }
+}
+
+@media (min-width: 1800px) {
+  .hero-text {
+    max-width: 50rem;
+  }
+}
