@@ -74,8 +74,8 @@ export default function App() {
           <p className="lead">
             I'm Sagnik — a <b>Design Engineer</b> with 4+ years of experience bridging{" "}
             <b>frontend engineering</b> and <b>product design</b>. I've worked on{" "}
-            <b>B2B SaaS dashboards</b>, customer support tools, procurement workflows, and HR
-            portals, turning complex requirements into intuitive, scalable, and visually polished
+            <b>B2B SaaS dashboards</b>, <b>customer support tools</b>, <b>procurement workflows</b>, and{" "}
+            <b>HR portals</b>, turning complex requirements into intuitive, scalable, and visually polished
             interfaces.
           </p>
           <div className="actions">
