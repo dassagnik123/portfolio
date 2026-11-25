@@ -2774,3 +2774,19 @@ html[data-cursor="lily"] :is(.nav-tab, .nav-mark, .board-link, .cs-back, .cs-ove
     max-width: 50rem;
   }
 }
+
+/* Key words in the intro: a soft marker stroke behind them, pink with the rose cursor and light
+   blue with the lily. It sits on the lower half of the line, like a highlighter. */
+.lead b {
+  --mark: rgba(220, 154, 157, 0.5);
+  padding: 0 0.15em;
+  margin: 0 -0.05em;
+  background: linear-gradient(to bottom, transparent 42%, var(--mark) 42%, var(--mark) 92%, transparent 92%);
+  border-radius: 0.3em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+html[data-cursor="lily"] .lead b {
+  --mark: rgba(143, 169, 228, 0.45);
+}
