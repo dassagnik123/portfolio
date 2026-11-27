@@ -1131,12 +1131,41 @@ html[data-cursor="lily"] .cs-tab:is(:hover, :focus-visible, .is-active) {
 .cs-controls {
   flex: none;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center; /* centred, so the cursor switch in the corner never covers a button */
-  gap: 2rem;
+  gap: 0.15rem;
   padding: 0.8rem 1.5rem;
   background: color-mix(in srgb, var(--background) 90%, transparent);
   box-shadow: 0 -1px 0 var(--border-light);
+}
+
+.cs-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* centred, so the cursor switch in the corner never covers a button */
+  gap: 2rem;
+}
+
+.cs-hint {
+  margin: 0;
+  font-size: 0.8rem;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.cs-hint-swipe {
+  display: none;
+}
+
+/* Touch screens: swipe instead of the keys. */
+@media (pointer: coarse) {
+  .cs-hint-keys {
+    display: none;
+  }
+
+  .cs-hint-swipe {
+    display: inline;
+  }
 }
 
 .cs-step {
@@ -1216,8 +1245,12 @@ html[data-cursor="lily"] .cs-tab:is(:hover, :focus-visible, .is-active) {
 
   /* Phones: start after the cursor switch in the corner. */
   .cs-controls {
-    justify-content: space-between;
     padding-left: 7rem;
+  }
+
+  .cs-steps {
+    width: 100%;
+    justify-content: space-between;
   }
 }
 

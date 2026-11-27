@@ -276,17 +276,23 @@ export default function CaseStudy({ slug }) {
       </div>
 
       <div className="cs-controls">
-        <button type="button" className="cs-step" onClick={() => go(slide - 1)} disabled={slide === 0} aria-label="Previous slide">
-          ← Previous
-        </button>
-        <span className="cs-dots" aria-hidden>
-          {labels.map((label, i) => (
-            <i key={label} className={i === slide ? "is-active" : ""} />
-          ))}
-        </span>
-        <button type="button" className="cs-step" onClick={() => go(slide + 1)} disabled={last} aria-label="Next slide">
-          Next →
-        </button>
+        <div className="cs-steps">
+          <button type="button" className="cs-step" onClick={() => go(slide - 1)} disabled={slide === 0} aria-label="Previous slide">
+            ← Previous
+          </button>
+          <span className="cs-dots" aria-hidden>
+            {labels.map((label, i) => (
+              <i key={label} className={i === slide ? "is-active" : ""} />
+            ))}
+          </span>
+          <button type="button" className="cs-step" onClick={() => go(slide + 1)} disabled={last} aria-label="Next slide">
+            Next →
+          </button>
+        </div>
+        <p className="cs-hint">
+          <span className="cs-hint-keys">Use the right and left buttons for navigation or scrolling.</span>
+          <span className="cs-hint-swipe">Swipe right or left to navigate.</span>
+        </p>
       </div>
     </main>
   );
