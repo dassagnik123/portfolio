@@ -296,8 +296,8 @@ export default function CaseStudy({ slug }) {
           </button>
         </div>
         <p className="cs-hint">
-          <span className="cs-hint-keys">Use the right and left buttons for navigation or scrolling.</span>
-          <span className="cs-hint-swipe">Swipe right or left to navigate.</span>
+          <span className="cs-hint-keys">Use ← → keys to navigate</span>
+          <span className="cs-hint-swipe">Swipe left or right to navigate</span>
         </p>
       </div>
     </main>
