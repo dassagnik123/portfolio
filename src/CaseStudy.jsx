@@ -64,31 +64,9 @@ function Cover({ project }) {
   );
 }
 
-const slugify = (text) => text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-
-// The section names in the top bar: jump links that scroll to each section, with the one you are
-// reading highlighted. They scroll with scrollIntoView rather than #links, because the page address
-// (#/case-study/...) is what tells the site which page to show.
-function SectionBar({ project, ids }) {
-  const [active, setActive] = useState(ids[0].id);
+// The top bar: the slide names (click one to jump to it) and where you are in the deck.
+function SlideBar({ project, labels, slide, onGo }) {
   const stripRef = useRef(null);
-
-  useEffect(() => {
-    // A section is "current" while it crosses a line a little below the bar.
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) setActive(entry.target.id);
-        });
-      },
-      { rootMargin: "-20% 0px -70% 0px" },
-    );
-    ids.forEach(({ id }) => {
-      const el = document.getElementById(id);
-      if (el) io.observe(el);
-    });
-    return () => io.disconnect();
-  }, [ids]);
 
   // Keep the highlighted name in view when the strip scrolls sideways (phones, long lists).
   useEffect(() => {
@@ -96,68 +74,39 @@ function SectionBar({ project, ids }) {
     const tab = strip?.querySelector(".is-active");
     if (!strip || !tab) return;
     strip.scrollTo({ left: tab.offsetLeft - strip.clientWidth / 2 + tab.clientWidth / 2, behavior: "smooth" });
-  }, [active]);
-
-  const jump = (e, id) => {
-    e.preventDefault();
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    document.getElementById(id)?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
-  };
+  }, [slide]);
 
   return (
     <>
-    <a className="cs-back-icon" href="#work" aria-label="Back to work" title="Back to work">
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-        <path d="M19 12H5" />
-        <path d="M11 6l-6 6 6 6" />
-      </svg>
-    </a>
-    <nav className="cs-nav" aria-label="Case study">
-      <ul ref={stripRef} className="cs-sections">
-        {ids.map(({ id, label }) => (
-          <li key={id}>
-            <a className={`cs-tab${active === id ? " is-active" : ""}`} href={`#${id}`} aria-current={active === id ? "true" : undefined} onClick={(e) => jump(e, id)}>
-              {label}
-            </a>
-          </li>
-        ))}
-      </ul>
-      <span className="cs-count">
-        {project.number} / {String(projects.length).padStart(2, "0")}
-      </span>
-    </nav>
+      <a className="cs-back-icon" href="#work" aria-label="Back to work" title="Back to work">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          <path d="M19 12H5" />
+          <path d="M11 6l-6 6 6 6" />
+        </svg>
+      </a>
+      <nav className="cs-nav" aria-label="Slides">
+        <ul ref={stripRef} className="cs-sections">
+          {labels.map((label, i) => (
+            <li key={label}>
+              <button type="button" className={`cs-tab${slide === i ? " is-active" : ""}`} aria-current={slide === i ? "true" : undefined} onClick={() => onGo(i)}>
+                {label}
+              </button>
+            </li>
+          ))}
+        </ul>
+        <span className="cs-count">
+          {project.number} / {String(projects.length).padStart(2, "0")}
+        </span>
+      </nav>
     </>
   );
 }
 
-// One case study as a page: the walkthrough video as the cover, the overview, then the story as
-// a conversation (a question on the left, the answer on the right), with images after the answer
-// they illustrate.
-export default function CaseStudy({ slug }) {
-  const project = projects.find((p) => p.slug === slug);
-  const study = caseStudies[slug];
-  const headRef = useReveal(0.05);
-
-  if (!project || !study) {
-    return (
-      <main className="cs">
-        <a className="cs-back" href="#work">
-          ← Back to work
-        </a>
-        <p>That case study doesn't exist.</p>
-      </main>
-    );
-  }
-
-  const index = projects.indexOf(project);
-  const next = projects[(index + 1) % projects.length];
-  const ids = [{ id: "cs-overview", label: "Overview" }, ...study.sections.map((sec) => ({ id: `cs-${slugify(sec.heading)}`, label: sec.heading }))];
-
+// The first slide: title, the story and the walkthrough on one side, the 1-minute overview on the other.
+function CoverSlide({ project, study }) {
   return (
-    <main className="cs">
-      <SectionBar project={project} ids={ids} />
-
-      <header ref={headRef} className="cs-head reveal">
+    <div className="cs-cover-slide">
+      <header className="cs-head">
         <Corner kind="lilies" at="tr" />
         <ul className="board-tags" aria-label="Tags">
           {project.tags.map((tag) => (
@@ -169,15 +118,10 @@ export default function CaseStudy({ slug }) {
           {study.created ? `${study.created} · ` : ""}
           {study.duration}
         </p>
+        <p className="cs-story">{study.story}</p>
       </header>
-
-      <Cover project={project} />
-
-      <div className="cs-intro" id="cs-overview">
-        <div>
-          <p className="eyebrow">The story behind the work</p>
-          <p className="cs-story">{study.story}</p>
-        </div>
+      <div className="cs-cover-side">
+        <Cover project={project} />
         <aside className="cs-overview" aria-label="1-minute overview">
           <p className="eyebrow">1-minute overview</p>
           <dl>
@@ -198,27 +142,137 @@ export default function CaseStudy({ slug }) {
           </dl>
         </aside>
       </div>
+    </div>
+  );
+}
 
-      {study.sections.map((section) => (
-        <section key={section.heading} id={`cs-${slugify(section.heading)}`} className="cs-section">
-          <h2 className="cs-heading">{section.heading}</h2>
-          <div className="cs-thread">
-            {section.blocks.map((block, i) => (
-              <Bubble key={i} block={block} />
-            ))}
-          </div>
-        </section>
-      ))}
+// A section slide: its heading, then the conversation. When the section has images they sit in a
+// column of their own beside the text.
+function SectionSlide({ section }) {
+  const images = section.blocks.filter((b) => b.type === "image");
+  const talk = section.blocks.filter((b) => b.type !== "image");
+  return (
+    <section className={`cs-section${images.length ? " has-images" : ""}`}>
+      <h2 className="cs-heading">{section.heading}</h2>
+      <div className="cs-thread">
+        {talk.map((block, i) => (
+          <Bubble key={i} block={block} />
+        ))}
+      </div>
+      {images.length > 0 && (
+        <div className="cs-shots">
+          {images.map((block, i) => (
+            <Bubble key={i} block={block} />
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
 
-      <Corner kind="roses" at="bl" />
-      <footer className="cs-foot">
-        <Btn variant="line" href="#work">
-          Back to work
-        </Btn>
-        <Btn variant="solid" href={`#/case-study/${next.slug}`}>
-          Next: {next.title.length > 40 ? `${next.title.slice(0, 40).trim()}…` : next.title} →
-        </Btn>
-      </footer>
+// One case study as a slide deck: a cover slide, then one slide per section. Move with the buttons,
+// the section names, the arrow keys or a swipe.
+export default function CaseStudy({ slug }) {
+  const project = projects.find((p) => p.slug === slug);
+  const study = caseStudies[slug];
+  const [slide, setSlide] = useState(0);
+  const [dir, setDir] = useState(1);
+  const touch = useRef(null);
+  const stageRef = useRef(null);
+
+  const total = study ? study.sections.length + 1 : 0;
+
+  const go = (to) => {
+    setSlide((from) => {
+      const next = Math.min(Math.max(to, 0), total - 1);
+      if (next !== from) setDir(next > from ? 1 : -1);
+      return next;
+    });
+  };
+
+  // A different case study starts on its first slide.
+  useEffect(() => {
+    setSlide(0);
+  }, [slug]);
+
+  // Every slide opens at its top.
+  useEffect(() => {
+    stageRef.current?.scrollTo(0, 0);
+  }, [slide]);
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.key === "ArrowRight") go(slide + 1);
+      else if (e.key === "ArrowLeft") go(slide - 1);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  });
+
+  if (!project || !study) {
+    return (
+      <main className="cs">
+        <a className="cs-back" href="#work">
+          ← Back to work
+        </a>
+        <p>That case study doesn't exist.</p>
+      </main>
+    );
+  }
+
+  const next = projects[(projects.indexOf(project) + 1) % projects.length];
+  const labels = ["Overview", ...study.sections.map((sec) => sec.heading)];
+  const last = slide === total - 1;
+
+  const onTouchEnd = (e) => {
+    const start = touch.current;
+    touch.current = null;
+    if (!start) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - start.x;
+    const dy = t.clientY - start.y;
+    if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    go(dx < 0 ? slide + 1 : slide - 1);
+  };
+
+  return (
+    <main className="cs">
+      <SlideBar project={project} labels={labels} slide={slide} onGo={go} />
+
+      <div
+        ref={stageRef}
+        key={slide}
+        className={`cs-stage ${dir >= 0 ? "from-right" : "from-left"}`}
+        onTouchStart={(e) => (touch.current = { x: e.touches[0].clientX, y: e.touches[0].clientY })}
+        onTouchEnd={onTouchEnd}
+      >
+        {slide === 0 ? <CoverSlide project={project} study={study} /> : <SectionSlide section={study.sections[slide - 1]} />}
+        {last && (
+          <footer className="cs-foot">
+            <Btn variant="line" href="#work">
+              Back to work
+            </Btn>
+            <Btn variant="solid" href={`#/case-study/${next.slug}`}>
+              Next: {next.title.length > 40 ? `${next.title.slice(0, 40).trim()}…` : next.title} →
+            </Btn>
+          </footer>
+        )}
+      </div>
+
+      <div className="cs-controls">
+        <button type="button" className="cs-step" onClick={() => go(slide - 1)} disabled={slide === 0} aria-label="Previous slide">
+          ← Previous
+        </button>
+        <span className="cs-dots" aria-hidden>
+          {labels.map((label, i) => (
+            <i key={label} className={i === slide ? "is-active" : ""} />
+          ))}
+        </span>
+        <button type="button" className="cs-step" onClick={() => go(slide + 1)} disabled={last} aria-label="Next slide">
+          Next →
+        </button>
+      </div>
     </main>
   );
 }
