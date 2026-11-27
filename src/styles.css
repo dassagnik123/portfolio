@@ -824,6 +824,7 @@ html[data-cursor="lily"] .cs-back-icon {
   list-style: none;
   /* Every slide name stays visible at once, on as many rows as it takes. */
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .cs-tab {
@@ -869,6 +870,20 @@ html[data-cursor="lily"] .cs-tab:is(:hover, :focus-visible, .is-active) {
 
 .cs-sections + .cs-count {
   flex: none;
+}
+
+@media (min-width: 900px) {
+  /* The slide names sit exactly in the middle: the number floats at the right edge and the same
+     room is kept on both sides. */
+  .cs-nav {
+    position: relative;
+    padding-inline: 5.5rem;
+  }
+
+  .cs-nav .cs-count {
+    position: absolute;
+    right: 1.5rem;
+  }
 }
 
 @media (max-width: 899px) {
