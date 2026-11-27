@@ -1169,21 +1169,24 @@ html[data-cursor="lily"] .cs-tab:is(:hover, :focus-visible, .is-active) {
 }
 
 .cs-step {
-  padding: 0.55rem 0.2rem;
-  border: 0;
-  font: inherit;
-  font-weight: 700;
+  display: grid;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  padding: 0;
+  border: 1px solid var(--border-light);
+  border-radius: 50%;
+  background: none;
   color: var(--text-primary);
   cursor: inherit;
-  background: linear-gradient(currentColor, currentColor) left bottom / 0% 2px no-repeat;
   transition:
-    background-size var(--duration-standard) var(--ease-paint),
+    background-color var(--duration-micro) ease,
     opacity var(--duration-micro) ease;
 }
 
 .cs-step:hover:not(:disabled),
 .cs-step:focus-visible {
-  background-size: 100% 2px;
+  background: color-mix(in srgb, var(--color-plum-900) 8%, transparent);
 }
 
 .cs-step:focus-visible {

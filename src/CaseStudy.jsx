@@ -58,6 +58,12 @@ function Cover({ project }) {
   );
 }
 
+const Chevron = ({ d }) => (
+  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d={d} />
+  </svg>
+);
+
 // The top bar: the slide names (click one to jump to it) and where you are in the deck.
 function SlideBar({ project, labels, slide, onGo }) {
   const stripRef = useRef(null);
@@ -278,7 +284,7 @@ export default function CaseStudy({ slug }) {
       <div className="cs-controls">
         <div className="cs-steps">
           <button type="button" className="cs-step" onClick={() => go(slide - 1)} disabled={slide === 0} aria-label="Previous slide">
-            ← Previous
+            <Chevron d="M15 6l-6 6 6 6" />
           </button>
           <span className="cs-dots" aria-hidden>
             {labels.map((label, i) => (
@@ -286,7 +292,7 @@ export default function CaseStudy({ slug }) {
             ))}
           </span>
           <button type="button" className="cs-step" onClick={() => go(slide + 1)} disabled={last} aria-label="Next slide">
-            Next →
+            <Chevron d="M9 6l6 6-6 6" />
           </button>
         </div>
         <p className="cs-hint">
