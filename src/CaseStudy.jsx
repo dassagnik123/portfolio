@@ -22,16 +22,10 @@ function Bubble({ block }) {
       </figure>
     );
   }
-  if (block.type === "q") {
-    return (
-      <p ref={ref} className="cs-bubble cs-q reveal">
-        <Rich text={block.text} />
-      </p>
-    );
-  }
+  // The questions are not shown: the slide is the heading and the author's text.
   if (block.type === "a") {
     return (
-      <p ref={ref} className="cs-bubble cs-a reveal">
+      <p ref={ref} className="cs-text reveal">
         <Rich text={block.text} />
       </p>
     );
@@ -208,6 +202,27 @@ export default function CaseStudy({ slug }) {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
+  });
+
+  // Scrolling down past the end of a slide moves on to the next one; scrolling up past its top goes
+  // back. One move per scroll gesture: the wheel is ignored for a moment after each move.
+  const wheelLock = useRef(0);
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (!stage) return undefined;
+    const onWheel = (e) => {
+      if (Math.abs(e.deltaY) < 8 || Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
+      const now = Date.now();
+      if (now < wheelLock.current) return;
+      const atEnd = stage.scrollTop + stage.clientHeight >= stage.scrollHeight - 2;
+      const atTop = stage.scrollTop <= 0;
+      if (e.deltaY > 0 && atEnd && slide < total - 1) go(slide + 1);
+      else if (e.deltaY < 0 && atTop && slide > 0) go(slide - 1);
+      else return;
+      wheelLock.current = now + 900;
+    };
+    stage.addEventListener("wheel", onWheel, { passive: true });
+    return () => stage.removeEventListener("wheel", onWheel);
   });
 
   if (!project || !study) {

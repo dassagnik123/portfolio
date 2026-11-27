@@ -822,12 +822,8 @@ html[data-cursor="lily"] .cs-back-icon {
   margin: 0;
   padding: 0;
   list-style: none;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.cs-sections::-webkit-scrollbar {
-  display: none;
+  /* Every slide name stays visible at once, on as many rows as it takes. */
+  flex-wrap: wrap;
 }
 
 .cs-tab {
@@ -876,7 +872,7 @@ html[data-cursor="lily"] .cs-tab:is(:hover, :focus-visible, .is-active) {
 }
 
 @media (max-width: 899px) {
-  /* Phones: the number and the back arrow on the first row, the section names scrolling on the second. */
+  /* Phones: the number and the back arrow on the first row, the slide names below. */
   .cs-nav {
     flex-wrap: wrap;
     gap: 0.25rem 1rem;
@@ -891,6 +887,11 @@ html[data-cursor="lily"] .cs-tab:is(:hover, :focus-visible, .is-active) {
 
   .cs-count {
     margin-right: auto;
+  }
+
+  .cs-tab {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.8rem;
   }
 }
 
@@ -1069,33 +1070,14 @@ html[data-cursor="lily"] .cs-tab:is(:hover, :focus-visible, .is-active) {
   align-content: start;
 }
 
-.cs-bubble {
+.cs-text {
   margin: 0;
-  max-width: min(46rem, 92%);
-  padding: 1rem 1.35rem;
-  border-radius: 1.4rem;
-  font-size: 1.2rem;
-  line-height: 1.7;
+  max-width: 46rem;
+  font-size: 1.3rem;
+  line-height: 1.75;
+  color: var(--text-primary);
   white-space: pre-line;
   text-wrap: pretty;
-}
-
-/* The question, on the left. */
-.cs-q {
-  justify-self: start;
-  border-bottom-left-radius: 0.4rem;
-  background: color-mix(in srgb, var(--color-plum-900) 8%, transparent);
-  color: var(--text-secondary);
-  font-weight: 600;
-}
-
-/* The author's answer, on the right. */
-.cs-a {
-  justify-self: end;
-  border: 1px solid var(--border-light);
-  border-bottom-right-radius: 0.4rem;
-  background: var(--color-cream-50);
-  color: var(--text-primary);
 }
 
 .cs-figure {
