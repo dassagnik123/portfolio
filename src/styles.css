@@ -86,7 +86,7 @@ body {
 
 .lead {
   margin: 0;
-  font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+  font-size: clamp(1.15rem, 1.8vw, 1.4rem);
   line-height: 1.7;
   color: var(--text-secondary);
   text-wrap: pretty;
@@ -99,7 +99,7 @@ body {
 
 .note {
   margin: 1.25rem 0 0;
-  font-size: 1rem;
+  font-size: 1.1rem;
   line-height: 1.65;
   color: var(--text-secondary);
 }
@@ -368,7 +368,7 @@ body {
 
 .board-description {
   margin: 1rem 0 0;
-  font-size: 1.05rem;
+  font-size: 1.15rem;
   line-height: 1.7;
   color: var(--text-secondary);
   text-wrap: pretty;
@@ -411,7 +411,7 @@ body {
 
 .board-meta dd {
   margin: 0.25rem 0 0;
-  font-size: 0.95rem;
+  font-size: 1.05rem;
   color: var(--text-primary);
 }
 
@@ -976,7 +976,7 @@ html {
 
 .cs-story {
   margin: 0.75rem 0 0;
-  font-size: 1.15rem;
+  font-size: 1.3rem;
   line-height: 1.75;
   color: var(--text-secondary);
   text-wrap: pretty;
@@ -1036,7 +1036,7 @@ html {
   max-width: min(46rem, 92%);
   padding: 1rem 1.35rem;
   border-radius: 1.4rem;
-  font-size: 1.05rem;
+  font-size: 1.2rem;
   line-height: 1.7;
   white-space: pre-line;
   text-wrap: pretty;
@@ -1358,7 +1358,7 @@ html {
 .contact-text {
   margin: 1.75rem 0 0;
   max-width: 38rem;
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   line-height: 1.75;
   color: var(--text-secondary);
   text-wrap: pretty;
